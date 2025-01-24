@@ -1,0 +1,125 @@
+<div style="width:800px; height:600px;" perfectScrollbar>
+    <div style="width:800px;height:650px;">
+
+        <h3>Add Vendor</h3>
+
+        <div style="width:99.4%;float: left;margin-bottom:10px;">
+
+
+            <mat-form-field [formGroup]="angForm" novalidate class="w-100" style="margin-top:5px;">
+                <input matInput placeholder="Vendor Name" formControlName="vendor_name">
+            </mat-form-field>
+
+            Vendor Image<input name="profile_pic" type="file" (change)="handleInputChange($event)"
+                accept="image/gif,image/jpeg,image/png,image/jpg" required>
+
+            <mat-form-field [formGroup]="angForm" novalidate class="w-100" style="margin-top:5px;">
+                <input type="Number" matInput placeholder="Bonus Points" formControlName="bonus_points">
+            </mat-form-field>
+
+            <mat-form-field [formGroup]="angForm" novalidate class="w-100" style="margin-top:5px;">
+                <input type="Number" matInput placeholder="Discount %" formControlName="discount">
+            </mat-form-field>                 
+
+<!--             After Scan <input name="profile_pic2" type="file" (change)="handleInputChange2($event)"
+                accept="image/gif,image/jpeg,image/png,image/jpg" required> -->
+
+            <div style="width:99.4%;margin-bottom:10px;">
+                <mat-form-field class="w-100">
+                    <input matInput placeholder="Vendor Location" #location>  
+                </mat-form-field>
+            </div>
+
+            <div style="align-items: center">
+                <button mat-raised-button color="accent" style="border-radius: 30px;margin-left: 300px"
+                    (click)="setlocation(location.value)">Set Vendor Location</button>
+            </div>
+
+            <div *ngIf="showMap; else elseBlock">
+                <div style="width:100%; height:50%">
+                    <agm-map [latitude]="lat" [longitude]="lng" [zoom]="zoom" [mapTypeControl]="true"
+                        (mapClick)="markerDragEnd($event)">
+                        <agm-marker [latitude]="lat" [longitude]="lng" [markerDraggable]="true"
+                            (dragEnd)="markerDragEnd($event)"></agm-marker>
+                        <!-- <agm-marker [latitude]="22.7002297" [longitude]="75.87640475"></agm-marker> -->
+
+                        
+<!--                         <agm-circle [latitude]="lat" [longitude]="lng" [radius]="500" [fillColor]="'green'">
+                        </agm-circle> -->
+
+<!--                         <div *ngFor="let val of sponsorLatings">
+
+                            <agm-circle [latitude]="val.lat" [longitude]="val.lng" [radius]="val.diameter"
+                                [fillColor]="'red'"></agm-circle>
+                            <agm-marker [latitude]="val.lat" [longitude]="val.lng" [iconUrl]="val.tag_image | image">
+                            </agm-marker>
+
+                        </div> -->
+
+
+                    </agm-map>
+
+                </div>
+
+            </div>
+
+            <ng-template #elseBlock>
+
+                <div style="width:100%; height:50%">
+
+                    <agm-map [latitude]="lat" [longitude]="lng" [zoom]="zoom" [mapTypeControl]="true"
+                        (mapClick)="markerDragEnd($event)">
+
+                        <agm-marker [latitude]="lat" [longitude]="lng" [markerDraggable]="true"
+                            (dragEnd)="markerDragEnd($event)"></agm-marker>
+
+                        <agm-circle [latitude]="lat" [longitude]="lng" [radius]="Number(tagDiameter)"
+                            [fillColor]="'green'"></agm-circle>
+
+<!--                         <div *ngFor="let val of sponsorLatings">
+
+                            <agm-circle [latitude]="val.lat" [longitude]="val.lng" [radius]="val.diameter"
+                                [fillColor]="'red'"></agm-circle>
+                            <agm-marker [latitude]="val.lat" [longitude]="val.lng" [iconUrl]="val.tag_image | image">
+                            </agm-marker>
+
+                        </div> -->
+
+
+                    </agm-map>
+
+                </div>
+
+            </ng-template>
+
+            <mat-form-field [formGroup]="angForm" novalidate class="w-100" style="margin-top:5px;">
+                <input matInput placeholder="latitude" formControlName="lat" >
+                <!-- [readonly]="true" -->
+
+            </mat-form-field>
+
+            <mat-form-field [formGroup]="angForm" novalidate class="w-100" style="margin-top:5px;">
+                <input matInput placeholder="longitude" formControlName="lng" >
+                <!-- [readonly]="true" -->
+
+            </mat-form-field>
+
+            <mat-form-field [formGroup]="angForm" novalidate class="w-100" style="margin-top:5px;">
+                <input matInput placeholder="Vendor Address" formControlName="vendor_address">
+            </mat-form-field>            
+
+<!--             <mat-form-field [formGroup]="angForm" novalidate class="w-100" style="margin-top:5px;">
+                <input matInput placeholder="diameter" formControlName="diameter" (keyup)="getDiameter($event)">
+
+            </mat-form-field> -->
+
+            <br />
+
+
+            <div style="position: absolute;margin:auto;"><button style="align-content: center;border-radius: 40px; position: absolute;margin:auto;
+            display:block;" mat-raised-button color="primary" (click)="addevent()" [disabled]="!angForm.valid">Add
+                    Vendor</button></div>
+
+
+        </div>
+        <br><br><br>

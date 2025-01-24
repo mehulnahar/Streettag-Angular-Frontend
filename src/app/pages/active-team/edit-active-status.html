@@ -1,0 +1,62 @@
+<mat-toolbar class="mb-2">
+  <span>Activate Team Code</span>
+  <span class="fill-remaining-space"></span>
+</mat-toolbar>
+<mat-dialog-content>
+  <form [formGroup]="angForm" (submit)="formsubmit()">
+    <div fxLayout="row wrap" fxLayoutGap="8px grid">
+      <div fxFlex="100" fxFlex.lt-sm="100">
+        <mat-form-field class="w-100 mb-2">
+          <mat-label>Leaderboard</mat-label>
+          <input
+            matInput
+            placeholder="Leaderboard"
+            formControlName="leaderboard"
+            required
+            [readonly]="edit"
+          />
+          <mat-hint *ngIf="edit">This field is locked</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field class="w-100 mb-2">
+          <mat-label>Team Name</mat-label>
+          <input
+            matInput
+            placeholder="Team Name"
+            formControlName="team_name"
+            required
+            [readonly]="edit"
+          />
+          <mat-hint *ngIf="edit">This field is locked</mat-hint>
+        </mat-form-field>
+      </div>
+    </div>
+    <div fxLayout="row wrap" fxLayoutGap="8px grid">
+      <div fxFlex="100" fxFlex.lt-sm="100">
+        <label>Active Status</label>
+        <mat-radio-group
+          [(ngModel)]="activestatus"
+          [ngModelOptions]="{standalone: true}"
+        >
+          <mat-radio-button
+            style="margin-right: 10px; margin-left: 6px; margin-bottom: 6px"
+            value="1"
+          >
+            Yes
+          </mat-radio-button>
+          <mat-radio-button value="0"> NO </mat-radio-button>
+        </mat-radio-group>
+      </div>
+    </div>
+    <button
+      mat-raised-button
+      type="submit"
+      color="primary"
+      class="custom-btn m-2"
+      appDebounceClick
+    >
+      Submit
+    </button>
+
+  </form></mat-dialog-content
+>

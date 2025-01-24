@@ -1,0 +1,121 @@
+<div fxLayout="row wrap" >
+    <div fxFlex="50" fxFlex.xl="25" fxFlex.lg="25" fxFlex.md="50" fxFlex.sm="50" class="p-2">
+        <mat-card  class="gradient-purple tile p-2 h-100p">
+            <mat-icon>near_me</mat-icon>
+            <div class="bottom">
+                <a class="none" routerLink="/streettags">
+                    <h5 *ngIf="!total_streettags_count">Calculating...</h5>
+                   <h3> {{total_streettags_count}} </h3>
+                </a>
+                <p>Street Tags</p>
+            </div>
+
+        </mat-card>
+    </div>
+    <div fxFlex="50" fxFlex.xl="25" fxFlex.lg="25" fxFlex.md="50" fxFlex.sm="50" class="p-2">
+        <mat-card class="gradient-teal tile p-2 h-100p" >
+            <mat-icon>transfer_within_a_station</mat-icon>
+            <div class="bottom">
+                <h5 *ngIf="!total_distance_count">Calculating...</h5>
+                <h3> {{total_distance_count}} </h3>
+                <p>Total Miles Till Date</p>
+            </div>
+
+        </mat-card>
+    </div>
+    <div fxFlex="50" fxFlex.xl="25" fxFlex.lg="25" fxFlex.md="50" fxFlex.sm="50" class="p-2">
+        <mat-card class="gradient-indigo tile p-2 h-100p">
+            <mat-icon>group</mat-icon>
+            <div class="bottom">
+                <h5 *ngIf="(!total_teams_count && total_teams_count != 0)">Calculating...</h5>
+                <h2> {{total_teams_count}} </h2>
+                <p>Total Teams</p>
+            </div>
+
+        </mat-card>
+    </div>
+    <div fxFlex="50" fxFlex.xl="25" fxFlex.lg="25" fxFlex.md="50" fxFlex.sm="50" class="p-2">
+        <mat-card class="gradient-amber tile p-2 h-100p">
+            <mat-icon>my_location</mat-icon>
+            <div class="bottom">
+                <h5 *ngIf="(!total_locations_count && total_locations_count != 0)">Calculating...</h5>
+                <h2> {{total_locations_count}} </h2>
+                <p>Total Location</p>
+            </div>
+
+        </mat-card>
+    </div>
+</div>
+<div fxLayout="row wrap">
+    <div fxFlex="50" fxFlex.xl="25" fxFlex.lg="25" fxFlex.md="50" fxFlex.sm="50" class="p-2">
+        <mat-card class="gradient-brown tile p-2 h-100p">
+            <mat-icon>person</mat-icon>
+            <div class="bottom">
+                <h5 *ngIf="!(total_profiles_count && total_profiles_count != 0)">Calculating...</h5>
+                <h2> {{total_profiles_count}} </h2>
+                <p>Total Profile</p>
+            </div>
+
+        </mat-card>
+    </div>
+    <div fxFlex="50" fxFlex.xl="25" fxFlex.lg="25" fxFlex.md="50" fxFlex.sm="50" class="p-2">
+        <mat-card class="gradient-pink tile p-2 h-100p">
+            <mat-icon>person_add</mat-icon>
+            <div class="bottom">
+                <h5 *ngIf="(!total_last_hr_profiles_count && total_last_hr_profiles_count != 0 )">Calculating...</h5>
+                <h2> {{total_last_hr_profiles_count}} </h2>
+                <p>Profile in Last 24 Hours</p>
+            </div>
+
+        </mat-card>
+    </div>
+    <div fxFlex="50" fxFlex.xl="25" fxFlex.lg="25" fxFlex.md="50" fxFlex.sm="50" class="p-2">
+        <mat-card class="gradient-gray tile p-2 h-100p">
+            <mat-icon>poll</mat-icon>
+            <div class="bottom">
+                <h5 *ngIf="!get_top_team_arr_val">Calculating...</h5>
+                <h4> {{get_top_team_arr_val}} </h4>
+                <p>Top Team in All</p>
+            </div>
+
+        </mat-card>
+    </div>
+    <div fxFlex="50" fxFlex.xl="25" fxFlex.lg="25" fxFlex.md="50" fxFlex.sm="50" class="p-2">
+        <mat-card class="gradient-red tile p-2 h-100p">
+            <mat-icon>flag</mat-icon>
+            <div class="bottom">
+                <h5 *ngIf="!get_top_player_arr_val">Calculating...</h5>
+                <h4> {{get_top_player_arr_val}} </h4>
+                <p>Top Players in All</p>
+            </div>
+
+        </mat-card>
+    </div>
+</div>
+
+<div fxLayout="row wrap">
+        <div fxFlex="50" fxFlex.xl="25" fxFlex.lg="25" fxFlex.md="50" fxFlex.sm="50" class="p-2">
+            <mat-card class="gradient-purple tile p-2 h-100p">
+                <mat-icon>person</mat-icon>
+                <div class="bottom">
+                    <h5 *ngIf="!total_scan_per_day_val">Calculating...</h5>
+                    <h3> {{total_scan_per_day_val}} </h3>
+                    <p>Total Scans In A Day</p>
+                </div>
+    
+            </mat-card>
+        </div>
+
+        <div fxFlex="50" fxFlex.xl="25" fxFlex.lg="25" fxFlex.md="50" fxFlex.sm="50" class="p-2">
+            <mat-card class="gradient-teal tile p-2 h-100p">
+                <mat-icon>directions_run</mat-icon>
+                <div class="bottom">
+                    <h5 *ngIf="!total_steps_per_day_val">Calculating...</h5>
+                    <h3> {{total_steps_per_day_val}} </h3>
+                    <p>Total Steps In A Day</p>
+                </div>
+    
+            </mat-card>
+        </div>
+
+    </div>

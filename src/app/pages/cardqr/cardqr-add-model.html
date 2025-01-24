@@ -1,0 +1,56 @@
+<div style="width:700px; height:250px;" >
+   
+        <h3>Add Fruit Card</h3>
+      
+        <div style="width:99.4%;float: left;margin-bottom:10px;">
+
+            <!-- <mat-form-field [formGroup]="angForm" novalidate class="w-100" style="margin-top:5px;">
+                <input matInput placeholder="Circuit ID" [(ngModel)] = "fruit_id" readonly>
+
+            </mat-form-field>             -->
+
+
+            <mat-form-field class="w-100" [formGroup]="angForm" novalidate>
+                <mat-select placeholder="Select Fruit" [(ngModel)]="fruit_id" name="food"
+                    formControlName="fruit_id">
+                    <mat-option *ngFor="let food of dataSourceFruits" [value]="food.id">
+                        {{food.fruit_name}}  {{ food.score_points }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>           
+
+            <!--
+            <div *ngIf="angForm.controls['circuit_name'].invalid && (angForm.controls['circuit_name'].dirty || angForm.controls['circuit_name'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="angForm.controls['circuit_name'].errors.required">
+                    Leaderboard is required.
+                </div>
+            </div>
+-->
+
+            <mat-form-field [formGroup]="angForm" novalidate class="w-100" style="margin-top:5px;">
+                <input matInput placeholder="Card Name" formControlName="card_name">
+
+            </mat-form-field>
+
+            <div *ngIf="angForm.controls['card_name'].invalid && (angForm.controls['card_name'].dirty || angForm.controls['card_name'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="angForm.controls['card_name'].errors.required">
+                    Card Name is required.
+                </div>
+            </div>
+        
+        <div>
+            <button style="align-content: center;border-radius: 10px; width:130px; margin-top: 20px;" mat-raised-button color="primary" (click)="addevent()" [disabled]="!angForm.valid || spinner ">Add
+                    QR</button>
+    <div fxFlex="38" style="margin: auto 15px">
+            <div *ngIf="spinner">
+              <mat-progress-spinner
+                diameter="21"
+                mode="indeterminate"
+              ></mat-progress-spinner>
+            </div>
+           </div> 
+        </div>
+</div>
+        

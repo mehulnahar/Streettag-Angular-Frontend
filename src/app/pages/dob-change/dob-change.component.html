@@ -1,0 +1,100 @@
+<app-content-header [title]="'DOB Change'" [icon]="'event'" [hideBreadcrumb]="true" [hasBgImage]="true"
+	[class]="'pb-3 pt-3'"></app-content-header>
+
+<br>
+
+<div class="container">
+	<form (ngSubmit)="onSubmit(searchForm.value)" #searchForm="ngForm">
+	
+		<input type="hidden" name="device_token" [(ngModel)]="device_token">
+		<input type="hidden" name="device_type" [(ngModel)]="device_type">
+		<input type="hidden" name="location_id" [(ngModel)]="location_id">
+		<input type="hidden" name="circuit_id" [(ngModel)]="circuit_id">
+		<input type="hidden" name="team_id" [(ngModel)]="team_id">
+		<input type="hidden" name="player_email" [(ngModel)]="player_email">
+		
+		<div class="form-group">
+	
+			<mat-form-field class="example-full-width">
+		      <input type="text" placeholder="Team Name" [(ngModel)]="team_namet" aria-label="Number" matInput [formControl]="myControl3" [matAutocomplete]="auto3">
+		      <mat-autocomplete #auto3="matAutocomplete">
+		        <mat-option  *ngFor="let option of filteredOptions3 | async" [value]="option.team_namee">
+		          {{option.team_namee}}
+		        </mat-option>
+		      </mat-autocomplete>
+		    </mat-form-field>
+
+			<span class="help-block">*Not mandatory</span>
+		</div>
+		<!-- <mat-form-field>
+			<input type="text" placeholder="Pick one" aria-label="Number" matInput [formControl]="myControl"
+				[matAutocomplete]="auto">
+			<mat-autocomplete #auto="matAutocomplete">
+				<mat-option *ngFor="let option of options" [value]="option">
+					{{option}}
+				</mat-option>
+			</mat-autocomplete>
+		</mat-form-field> -->
+
+		<div class="form-group" *ngIf="is_all==true">
+			
+			<mat-form-field class="example-full-width">
+		      <input type="text" placeholder="Player ID" [(ngModel)]="player_namet" aria-label="Number" matInput [formControl]="myControl1" [matAutocomplete]="auto1">
+		      <mat-autocomplete #auto1="matAutocomplete">
+		        <mat-option  *ngFor="let option of filteredOptions1 | async" [value]="option.player_idd">
+		          {{option.player_idd}}
+		        </mat-option>
+		      </mat-autocomplete>
+		    </mat-form-field>
+
+
+			<!-- <select class="form-control" name="player_id" [(ngModel)]="player_id"
+				(ngModelChange)="get_player_id($event)">
+				<option value="">Select Player</option>
+				<option *ngFor="let food of dataSourceAllPlayers" [value]="food.player_id">{{food.fullname | decode}}
+				</option>
+			</select> -->
+
+		</div>
+		<div class="form-group" *ngIf="is_all==false">
+
+			<mat-form-field class="example-full-width">
+		      <input type="text" placeholder="Player ID" [(ngModel)]="player_namet" aria-label="Number" matInput [formControl]="myControl1" [matAutocomplete]="auto2">
+		      <mat-autocomplete #auto2="matAutocomplete">
+		        <mat-option  *ngFor="let option of filteredOptions1 | async" [value]="option.player_idd">
+		          {{option.player_idd}}
+		        </mat-option>
+		      </mat-autocomplete>
+		    </mat-form-field>
+		</div>
+
+		<div class="row">
+			<div class="col-md-3">
+				Name:<br>{{player_name | decode}}
+			</div>
+			<div class="col-md-3">
+				DOB:<br>{{ player_dob }}
+			</div>				
+			<div class="col-md-3">
+				Email:<br>{{player_email | decode}}
+			</div>
+			<div class="col-md-3"> <!-- align="center" -->
+				Team:<br>{{player_team | decode }}
+			</div>
+		
+		</div>
+		<br>
+		<div class="form-group">
+			<mat-form-field>
+			  <input matInput [(ngModel)]="d" placeholder="Choose Date Of Birth"	[formControl]="myControl4"	[matDatepicker]="dp1"
+			  />
+			  <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
+			  <mat-datepicker #dp1></mat-datepicker>
+			</mat-form-field>
+		</div>
+		<br>
+		<div class="form-group" align="center">
+			<button type="submit" class="btn btn-primary btn-md">Update DOB</button>
+		</div>
+	</form>
+</div>

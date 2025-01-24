@@ -1,0 +1,20 @@
+<button mat-icon-button [matMenuTriggerFor]="userMenu" #userMenuTrigger="matMenuTrigger" >
+    <mat-icon>account_circle</mat-icon>
+</button>
+
+<mat-menu #userMenu="matMenu" [overlapTrigger]="false" class="toolbar-dropdown-menu user-menu">
+    <!--<span (mouseleave)="userMenuTrigger.closeMenu()">-->        
+        <mat-card fxLayout="row" fxLayoutAlign="space-around center" class="user-info p-0">
+            <img [src]="userImage" alt="user-image">
+            <div fxLayout="column" fxLayoutAlign="center center">
+                Admin 
+            </div>
+        </mat-card>  
+        <mat-divider></mat-divider>
+        
+        <a mat-menu-item (click)="logout()">
+            <mat-icon>power_settings_new</mat-icon>
+            <span>Log out</span>
+        </a>
+    <!--</span>-->
+</mat-menu>

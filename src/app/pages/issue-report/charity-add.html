@@ -1,0 +1,55 @@
+<div style="width:100%; height:310px;" perfectScrollbar>
+    <div style="width:100%;height:310px;">
+
+        <h3>Add Charity </h3>
+
+        <div style="width:99.4%;float: left;">
+            <mat-form-field [formGroup]="angForm" novalidate class="w-100" style="margin-top:15px;">
+                <input matInput placeholder="Title"  name="title"
+                    formControlName="title">
+            </mat-form-field>
+
+            <div style="width: 550px;" *ngIf="angForm.controls['title'].invalid && (angForm.controls['title'].dirty || angForm.controls['title'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="angForm.controls['title'].errors.required">
+                    &#x26A0; Title is required.
+                </div>
+            </div>
+      
+            <mat-form-field [formGroup]="angForm"  class="w-100" style="margin-top:10px;">
+                    <mat-label>Description</mat-label>
+                    <textarea matInput  formControlName="description"></textarea>
+                </mat-form-field>
+            <div style="width: 550px;" *ngIf="angForm.controls['description'].invalid && (angForm.controls['description'].dirty || angForm.controls['description'].touched)"
+            class="alert alert-danger">
+            <div *ngIf="angForm.controls['description'].invalid">
+                &#x26A0; Description is required.
+            </div>
+            </div>
+
+            <label>Match Fund : </label>
+            <mat-radio-group [(ngModel)]="Fund"  name="Fund">
+            <mat-radio-button style="margin-right: 10px; margin-left: 6px; margin-bottom:6px ;" value="1" > Yes </mat-radio-button>
+            <mat-radio-button  value="0"> NO </mat-radio-button>
+            </mat-radio-group>
+       
+            <br/>
+
+            <div [formGroup]="angForm">
+            <input formControlName="requiredfile" name="charity_image" type="file" (change)="handleInputChange($event)"  
+            accept="image/gif,image/jpeg,image/png,image/jpg" required > 
+            </div>
+                
+            <div style="width: 550px;" *ngIf="angForm.controls['requiredfile'].invalid && (angForm.controls['requiredfile'].dirty || angForm.controls['requiredfile'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="angForm.controls['requiredfile'].errors.required">
+                    &#x26A0;  Image is required.
+                </div>
+            </div>
+         
+          <div style="width:100%; height:30%; margin-top: 12px;" >
+            <div style="position: absolute;margin:auto;">
+            <button style="align-content:center ;border-radius: 40px; position: absolute;margin:auto;
+            display:block;" mat-raised-button color="primary" [disabled]="!angForm.valid  || clicked" (click)="addCharityData();">Add Charity</button>
+            </div>
+        </div>

@@ -1,0 +1,57 @@
+<app-content-header [title]="'Fruit Card QR'" [icon]="'qr_code'" [hideBreadcrumb]="true" [hasBgImage]="true" [class]="'pt-2'">
+</app-content-header>
+
+
+<mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="space-between center" class="px-2 mailbox-toolbar">
+  <div fxLayout="row" fxLayoutAlign="center center">
+    <button mat-raised-button color="accent" (click)="openAddMessageDialog()" class="compose" fxShow="false"
+      fxShow.gt-xs>Generate QR</button>
+  </div>
+</mat-toolbar>
+
+
+<div fxLayout="column" class="p-2">
+  <div class="p-2">
+    <div fxLayout="column" class="mat-elevation-z8">
+      <mat-form-field class="px-3 py-1">
+        <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Type to filter all columns">
+      </mat-form-field>
+    </div>
+    <mat-table #table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+      <ng-container matColumnDef="serial_number">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>S No.</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.serial_number}}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="card_name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Card Name</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.card_name}}</mat-cell>
+      </ng-container>      
+      <ng-container matColumnDef="fruit_name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Fruit</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.fruit_name}}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="score">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Score Points</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.score}}</mat-cell>
+      </ng-container>      
+      <!-- <ng-container matColumnDef="totalScans">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Total Scans</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.totalScans}}</mat-cell>
+      </ng-container>    -->
+      <ng-container matColumnDef="qr_code_path">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Qr Image</mat-header-cell>
+        <mat-cell *matCellDef="let element"><img loading="lazy" src={{element.qr_code_path}}
+          style="height:120px; width:120px;"></mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="loading">
+        <mat-footer-cell *matFooterCellDef colspan="6">
+          Loading data...
+        </mat-footer-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      <mat-footer-row *matFooterRowDef="['loading']" [ngClass]="{'hide': dataSource!=null}"></mat-footer-row>
+    </mat-table>
+    <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  </div> 
+</div>

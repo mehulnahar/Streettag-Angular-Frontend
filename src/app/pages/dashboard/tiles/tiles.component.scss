@@ -1,0 +1,41 @@
+.tile{
+    text-align: right;
+    .mat-icon{
+        position: absolute;
+        left: 4px;
+        top: 50%;
+        line-height: 0;
+        font-size: 54px;
+        opacity: 0.3;
+    }
+    h2{
+        font-weight: 500;
+    }
+    p{
+        text-transform: uppercase;
+    }
+}
+
+.h-100p{
+    height: 150px;
+    //height: 500%;
+    position: relative
+}
+
+.bottom{
+    position: absolute; 
+    bottom: 0;
+    right:5px;
+    font-size: 150%;
+    //float : right
+}
+
+.none {
+    text-decoration: none !important;
+    color:white;
+}
+
+.example-card {
+    width: 100px;
+    height: 200%;
+  }

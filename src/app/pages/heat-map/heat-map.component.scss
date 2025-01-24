@@ -1,0 +1,16 @@
+agm-map {
+    height: 350px;
+  }
+
+  ::ng-deep snack-bar-container.warn-snackbar {
+    background: rgb(214, 141, 4) !important;
+  }
+
+::ng-deep .red-snackbar .mat-simple-snackbar {
+    color: rgb(255, 255, 255);
+  }
+
+button:disabled:hover,
+button[disabled]:hover{
+    cursor:no-drop;
+}

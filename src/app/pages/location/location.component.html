@@ -1,0 +1,141 @@
+<app-content-header
+  [title]="'Location Management'"
+  [icon]="'my_location'"
+  [hideBreadcrumb]="true"
+  [hasBgImage]="true"
+  [class]="'pt-3'"
+></app-content-header>
+
+<mat-toolbar
+  color="primary"
+  fxLayout="row"
+  fxLayoutAlign="space-between center"
+>
+  <div fxLayout="row" fxLayoutAlign="center center">
+    <button
+      mat-raised-button
+      color="accent"
+      (click)="openAddMessageDialog()"
+      class="compose"
+      fxShow="false"
+      fxShow.gt-xs
+    >
+      Add Location
+    </button>
+  </div>
+</mat-toolbar>
+
+<div fxLayout="column" class="p-2">
+  <div class="p-2">
+    <div fxLayout="column" class="mat-elevation-z8">
+      <mat-form-field class="px-3 py-1">
+        <input
+          matInput
+          (keyup)="applyFilter($event.target.value)"
+          placeholder="Type to filter all columns"
+        />
+      </mat-form-field>
+    </div>
+    <mat-table
+      #table
+      [dataSource]="dataSource"
+      matSort
+      class="mat-elevation-z8"
+    >
+      <ng-container matColumnDef="serial_number">
+        <mat-header-cell *matHeaderCellDef mat-sort-header
+          >S No.
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.serial_number }}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="location_name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header
+          >Location Name
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.location_name }}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="created_at">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          Date
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.created_at }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- <ng-container matColumnDef="action">
+        <mat-header-cell *matHeaderCellDef> Action </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <a (click)="openEditDialog(element)">
+            <mat-icon
+              matListIcon
+              class="pointer"
+              style="color: dimgrey; margin-right: 5px; cursor: pointer"
+              >edit</mat-icon
+            >
+          </a>
+        </mat-cell>
+      </ng-container> -->
+
+        <!-- Action Column -->
+        <ng-container matColumnDef="edit">
+          <mat-header-cell *matHeaderCellDef > Edit </mat-header-cell>
+          <mat-cell *matCellDef="let element"> <button mat-icon-button matTooltip="Click to Edit" class="remove-border"
+              color="primary" (click)="openEditDialog(element)">
+              <mat-icon>edit</mat-icon>
+          </button> </mat-cell>
+      </ng-container>
+    
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    </mat-table>
+    <mat-paginator
+      #paginator
+      [pageSize]="10"
+      [pageSizeOptions]="[15, 20, 30]"
+      showFirstLastButtons
+    ></mat-paginator>
+  </div>
+</div>
+<!-- 
+
+<div fxLayout="row wrap" fxLayoutAlign="center" class="p-4">
+   
+    <mat-card class="p-4">  
+
+                    <table >
+                      <tr style="height: 50px;">
+                        <th>Location Name</th>
+                        <th>Created Date</th>
+                        
+                        <th>Action</th>
+
+                    
+                    </tr>
+             
+                    <tr *ngFor="let location of allCircuits.response;" class="trstyle">
+                       
+                    <td >{{location.location_name}}</td>
+                    <td>{{location.created_at}}</td>
+                    
+                    <td>
+                       <div>
+                            <a (click)="openEditDialog(location)"><mat-icon matListIcon class="pointer" style="color: dimgrey;margin-right: 5px; cursor: pointer;">edit</mat-icon> </a> 
+                        
+                            <a (click)="OpenDelete(location.id)"><mat-icon matListIcon class="pointer" style="color: dimgrey;margin-right: 5px; cursor: pointer;">delete</mat-icon> </a>
+                        </div>           
+
+                    </td>
+                    <mat-divider></mat-divider>
+
+                   
+                    </tr>
+              
+      </table> 
+      </mat-card>     
+  
+</div> -->

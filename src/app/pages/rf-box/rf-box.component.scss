@@ -1,0 +1,14 @@
+.mat-cell:nth-child(6),
+.mat-header-cell:nth-child(6) {
+  flex: 0 0 4rem;
+}
+.mat-column-serial_number {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 8% !important;
+}
+.mat-column-lng {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 15% !important;
+}

@@ -1,0 +1,89 @@
+<app-content-header
+  [title]="'Questionnaires Report Generator'"
+  [icon]="'question_answer'"
+  [hideBreadcrumb]="true"
+  [hasBgImage]="true"
+  [class]="'pb-3 pt-3'"
+>
+</app-content-header>
+<br />
+<div class="container">
+  <form (ngSubmit)="onSubmit()" [formGroup]="angForm" #searchForm="ngForm">
+    <div class="row">
+      
+        <div class="col-md-4 datediv">
+          
+        <input class="form-control"
+          type="text"
+          formControlName="date"
+          ngxDaterangepickerMd
+          [showCustomRangeLabel]="true"
+          [alwaysShowCalendars]="true"
+          [ranges]="ranges"
+          [minDate]="minDate"
+          [maxDate]="maxDate"
+          startKey="start" endKey="end"
+          [linkedCalendars]="true"
+          [showClearButton]="false"
+          [locale]="{format: 'DD-MM-YYYY', applyLabel: 'Apply' ,displayFormat: 'DD MMMM YYYY', separator: ' To '}"
+          placeholder="Select Date"
+          [showDropdowns]="true"
+          [showWeekNumbers]="true"
+          [showCancel]="true"
+          />
+        
+      </div>
+
+      <div class="col-md-4">
+        <select
+          formControlName="location_id"
+          (ngModelChange)="getCircuits($event)"
+          class="form-control"
+          name="location_id"
+        >
+          <option value="" disabled>Select Location</option>
+          <option
+            *ngFor="let option of locationArray | async"
+            [value]="option.id"
+          >
+            {{ option.location_name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="col-md-4">
+        <select
+          formControlName="circuit_id"
+          class="form-control"
+          name="circuit_id"
+        >
+          <option value="" disabled>Select Circuit</option>
+          <option
+            *ngFor="let option1 of circuitArray | async"
+            [ngValue]="option1"
+          >
+            {{ option1.circuit_name }}
+          </option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group" fxLayout="row" fxLayoutAlign="center center">
+      <button
+        class = "btn"
+        type="submit"
+        [disabled]="!angForm.valid"
+        class="btn btn-primary btn-md"
+      >
+        Generate
+      </button>
+    </div>
+  </form>
+  
+  <!-- Conditional Spinner -->
+
+  <div *ngIf="spiner">
+    <mat-spinner  diameter="45" style="margin: 30px auto"></mat-spinner>
+    <h5 class="center">Preparing for download...</h5>
+  </div>
+  
+</div>

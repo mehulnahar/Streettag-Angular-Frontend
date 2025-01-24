@@ -1,0 +1,79 @@
+<mat-toolbar class="mb-2">
+  <span>Activate Team Code</span>
+  <span class="fill-remaining-space"></span>
+</mat-toolbar>
+<mat-dialog-content>
+  <form [formGroup]="angForm" (submit)="formsubmit()">
+    <div fxLayout="row wrap" fxLayoutGap="8px grid">
+      <div fxFlex="100" fxFlex.lt-sm="100">
+        <mat-form-field class="w-100">
+          <mat-label>Leaderboard</mat-label>
+          <mat-select
+            formControlName="leaderboard"
+            [disabled]="edit"
+            (selectionChange)="onChange($event)"
+          >
+            <mat-option
+              *ngFor="let circuit of leaderboards"
+              [value]="circuit.id"
+            >
+              {{circuit.circuit_name}}
+            </mat-option>
+          </mat-select>
+          <mat-hint *ngIf="edit">This field is locked</mat-hint>
+          <mat-error
+            *ngIf="fc['leaderboard'].invalid && (fc['leaderboard'].dirty || fc['leaderboard'].touched)"
+          >
+            {{getErrorMessage('leaderboard','Leaderboard')}}
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="w-100">
+          <mat-label>Team Name</mat-label>
+          <mat-select
+            formControlName="team_name"
+            [disabled]="edit && schoolteams.length == 0"
+          >
+            <mat-option
+              *ngFor="let schoolteam of schoolteams"
+              [value]="schoolteam.id"
+            >
+              {{schoolteam.team_name}}
+            </mat-option>
+          </mat-select>
+          <mat-hint *ngIf="edit">This field is locked</mat-hint>
+          <mat-error
+            *ngIf="fc['team_name'].invalid && (fc['team_name'].dirty || fc['team_name'].touched)"
+          >
+            {{getErrorMessage('team_name','Team Name')}}
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+    <div fxLayout="row wrap" fxLayoutGap="8px grid">
+      <div fxFlex="100" fxFlex.lt-sm="100">
+        <label>Active Status</label>
+        <mat-radio-group
+          [(ngModel)]="activestatus"
+          [ngModelOptions]="{standalone: true}"
+        >
+          <mat-radio-button
+            style="margin-right: 10px; margin-left: 6px; margin-bottom: 6px"
+            value="1"
+          >
+            Yes
+          </mat-radio-button>
+          <mat-radio-button value="0"> NO </mat-radio-button>
+        </mat-radio-group>
+      </div>
+    </div>
+    <button
+      mat-raised-button
+      type="submit"
+      color="primary"
+      class="custom-btn m-2"
+      appDebounceClick
+    >
+      Submit
+    </button>
+  </form>
+</mat-dialog-content>

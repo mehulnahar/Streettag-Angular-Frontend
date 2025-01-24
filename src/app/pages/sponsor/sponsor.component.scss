@@ -1,0 +1,18 @@
+.hide{
+    display: none;
+}
+
+mat-footer-row mat-footer-cell{
+    justify-content: center;
+    font-style: italic;
+}
+
+.mat-cell:nth-child(7),
+.mat-header-cell:nth-child(7) {
+  flex: 0 0 6rem;
+}
+
+.mat-cell:nth-child(6),
+.mat-header-cell:nth-child(6) {
+  flex: 0 0 6rem;
+}

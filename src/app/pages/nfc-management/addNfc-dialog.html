@@ -1,0 +1,123 @@
+<mat-toolbar>
+  <span>Register Child</span>
+  <span class="fill-remaining-space"></span>
+  <button
+    class="btn-dialog-close"
+    (click)="close()"
+    mat-stroked-button
+    tabindex="-1"
+  >
+  <mat-icon>clear</mat-icon>
+  </button>
+</mat-toolbar>
+    
+      <mat-form-field class="pt-2 w-100">
+        <input matInput placeholder="Search Players" aria-label="Search" [matAutocomplete]="auto" [formControl]="searchPlayerCtrl" >
+        <mat-icon matSuffix>search</mat-icon>
+            <mat-autocomplete  #auto="matAutocomplete" (optionSelected)="onSelectionChanged($event)" [displayWith]="displayFn">
+              <mat-option  *ngIf="isLoading" [disabled]="true"><mat-progress-bar mode="indeterminate"></mat-progress-bar></mat-option>
+              <ng-container *ngIf="!isLoading">
+                <!-- No result found-->
+              <mat-option class="alert-danger" [disabled]="true" *ngIf="errorMsg"><strong>{{errorMsg}}</strong></mat-option>
+              <mat-option *ngFor="let player of filteredPlayers; trackBy: trackByFn" [value]="player">
+                  <span>{{player.player_id | decode}}</span>
+                </mat-option>
+              </ng-container>
+            </mat-autocomplete>
+      </mat-form-field>
+<!--    
+      <mat-divider></mat-divider>  -->
+      
+        <mat-grid-list cols="2" rowHeight="225px">
+          <mat-grid-tile>
+            <div class="controls-container">
+              <mat-form-field class="w-100">
+                <input
+                  matInput
+                  placeholder="Player Id"
+                  readonly
+                  autocomplete="off"
+                  [ngModel] = "child && (child.player_id | decode)"                  
+                  />
+               </mat-form-field>
+      
+              <mat-form-field class="w-100">
+                <input
+                  matInput
+                  placeholder="Fullname"
+                  readonly
+                  [ngModel] = "child && (child.fullname | decode)"                  
+                  autocomplete="off"
+                />
+               </mat-form-field>
+      
+              <mat-form-field class="w-100">
+                <mat-label>Date of birth</mat-label>
+                <input
+                  matInput
+                  readonly
+                  [ngModel] = "child?.date_of_birth"                  
+                  placeholder="dd/mm/yyyy"
+                  autocomplete="off"
+                />
+                </mat-form-field>
+      
+            
+            </div>
+          </mat-grid-tile>
+      
+          <mat-grid-tile>
+            <div class="controls-container" class="adjust-div">
+              <mat-form-field class="w-100">
+                <input
+                  matInput
+                  placeholder="Email"
+                  readonly
+                  [ngModel] = "child && (child.email | decode)"                  
+                  autocomplete="off"
+                />
+              </mat-form-field>
+      
+              <mat-form-field class="w-100">
+                <input
+                  matInput
+                  placeholder="Team Id"
+                  readonly
+                  [ngModel] ="child?.team_id"
+                  type="number"
+                  autocomplete="off"
+                />
+              
+              </mat-form-field>
+                      
+              <mat-form-field class="w-100">
+                <input
+                  matInput
+                  readonly
+                  placeholder="Gender"
+                  [ngModel] ="child?.gender"
+                  />
+              </mat-form-field>
+            </div>
+          </mat-grid-tile>
+        </mat-grid-list>
+      
+
+   
+        <mat-dialog-actions align="end">
+
+          <button
+            mat-raised-button
+            color="warn"
+            class="custom-btn m-2"
+            [mat-dialog-close]="true"
+          >
+          Clear
+          </button>
+        
+          
+          <button [disabled]="!(searchPlayerCtrl.valid && child)" mat-raised-button color="primary" (click)="Submit()">&nbsp; Add NFC &nbsp;</button> 
+        </mat-dialog-actions> 
+
+            
+ 

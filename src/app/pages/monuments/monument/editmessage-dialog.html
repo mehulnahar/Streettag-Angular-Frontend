@@ -1,0 +1,142 @@
+    <mat-toolbar >
+        <span>Edit Monument</span>editevent
+        <span class="fill-remaining-space"></span>
+        <button
+        [mat-dialog-close]="true"
+        class="btn-dialog-close"
+          mat-stroked-button
+          tabindex="-1"
+        >
+          <mat-icon>clear</mat-icon>
+        </button>
+      </mat-toolbar>   
+    
+<mat-dialog-content>
+        
+            <mat-form-field [formGroup]="angForm" novalidate class="w-100 pt-2 pb-0" hintLabel="Max 50 characters">
+            <mat-label>Monument Name</mat-label>
+                <input matInput placeholder="Ex. Tower of London" name="name"
+                    formControlName="name" #inputTitle 
+                    maxlength="50">
+           <mat-hint align="end">{{inputTitle.value?.length || 0}}/50</mat-hint>
+                      <!-- error -->
+            <mat-error style="color: red;" *ngIf="angForm.controls.name.invalid && (angForm.controls.name.dirty || angForm.controls.name.touched)">
+                <span> &#9888; Monument name is <strong>required</strong>.</span> 
+              </mat-error>
+            </mat-form-field>
+           
+            <div style="position:relative; right:1rem; top:50px; justify-content:flex-end; display: flex;">
+                <button style="margin-right: 40px; " (click)="addMoreDecription()" [disabled]="!angForm.valid"  mat-mini-fab color="primary">
+                    <mat-icon>add</mat-icon>
+                </button>
+                <button (click)="RemoveDecription()" mat-mini-fab color="primary">
+                    <mat-icon>remove</mat-icon>
+                </button>
+            </div>  
+           
+            <div [formGroup]="angForm" *ngFor="let description of description['controls']; let i=index">
+                <mat-form-field formArrayName="description" hintLabel="Max 400 characters" class="example-full-width pb-2">
+                    <mat-label>Description</mat-label>
+                     <textarea cdkTextareaAutosize matInput maxlength="400" #inputDesc  placeholder="Ex. This is one of the most famous monuments..."  [formControlName]="i"></textarea>
+                     <mat-hint align="end">{{inputDesc.value?.length || 0}}/400</mat-hint>
+                </mat-form-field>
+            </div>
+    
+                
+
+                <mat-form-field [formGroup]="angForm" novalidate class="w-100" >
+                    <mat-label>Link</mat-label>
+                    <input type="url" matInput placeholder="Ex. https://www.google.com" name="link"
+                        formControlName="link">
+                <!-- error -->
+                <mat-error  *ngIf="angForm.controls.link.invalid && (angForm.controls.link.dirty || angForm.controls.link.touched)">
+                    <span *ngIf="angForm.controls.link.errors.required">
+                        &#9888; URL is <strong>required</strong>.
+                    </span>
+                    <span *ngIf="angForm.controls.link.errors.pattern">
+                        &#9888; Please enter valid url.
+                    </span>
+                </mat-error>
+                    </mat-form-field>
+
+                    <div  [formGroup]="angForm">
+                        <mat-radio-group  formControlName="basketFlag">
+                            <mat-label>Do you want to Activate Basket Option? &nbsp;&nbsp;</mat-label>
+                            <mat-radio-button value="0">No</mat-radio-button>
+                            <mat-radio-button value="1">Yes</mat-radio-button>
+                        </mat-radio-group>
+                    </div> 
+                    <br/>    
+               
+                <div fxLayout="row" fxLayoutAlign="space-between center">
+                    <div>
+                        <label class="custom-file-upload">
+                                <input type="file" class="custom-file-upload" accept="video/mp4" (change)="onFileChange($event)" #fileInput multiple/><span class="material-icons">backup</span>
+                                &nbsp;Select Video File
+                        </label>
+                        <small>&nbsp; <strong>{{SelectedVideoCount}}</strong> File Selected</small>
+                    </div>
+        
+                    <div>
+                        <label class="custom-file-upload">
+                            <input type="file" accept="audio/mpeg" (change)="onFileChange1($event)" #fileInput multiple/>
+                                <span class="material-icons">backup</span>
+                                &nbsp;Select Audio File
+                        </label>  
+                        <small>&nbsp; <strong>{{SelectedAudioCount}}</strong> File Selected</small>
+                    </div>
+           
+                    <div>
+                        <label class="custom-file-upload">
+                            <input type="file" accept="image/png , image/jpeg , image/jpg" (change)="onFileChangeImage($event)" #fileInput  multiple/>
+                                <span class="material-icons">backup</span>
+                                &nbsp;Select Images File
+                        </label> 
+                        <small>&nbsp; <strong>{{SelectedImgCount}}</strong> File Selected</small>
+                    </div>
+            
+                    </div> 
+                
+                <mat-grid-list *ngIf="videoUrl.length > 0 || imageUrl.length > 0 " cols="4" rowHeight="170px">
+                <div  *ngIf="videoUrl.length > 0">
+                    <mat-grid-tile class="polaroid embed-responsive embed-responsive-1by1" *ngFor="let vid of videoUrl">
+                        <iframe loading="lazy" width="200" height="145" [src]="vid | validurl" frameborder="0" allowfullscreen>Your browser doesn't support iframes</iframe>                        
+                    </mat-grid-tile>    
+                </div>
+
+                <!-- <div  *ngIf="videoUrl.length > 0">
+                    <mat-grid-tile class="polaroid embed-responsive embed-responsive-1by1" *ngFor="let vid of videoUrl">
+                    
+                    </mat-grid-tile>    
+                    <div>one</div>                
+                </div>                 -->
+                
+                
+                <div  *ngIf="imageUrl.length > 0">
+                    <mat-grid-tile class="polaroid" *ngFor="let img of imageUrl">
+                    <img (click)="OpenImageViewerBox(img)" loading="lazy" width="200" height="145" [src]="img | validurl" >
+                    </mat-grid-tile>
+                </div>
+        
+
+                <div *ngFor="let audio of audioUrl">
+                  <mat-grid-tile class="polaroid">
+                    <audio controls>
+                        <source [src]="audio | validurl" type="audio/mpeg">
+                    <source [src]="audio | validurl" type="audio/ogg">
+                    Your browser does not support the audio tag.
+                    </audio> 
+                </mat-grid-tile>
+                </div> 
+
+            </mat-grid-list>
+          
+        </mat-dialog-content>
+     
+<mat-dialog-actions align="end">
+
+  <mat-progress-bar  *ngIf="showBar" mode="determinate" [value]="progrees" ></mat-progress-bar>
+          
+  <button class="m-2"  mat-raised-button color="primary" [disabled]="!angForm.valid || clicked" (click)="editevent()">Edit Monument</button>
+            
+</mat-dialog-actions> 

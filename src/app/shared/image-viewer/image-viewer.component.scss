@@ -1,0 +1,33 @@
+.fill-remaining-space {
+    flex: 1 1 auto;
+  }
+  
+  .btn-dialog-close {
+    width: 45px;
+    min-width: 0px !important;
+    height: 40px;
+    padding: 0px !important;
+  }
+
+  img {
+    max-height: 570px;
+    min-width: 350px;
+    min-height: 30px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+ }
+
+
+ .btn-dialog-close {
+  width: 45px;
+  min-width: 0px !important;
+  height: 40px;
+  padding: 0px !important;
+  &:hover{
+    background-color:#F44336;
+    color: #fff;
+  }
+}

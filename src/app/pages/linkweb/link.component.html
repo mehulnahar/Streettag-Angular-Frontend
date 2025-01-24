@@ -1,0 +1,43 @@
+<app-content-header 
+    [icon]="'link'" 
+    [title]="'קישור לאתר'" 
+    [hideBreadcrumb]="false"
+    [hasBgImage]="true" 
+    [class]="'pb-4'">
+</app-content-header>
+
+    
+    <div>
+
+  
+   
+    <div style="align-content:left; width:100%;height:100%">
+        <mat-nav-list class="p-0 mailbox-sidenav-list" perfectScrollbar>
+                <div *ngFor="let link of dynamiclinks.result" >
+                    <mat-list-item [ngClass]>
+                                   <div matLine fxLayout="row" fxLayoutAlign="space-between space-between">   
+                                        <input  matInput placeholder="Dynamic Link" [disabled]=is_edit  id="aboutus1" name="aboutus1"  value="{{link.link}}">
+                                        <div>
+                                                <button mat-raised-button color="primary"  [disabled]=is_edit fxLayoutAlign="center" (click)="editlink()">עדכן קישור</button>
+                                    </div>
+                                        <div style="margin-right: 150px;"><a (click)="enableedit()"><mat-icon matListIcon >edit</mat-icon> </a> 
+                             <a (click)="openDeleteDialog()" ><mat-icon matListIcon>delete</mat-icon> </a></div>                         
+
+                         
+                        </div>
+                       
+                    </mat-list-item> 
+                    <mat-divider></mat-divider>
+                </div>
+            </mat-nav-list>
+
+    
+</div>
+
+
+</div>
+
+
+<div id="spinner" style="display:none;">
+    <mat-spinner></mat-spinner>
+</div>

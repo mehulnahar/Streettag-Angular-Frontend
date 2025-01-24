@@ -1,0 +1,37 @@
+<div style="width:600px; height:100%;" perfectScrollbar>
+    <div style="width:600px; height:100%;">
+        <h4>Add/Edit Authority Email </h4>
+
+        <mat-form-field [formGroup]="angForm" class="mx-2" style="margin-top:15px;" >
+            <mat-select  (ngModelChange)="get_email($event)" placeholder="Select Circuit" 
+            name="circuit" formControlName="circuit">
+                <mat-option *ngFor="let food of dataSource1" [value]="food.id">
+                    {{food.circuit_name}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>  
+        <div style="color: red;" *ngIf="angForm.controls['circuit'].invalid  && (angForm.controls['circuit'].dirty || angForm.controls['circuit'].touched)">
+            <small> *Circuit is required.</small>
+        </div>
+
+            <mat-form-field [formGroup]="angForm" novalidate class="w-100" style="margin-top:15px;">
+                <input matInput placeholder="Email"  name="email"
+                    formControlName="email">
+            </mat-form-field>
+
+            <div style="width: 550px;" *ngIf="angForm.controls['email'].invalid && (angForm.controls['email'].dirty || angForm.controls['email'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="angForm.controls['email'].errors.required">
+                    &#x26A0; Email is required.
+                </div>
+                <div *ngIf="angForm.controls['email'].errors.pattern">
+                    &#x26A0; Please pass valid email address.
+                </div>
+            </div>
+      
+         
+            <button style="align-content:center ;border-radius:40px;" mat-raised-button color="primary" [disabled]='false || !angForm.valid' (click)="addCharityData();">Add/Edit Email</button>
+        
+        </div>
+        </div>
+        

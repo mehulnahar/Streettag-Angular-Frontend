@@ -1,0 +1,55 @@
+<div style="width:600px; height:100%;" perfectScrollbar>
+ 
+        <h3>Add Building</h3>
+
+        <div style="width:99.4%;float: left;margin-bottom:10px;">
+
+
+            <mat-form-field [formGroup]="angForm" novalidate class="w-100" style="margin-top:5px;">
+                <input matInput placeholder="Building" [(ngModel)]="building_name" formControlName="building_name"
+                    name="building_name">
+
+            </mat-form-field>
+
+            <div *ngIf="angForm.controls['building_name'].invalid && (angForm.controls['building_name'].dirty || angForm.controls['building_name'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="angForm.controls['building_name'].errors.required">
+                    Building Name is required.
+                </div>
+            </div>
+  <!--[added type input here 22_august_2019]-->
+            <mat-form-field [formGroup]="angForm" novalidate class="w-100" style="margin-top:5px;">
+                <input type="number" matInput placeholder="Lattitude" [(ngModel)]="lat" formControlName="lat"
+                    name="lat">
+<!--[added type input here]-->
+            </mat-form-field>
+            <div *ngIf="angForm.controls['lat'].invalid && (angForm.controls['lat'].dirty || angForm.controls['lat'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="angForm.controls['lat'].errors.required">
+                    Lattitude is required.
+                </div>
+            </div>
+<!--[added type input here 22_august_2019]-->
+            <mat-form-field [formGroup]="angForm" novalidate class="w-100" style="margin-top:5px;">
+                <input type="number" matInput placeholder="Longitude" [(ngModel)]="lng" formControlName="lng"
+                    name="lng">
+            </mat-form-field>
+            <!--[added type input here]-->
+            <div *ngIf="angForm.controls['lng'].invalid && (angForm.controls['lng'].dirty || angForm.controls['lng'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="angForm.controls['lng'].errors.required">
+                    Longitude is required.
+                </div>
+            </div>
+           
+
+
+            <br />
+
+
+            <div><button style="border-radius: 40px;" mat-raised-button color="primary" (click)="addevent()" [disabled]="!angForm.valid">Add
+                    Building</button></div>
+
+
+        </div>
+        <br><br><br>

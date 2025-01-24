@@ -1,0 +1,89 @@
+<div style= "width:600px; height:100%;" perfectScrollbar>
+        
+        <h3>Update Opportunity </h3>
+    
+        <div style="width:99.4%;float: left;margin-bottom:10px;">
+    
+
+        <mat-form-field class="w-100" style= "margin-top:15px;">
+            <input matInput placeholder="Opportunity Text" [(ngModel)]="opportunity_data" name="opportunity_data" >
+
+        </mat-form-field>
+
+        <!-- <div *ngIf="angForm.controls['opportunity_data'].invalid && (angForm.controls['opportunity_data'].dirty || angForm.controls['opportunity_data'].touched)" class="alert alert-danger">
+            <div *ngIf="angForm.controls['opportunity_data'].errors.required">
+                Opportunity text required
+          </div>
+        </div> -->
+    
+        
+        
+
+         <input  name="profile_pic" type="file" (change)="handleInputChange($event)" accept="image/gif,image/jpeg,image/png,image/jpg" required> 
+        
+        
+         <img src="{{opportunity_image}}"
+         style=" margin:10px; height:130px; width:130px; border-radius: 6px;">
+
+           
+    
+        <mat-form-field class="w-100" style= "margin-top:15px;">
+            <input matInput placeholder="Opportunity Link" [(ngModel)]="opportunity_link" name="opportunity_link" >
+
+        </mat-form-field>
+
+        <!-- <div *ngIf="angForm.controls['opportunity_link'].invalid && (angForm.controls['opportunity_link'].dirty || angForm.controls['opportunity_link'].touched)" class="alert alert-danger">
+            <div *ngIf="angForm.controls['opportunity_link'].errors.required">
+                Opportunity link required
+          </div>
+        </div> -->
+
+        <!--
+        <mat-form-field [formGroup]="angForm" novalidate class="mx-2">
+                <mat-select placeholder="Location"  [(ngModel)]="location_name_arr" name="food" multiple formControlName="location_name">
+                    <mat-option *ngFor="let food of dataSourceLocation" [value]="food.location_name">
+                        {{food.location_name}}
+                    </mat-option>
+                </mat-select>
+        </mat-form-field>
+
+        <div *ngIf="angForm.controls['location_name'].invalid && (angForm.controls['location_name'].dirty || angForm.controls['location_name'].touched)" class="alert alert-danger">
+            <div *ngIf="angForm.controls['location_name'].errors.required">
+                Location required
+          </div>
+        </div>
+        <br>
+        -->
+        
+        <mat-form-field [formGroup]="angForm" novalidate class="mx-2">
+                <mat-select placeholder="Location"  [(ngModel)]="circuit_name_arr" name="food" multiple formControlName="circuit_name">
+                    <mat-option *ngFor="let food of dataSourceCircuit" [value]="food.circuit_name">
+                        {{food.circuit_name}}
+                    </mat-option>
+                </mat-select>
+        </mat-form-field>
+
+        <div *ngIf="angForm.controls['circuit_name'].invalid && (angForm.controls['circuit_name'].dirty || angForm.controls['circuit_name'].touched)" class="alert alert-danger">
+            <div *ngIf="angForm.controls['circuit_name'].errors.required">
+                Location required
+          </div>
+        </div>        
+
+
+      
+
+
+    
+    <div><button style="border-radius: 40px;
+    " mat-raised-button color="primary" (click)="updateevent()" >Update Opportunity</button></div>     
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+ 

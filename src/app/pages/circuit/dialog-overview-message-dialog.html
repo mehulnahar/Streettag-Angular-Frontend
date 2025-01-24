@@ -1,0 +1,94 @@
+<div style= "width:500px; height:450px;" perfectScrollbar>
+        <div  style= "width:500px;height:250px;">
+            
+            <h3>Update Circuit </h3>
+        
+            <div style="width:99.4%;float: left;margin-bottom:10px;">
+        
+
+            <mat-form-field [formGroup]="angForm" novalidate class="w-100" style= "margin-top:15px;">
+                <input matInput placeholder="Circuit Name" [(ngModel)]="circuit_name" name="circuit_name" formControlName="circuit_name" >
+
+            </mat-form-field>
+
+            <div *ngIf="angForm.controls['circuit_name'].invalid && (angForm.controls['circuit_name'].dirty || angForm.controls['circuit_name'].touched)" class="alert alert-danger">
+                <div *ngIf="angForm.controls['circuit_name'].errors.required">
+                Circuit Name is required.
+              </div>
+            </div>
+        
+            
+
+
+            <!-- <mat-form-field class="w-100" style= "margin-top:5px;">
+                <input matInput placeholder="Location Name" [(ngModel)]="location_name" name="location_name">
+
+            </mat-form-field> -->
+            
+            
+                <mat-form-field [formGroup]="angForm" novalidate class="mx-2">
+                    <mat-select placeholder="Location"  [(ngModel)]="location_name" name="food" formControlName="location_name">
+                        <mat-option *ngFor="let food of dataSourceLocation" [value]="food.location_name">
+                            {{food.location_name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <div *ngIf="angForm.controls['location_name'].invalid && (angForm.controls['location_name'].dirty || angForm.controls['location_name'].touched)" class="alert alert-danger">
+                    <div *ngIf="angForm.controls['location_name'].errors.required">
+                        Location is required.
+                  </div>
+                </div>
+
+                <!-- <mat-form-field [formGroup]="angForm" novalidate class="w-100" style= "margin-top:15px;">
+                <input matInput placeholder="No. of QR codes" [(ngModel)]="no_of_QR" name="no_of_QR" formControlName="no_of_QR">
+
+                </mat-form-field>
+                <div *ngIf="angForm.controls['no_of_QR'].invalid && (angForm.controls['no_of_QR'].dirty || angForm.controls['no_of_QR'].touched)" class="alert alert-danger">
+                    <div *ngIf="angForm.controls['no_of_QR'].errors.required || angForm.controls['no_of_QR'].errors.pattern">
+                        No. of QR code is required and must be number
+                  </div>
+                </div> -->
+
+             
+
+                <mat-form-field [formGroup]="angForm" novalidate class="w-100" style= "margin-top:15px;">
+                        <input readonly="true" matInput [matDatepicker]="picker1" placeholder="Start Date" [(ngModel)]="start_date" name="start_date" formControlName="start_date">
+                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                        <mat-datepicker #picker1></mat-datepicker>
+                </mat-form-field>
+               <!--  <div *ngIf="angForm.controls['start_date'].invalid && (angForm.controls['start_date'].dirty || angForm.controls['start_date'].touched)" class="alert alert-danger">
+                    <div *ngIf="angForm.controls['start_date'].errors.required">
+                        Please select Start Date.
+                  </div>
+                </div> -->
+
+
+                <mat-form-field [formGroup]="angForm" novalidate class="w-100" style= "margin-top:15px;">
+                        <input readonly="true" matInput [matDatepicker]="picker2" placeholder="End Date" [(ngModel)]="end_date" name="end_date" formControlName="end_date">
+                        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                        <mat-datepicker #picker2 ></mat-datepicker>
+                </mat-form-field>
+             <!--    <div *ngIf="angForm.controls['end_date'].invalid && (angForm.controls['end_date'].dirty || angForm.controls['end_date'].touched)" class="alert alert-danger">
+                    <div *ngIf="angForm.controls['end_date'].errors.required">
+                        Please select End date
+                  </div>
+                </div>  -->
+
+        
+            
+
+
+        
+        <div style="position: absolute;margin:auto;"><button style="align-content: center;border-radius: 40px; position: absolute;margin:auto;
+        display:block;" mat-raised-button color="primary" (click)="updateevent()" [disabled]="!angForm.valid" >Update Circuit</button></div>     
+        
+        
+        </div>
+        
+        
+        
+        
+        
+        
+        
+     

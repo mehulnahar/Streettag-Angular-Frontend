@@ -1,0 +1,79 @@
+<!-- <div class="parent-div">
+    <span class="class-div1">
+        <mat-form-field>
+            <mat-label>Select Location</mat-label>
+            <mat-select ngModel (ngModelChange)="get_location_id($event)">
+                <mat-option *ngFor="let food of dataSourceLocation" [value]="food.id">
+                    {{food.location_name}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </span>
+
+    <span>
+        <mat-form-field>
+            <mat-label>Select Team</mat-label>
+            <mat-select ngModel (ngModelChange)="get_team_id($event)">
+                <mat-option *ngFor="let food of dataSourceTeam" [value]="food.id">
+                    {{food.team_name | decode}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+    </span>
+</div> -->
+
+<div class="row">
+    <div class="col-md-6">
+        <mat-form-field>
+            <mat-label>Select Location</mat-label>
+            <mat-select ngModel (ngModelChange)="get_location_id($event)">
+                <mat-option *ngFor="let food of dataSourceLocation" [value]="food.id">
+                    {{food.location_name}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <div class="col-md-6">
+        <mat-form-field>
+            <mat-label>Select Team</mat-label>
+            <mat-select ngModel (ngModelChange)="get_team_id($event)">
+                <mat-option *ngFor="let food of dataSourceTeam" [value]="food.id">
+                    {{food.team_name | decode}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+    </div>
+</div>
+
+<table class="table">
+
+    <tbody>
+        <tr>
+            <td>
+                Daily Total Miles
+            </td>
+            <td>
+                {{dailyMiles}}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Weekly Total Miles
+            </td>
+            <td>
+                {{weeklyMiles}}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Monthly Total Miles
+            </td>
+            <td>
+                {{monthlyMiles}}
+            </td>
+        </tr>
+    </tbody>
+</table>

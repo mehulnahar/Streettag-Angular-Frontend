@@ -1,0 +1,6 @@
+<h1 mat-dialog-title>Withdrawal Request</h1>
+<div mat-dialog-content>Are you sure , want to approve this</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="approve([data.name])">Yes</button>
+  <button mat-button mat-dialog-close (click)="cancelApprove(true)">No</button>
+</div>

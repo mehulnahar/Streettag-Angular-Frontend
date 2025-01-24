@@ -1,0 +1,43 @@
+<div style="width:500px; height:250px;" perfectScrollbar>
+    <div style="width:500px;height:250px;">
+
+        <h3>Create Floor </h3>
+
+        <div style="width:99.4%;float: left;margin-bottom:10px;">
+
+
+            <mat-form-field [formGroup]="angForm" novalidate  class="w-100" style="margin-top:15px;">
+                <input matInput placeholder="Floor Name" [(ngModel)]="floor_name" name="floor_name" formControlName="floor_name"
+                    >
+
+            </mat-form-field>
+
+            <div *ngIf="angForm.controls['floor_name'].invalid && (angForm.controls['floor_name'].dirty || angForm.controls['floor_name'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="angForm.controls['floor_name'].errors.required">
+                    Floor name is required.
+                </div>
+            </div>
+
+            <mat-form-field [formGroup]="angForm" novalidate class="mx-2" >
+                <mat-select placeholder="Select Building" [(ngModel)]="building_id" name="food" formControlName="building_id"
+                    >
+                    <mat-option *ngFor="let food of dataSourceBuilding | async" [value]="food.id">
+                        {{food.building_name}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <div *ngIf="angForm.controls['building_id'].invalid && (angForm.controls['building_id'].dirty || angForm.controls['building_id'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="angForm.controls['building_id'].errors.required">
+                    Please select building
+                </div>
+            </div>
+
+            <div style="position: absolute;margin:auto;"><button style="align-content: center;border-radius: 40px; position: absolute;margin:auto;
+        display:block;" mat-raised-button color="primary" (click)="addevent()" [disabled]="!angForm.valid">Add Floor</button>
+            </div>
+
+
+        </div>

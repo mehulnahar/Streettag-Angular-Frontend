@@ -1,0 +1,75 @@
+<app-content-header [title]="'Auto Stats for LA'" [icon]="'autorenew'" [hideBreadcrumb]="true" [hasBgImage]="true"
+	[class]="'pt-2'"></app-content-header>
+ 
+  <mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="space-between center" class="px-2 mailbox-toolbar">
+    <div fxLayout="row" fxLayoutAlign="center center" >
+      <button mat-button mat-raised-button color="accent" (click)="openAddMessageDialog()" class="compose" fxShow="false" fxShow.gt-xs>
+      Register Emails</button>       
+    </div>
+  </mat-toolbar>
+
+       <div fxLayout="column" class="p-2">
+        <div class="p-2"> 
+            <div fxLayout="column" class="mat-elevation-z8">           
+                <mat-form-field class="px-3 py-1">
+                    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Type to filter all columns">
+                </mat-form-field> 
+            </div>
+            <mat-table #table [dataSource]="dataSource" matSort class="mat-elevation-z8">       
+                <ng-container matColumnDef="serial_number" colspan="6">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>S No. </mat-header-cell>
+                    <mat-cell *matCellDef="let element; index as i">  {{i | serialNumber: paginator.pageSize : paginator.pageIndex}} </mat-cell>
+                </ng-container>
+    
+                 <ng-container matColumnDef="circuit_name" colspan="6">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Circuit Name </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.circuit_name}} </mat-cell>
+                </ng-container> 
+    
+                <ng-container matColumnDef="location_name" colspan="6">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Location Name </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.location_name}} </mat-cell>
+                </ng-container>   
+                
+                <ng-container matColumnDef="emails" colspan="6">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Register Email</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.emails}} </mat-cell>
+                </ng-container>   
+               
+                <!-- Action Column -->
+                <ng-container matColumnDef="edit">
+                    <mat-header-cell *matHeaderCellDef > Edit </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> <button mat-icon-button matTooltip="Click to Edit" class="remove-border"
+                        color="primary" (click)="edit(element)">
+                        <mat-icon>edit</mat-icon>
+                    </button> </mat-cell>
+                </ng-container>
+              
+                <ng-container matColumnDef="delete">
+                    <mat-header-cell *matHeaderCellDef> Delete </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> <button mat-icon-button matTooltip="Click to Delete" class="remove-border"
+                        (click)="delete(element)" color="warn">
+                        <mat-icon>delete</mat-icon>
+                    </button> </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="loading">
+                    <mat-footer-cell *matFooterCellDef colspan="6">
+                      Loading data...
+                    </mat-footer-cell>
+                  </ng-container>
+            
+                  <ng-container matColumnDef="no-data">
+                    <mat-footer-cell *matFooterCellDef colspan="6">
+                      No Data
+                    </mat-footer-cell>
+                  </ng-container>
+                
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row [@fadeOut]="'in'" *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                <mat-footer-row *matFooterRowDef="['loading']" [ngClass]="{'hide': dataSource!=null}"></mat-footer-row>
+                <mat-footer-row *matFooterRowDef="['no-data']" [ngClass]="{'hide': !(dataSource!=null && dataSource.data.length==0)}"></mat-footer-row>
+            </mat-table>
+            <mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[15, 20, 30]" showFirstLastButtons></mat-paginator>        
+        </div>
+    </div>

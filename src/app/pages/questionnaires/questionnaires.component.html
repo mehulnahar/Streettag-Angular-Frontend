@@ -1,0 +1,207 @@
+<app-content-header [title]="'Questionnaires'" [icon]="'question_answer'" [hideBreadcrumb]="true" [hasBgImage]="true"
+	[class]="'pt-3 pb-3'"></app-content-header>
+<br>
+<div class="container">
+	<form (ngSubmit)="onSubmit(searchForm.value)" #searchForm="ngForm" style="overflow: auto;">
+		<div class="form-group" *ngIf="is_all==true">
+			<!-- <select class="form-control" name="player_id" [(ngModel)]="player_id"
+				(ngModelChange)="get_player_id($event)">
+				<option value="">Select Player</option>
+				<option *ngFor="let food of dataSourceAllPlayers" [value]="food.player_id">{{food.fullname | decode}}
+				</option>
+			</select>
+ -->
+
+			<mat-form-field class="example-full-width">
+		      <input type="text" placeholder="Player ID" aria-label="Number" matInput [formControl]="myControl1" [matAutocomplete]="auto1">
+		      <mat-autocomplete #auto1="matAutocomplete">
+		        <mat-option  *ngFor="let option of filteredOptions1 | async" [value]="option.player_idd">
+		          {{option.player_idd}}
+		        </mat-option>
+		      </mat-autocomplete>
+		    </mat-form-field>
+
+		    
+
+		</div>
+		<div class="form-group" *ngIf="is_all==false">
+			<select class="form-control" name="player_id2" [(ngModel)]="player_id2"
+				(ngModelChange)="get_player_id($event)">
+				<option value="">Select Player</option>
+				<option *ngFor="let food of dataSourcePlayers" [value]="food.player_id">{{food.fullname | decode}}
+				</option>
+			</select>
+		</div>
+		<div class="form-group" align="center">
+			<button style="padding: 10px 50px; margin:15px 0" type="submit" class="btn btn-primary btn-md">Go</button>
+		</div>
+		<style>
+				table {
+					border-collapse: collapse;
+					width: 100%;
+				}
+	
+				td,
+				th {
+					border: 1px solid #dddddd;
+					text-align: left;
+					padding: 8px;
+				}
+	
+				tr:nth-child(even) {
+					background-color: #dddddd;
+				}
+			</style>
+			<div class="row">
+			<!--[Before]-->
+			<div class="col-md-6" *ngIf="show_table">
+					<h5>Before Questionnaire</h5>
+				<table>
+
+					<tr *ngIf = 'before1'>
+						<th>Ques.1 {{qdata1.q1.ques}}</th>
+					</tr>
+					<tr *ngIf = 'before1'>
+						<td>ANS: {{qdata1.q1.ans}}</td>
+					</tr>
+					   <!--[subqestion1]-->
+					<tr *ngIf = "subdata">
+							<th>Ques.1.1 {{qdata1.q1.subques.a.ques}}</th>
+						</tr>
+						<tr *ngIf ="subdata">
+							<td>ANS: {{qdata1.q1.subques.a.ans}}</td>
+						</tr>
+						<!--[subqestion1]-->
+
+						   <!--[subqestion2]-->
+					<tr *ngIf = "subdata">
+							<th>Ques.1.2 {{qdata1.q1.subques.b.ques}}</th>
+						</tr>
+						<tr *ngIf ="subdata">
+							<td>ANS: {{qdata1.q1.subques.b.ans}}</td>
+						</tr>
+						<!--[subqestion2]-->
+
+						   <!--[subqestion3]-->
+					<tr *ngIf = "subdata">
+							<th>Ques.1.3 {{qdata1.q1.subques.c.ques}}</th>
+						</tr>
+						<tr *ngIf ="subdata">
+							<td>ANS: {{qdata1.q1.subques.c.ans}}</td>
+						</tr>
+						<!--[subqestion3]-->
+						
+
+
+
+                   <!--[q2]-->
+						<tr *ngIf = 'before2'>
+								<th>Ques.2 {{qdata1.q2.ques}}</th>
+							</tr>
+							<tr *ngIf = 'before2'>
+								<td>ANS: {{qdata1.q2.ans}}</td>
+							</tr>
+							   <!--[subqestion1]-->
+							<tr *ngIf = "subdata2">
+									<th>Ques.2.1 {{qdata1.q2.subques.a.ques}}</th>
+								</tr>
+								<tr *ngIf ="subdata2">
+									<td>ANS: {{qdata1.q2.subques.a.ans}}</td>
+								</tr>
+								<!--[subqestion1]-->
+		
+								   <!--[subqestion2]-->
+							<tr *ngIf = "subdata2">
+									<th>Ques.2.2 {{qdata1.q2.subques.b.ques}}</th>
+								</tr>
+								<tr *ngIf ="subdata2">
+									<td>ANS: {{qdata1.q2.subques.b.ans}}</td>
+								</tr>
+								<!--[subqestion2]-->
+		
+								   <!--[subqestion3]-->
+							<tr *ngIf = "subdata2">
+									<th>Ques.2.3 {{qdata1.q2.subques.c.ques}}</th>
+								</tr>
+								<tr *ngIf ="subdata2">
+									<td>ANS: {{qdata1.q2.subques.c.ans}}</td>
+								</tr>
+								<!--[subqestion3]-->
+								<!--[q2]-->
+
+
+								
+                   <!--[q3]-->
+						<tr *ngIf = 'before3'>
+								<th>Ques.3 {{qdata1.q3.ques}}</th>
+							</tr>
+							<tr *ngIf = 'before3'>
+								<td>ANS: {{qdata1.q3.ans}}</td>
+							</tr>
+							   <!--[subqestion1]-->
+							<tr *ngIf = "subdata3">
+									<th>Ques.3.1 {{qdata1.q3.subques.a.ques}}</th>
+								</tr>
+								<tr *ngIf ="subdata3">
+									<td>ANS: {{qdata1.q3.subques.a.ans}}</td>
+								</tr>
+								<!--[subqestion1]-->
+		
+								   <!--[subqestion2]-->
+							<tr *ngIf = "subdata3">
+									<th>Ques.3.2 {{qdata1.q3.subques.b.ques}}</th>
+								</tr>
+								<tr *ngIf ="subdata3">
+									<td>ANS: {{qdata1.q3.subques.b.ans}}</td>
+								</tr>
+								<!--[subqestion2]-->
+		
+								   <!--[subqestion3]-->
+							<tr *ngIf = "subdata3">
+									<th>Ques.3.3 {{qdata1.q3.subques.c.ques}}</th>
+								</tr>
+								<tr *ngIf ="subdata3">
+									<td>ANS: {{qdata1.q3.subques.c.ans}}</td>
+								</tr>
+								<!--[subqestion3]-->
+								<!--[q2]-->
+				</table>
+			</div>
+			<!--[Before]-->
+			<!--[after]-->
+			<div  class="col-md-6" *ngIf="show_table">
+					<h5>After Questionnaire</h5>
+				<table>
+
+					<tr *ngIf="after1">
+						<th>Ques.1 {{qdata2.q1.ques}}</th>
+					</tr>
+					<tr *ngIf="after1">
+						<td>ANS: {{qdata2.q1.ans}}</td>
+					</tr>
+
+                   <!--[q2]-->
+						<!-- <tr *ngIf="after2">
+								<th>Ques.2 {{qdata2.q2.ques}}</th>
+							</tr>
+							<tr *ngIf="after2">
+								<td>ANS: {{qdata2.q2.ans}}</td>
+							</tr>								 -->
+							<!--[q2]-->
+
+
+								
+                   <!--[q3]-->
+						<!-- <tr *ngIf="after3">
+								<th>Ques.3 {{qdata3.q3.ques}}</th>
+							</tr>
+							<tr *ngIf="after3">
+								<td>ANS: {{qdata3.q3.ans}}</td>
+							</tr> -->
+								<!--[q3]-->
+				</table>
+			</div>
+			<!--[after]-->
+		</div>
+	</form>
+</div>

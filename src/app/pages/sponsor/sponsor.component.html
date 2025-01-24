@@ -1,0 +1,94 @@
+<app-content-header [title]="'Sponsor'" [icon]="'euro'" [hideBreadcrumb]="true" [hasBgImage]="true" [class]="'pt-3'">
+</app-content-header>
+
+<mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="space-between center">
+
+
+  <div fxLayout="row" fxLayoutAlign="center center">
+    <button mat-raised-button color="accent" (click)="openAddMessageDialog()" class="compose" fxShow="false"
+      fxShow.gt-xs>Add Sponsor</button>
+  </div>
+</mat-toolbar>
+
+
+<div fxLayout="column" class="p-2">
+  <div class="p-2">
+    <div fxLayout="column" class="mat-elevation-z8">
+      <mat-form-field class="px-3 py-1">
+        <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Type to filter all columns">
+      </mat-form-field>
+    </div>
+    <mat-table #table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+      <ng-container matColumnDef="id">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>S No. </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.serial_number}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="sponsor_name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Sponsor Name </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.sponsor_name}} </mat-cell>
+      </ng-container>
+
+
+      <ng-container matColumnDef="sponsor_image">
+        <mat-header-cell *matHeaderCellDef>Sponsor Image Before</mat-header-cell>
+        <mat-cell *matCellDef="let element"><img src={{element.tag_image}}
+            style=" margin:10px; height:120px; width:120px; border-radius: 6px;"></mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="sponsor_image2">
+        <mat-header-cell *matHeaderCellDef>Sponsor Image After</mat-header-cell>
+        <mat-cell *matCellDef="let element"><img src={{element.tag_image2}}
+            style=" margin:10px; height:120px; width:120px; border-radius: 6px;"></mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="diameter">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Diameter</mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.diameter}} </mat-cell>
+      </ng-container>
+
+
+
+<!-- 
+      <ng-container matColumnDef="action">
+        <mat-header-cell *matHeaderCellDef> Action </mat-header-cell>
+        <mat-cell *matCellDef="let element"> <a (click)="openEditDialog(element)">
+            <mat-icon matListIcon class="pointer" style="color: dimgrey;margin-right: 15px; cursor: pointer;">edit
+            </mat-icon>
+          </a>
+
+          <a (click)="confirmDialog(element.id)">
+            <mat-icon matListIcon class="pointer" style="color: dimgrey;margin-right: 5px; cursor: pointer;">delete
+            </mat-icon>
+          </a> </mat-cell>
+      </ng-container> -->
+
+       <!-- Action Column -->
+       <ng-container matColumnDef="edit">
+        <mat-header-cell *matHeaderCellDef > Edit </mat-header-cell>
+        <mat-cell *matCellDef="let element"> <button mat-icon-button matTooltip="Click to Edit" class="remove-border"
+            color="primary" (click)="openEditDialog(element)">
+            <mat-icon>edit</mat-icon>
+        </button> </mat-cell>
+    </ng-container>
+  
+    <ng-container matColumnDef="delete">
+        <mat-header-cell *matHeaderCellDef> Delete </mat-header-cell>
+        <mat-cell *matCellDef="let element"> <button mat-icon-button matTooltip="Click to Delete" class="remove-border"
+            (click)="confirmDialog(element)" color="warn">
+            <mat-icon>delete</mat-icon>
+        </button> </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="loading">
+        <mat-footer-cell *matFooterCellDef colspan="6">
+          Loading data...
+        </mat-footer-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      <mat-footer-row *matFooterRowDef="['loading']" [ngClass]="{'hide': dataSource!=null}"></mat-footer-row>
+    </mat-table>
+    <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  </div>
+</div>

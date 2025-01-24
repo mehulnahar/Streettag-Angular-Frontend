@@ -1,0 +1,64 @@
+.mat-column-serial_number {
+    max-width: 80px;
+  }
+  
+  .mat-column-action {
+    max-width: 120px;
+    justify-content: center;
+  }
+  
+  .mat-column-title {
+    padding-right: 7.5px;
+    max-width: 150px;
+  }
+  
+  .mat-column-match_fund {
+    justify-content: center;
+    max-width: 90px;
+  }
+  
+  .mat-column-charity_image {
+    justify-content: center;
+    max-width: 150px;
+  }
+
+  .mat-column-edit {
+    justify-content: center;
+    max-width: 150px;
+  }
+  
+  .mat-column-charity_amount {
+    justify-content: center;
+    max-width: 100px;
+  }
+ 
+  ::ng-deep snack-bar-container.blue-snackbar {
+    background:rgb(9, 133, 9) !important;
+  }
+  
+  ::ng-deep .blue-snackbarr .mat-simple-snackbar {
+    color: White;
+  }
+
+ 
+::ng-deep snack-bar-container.red-snackbar {
+    background: red !important;
+  }
+  
+  ::ng-deep .red-snackbar .mat-simple-snackbar {
+    color: White;
+  }
+
+ ::ng-deep .mat-simple-snackbar {
+    justify-content: center !important;
+  }
+
+.mat-cell:nth-child(7),
+.mat-header-cell:nth-child(7) {
+  flex: 0 0 4rem;
+}
+
+.mat-cell:nth-child(8),
+.mat-header-cell:nth-child(8) {
+  flex: 0 0 4rem;
+}

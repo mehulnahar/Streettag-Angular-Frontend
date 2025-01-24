@@ -1,0 +1,103 @@
+<app-content-header     
+[title]="'Monument Tour'" 
+    [icon]="'tour'"
+    [hideBreadcrumb]="true"
+    [hasBgImage]="true" 
+    [class]="'pt-3 pb-1'"></app-content-header>
+<mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="space-between center" class="px-2 mailbox-toolbar">
+        <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-raised-button color="accent" (click)="openAddMessageDialog()" class="compose" fxShow="false" fxShow.gt-xs>Add Tour</button>       
+        </div>
+</mat-toolbar> 
+<div fxLayout="column" class="p-2">
+    <div class="p-2"> 
+        <div fxLayout="column" class="mat-elevation-z8">           
+            <mat-form-field class="px-3 py-1">
+                <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Type to filter all columns">
+            </mat-form-field> 
+        </div>
+        <mat-table #table [dataSource]="dataSource" matSort class="mat-elevation-z8">       
+            <ng-container matColumnDef="serial_number">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>S No. </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.serial_number}} </mat-cell>
+            </ng-container>
+
+             <ng-container matColumnDef="tourName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Tour Name </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.tour_name}} </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="description">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Description</mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.discription}} </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="lat">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Latitude</mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.lat}} </mat-cell>
+            </ng-container>
+            
+            <ng-container matColumnDef="lng">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Longitude</mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.lng}} </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="image">
+                <mat-header-cell *matHeaderCellDef>Image</mat-header-cell>
+                <mat-cell *matCellDef="let element"><img loading="lazy" src={{element.tour_image}}
+                    style="border-radius: 6px; height:100px; width:100px; padding: 3px 0"></mat-cell>
+              </ng-container>
+            
+            <ng-container matColumnDef="startDate">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Start Date</mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.created_at  | date:"d/MM/y"}} </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="detail">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Details</mat-header-cell>
+                <mat-cell *matCellDef="let element"> <mat-icon mat-raised-button
+                    matTooltip="Show detail">visibility</mat-icon> </mat-cell>
+            </ng-container>
+
+            <!-- <ng-container matColumnDef="action">
+                <mat-header-cell *matHeaderCellDef> Action </mat-header-cell>
+                <mat-cell *matCellDef="let element"> 
+                    <a (click)="openDetailDialog(element)"><mat-icon style="color: dimgrey; cursor: pointer; margin-right: 20px;" mat-raised-button
+                            matTooltip="Show detail">visibility</mat-icon></a>
+                      
+                    <a (click)="openEditDialog(element)"><mat-icon style="color: dimgrey; cursor: pointer;" mat-raised-button
+                    matTooltip="Edit ">edit</mat-icon> </a> 
+                    
+                    </mat-cell>  
+            </ng-container>  -->
+
+                 <!-- Action Column -->
+                 <ng-container matColumnDef="view">
+                    <mat-header-cell *matHeaderCellDef >View</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> <button mat-icon-button matTooltip="Click to Edit" class="remove-border"
+                        color="accent" (click)="openDetailDialog(element)">
+                        <mat-icon>visibility</mat-icon>
+                    </button> </mat-cell>
+                </ng-container>
+              
+                <ng-container matColumnDef="edit">
+                    <mat-header-cell *matHeaderCellDef > Edit </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> <button mat-icon-button matTooltip="Click to Edit" class="remove-border"
+                        color="primary" (click)="openEditDialog(element)">
+                        <mat-icon>edit</mat-icon>
+                    </button> </mat-cell>
+                </ng-container>
+
+            <ng-container matColumnDef="loading">
+                <mat-footer-cell *matFooterCellDef colspan="6">
+                    Loading...
+                </mat-footer-cell>
+            </ng-container>
+            
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            <mat-footer-row *matFooterRowDef="['loading']" [ngClass]="{'hide': dataSource!=null}"></mat-footer-row>
+        </mat-table>
+        <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>        
+    </div>
+</div>

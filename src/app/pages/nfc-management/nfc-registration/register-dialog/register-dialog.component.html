@@ -1,0 +1,155 @@
+<mat-toolbar>
+  <span>Register NFC</span>
+  <span class="fill-remaining-space"></span>
+  <button
+    class="btn-dialog-close"
+    (click)="onClose()"
+    mat-stroked-button
+    tabindex="-1"
+  >
+    <mat-icon>clear</mat-icon>
+  </button>
+</mat-toolbar>
+<form [formGroup]="nfcRegistrationForm">
+  <mat-grid-list cols="2" rowHeight="225px">
+    <mat-grid-tile>
+      <div class="controls-container">
+        <mat-form-field class="w-100">
+          <input
+            matInput
+            placeholder="Player Id"
+            name="player_id"
+            formControlName="player_id"
+            autocomplete="off"
+          />
+          <mat-error
+            *ngIf="nfcRegistrationForm.controls.player_id.errors?.required"
+            >This field is mandatory</mat-error
+          >
+          <mat-error
+            *ngIf="nfcRegistrationForm.controls.player_id.errors?.pattern"
+            >Special characters and Space not allowed.</mat-error
+          >
+        </mat-form-field>
+
+        <mat-form-field class="w-100">
+          <input
+            matInput
+            placeholder="Fullname"
+            name="name"
+            formControlName="name"
+            autocomplete="off"
+          />
+          <mat-error *ngIf="nfcRegistrationForm.controls.name.errors?.required"
+            >This field is mandatory</mat-error
+          >
+          <mat-error
+            *ngIf="
+              nfcRegistrationForm.controls.name.hasError('invalidSpecialChal')
+            "
+            >Special characters not allowed.</mat-error
+          >
+          <mat-error *ngIf="nfcRegistrationForm.controls.name.hasError('invalidNumber')">
+            Numeric not allowed.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="w-100">
+          <mat-label>Date of birth</mat-label>
+          <input
+            formControlName="dob"
+            matInput
+            [max]="maxDate"
+            [matDatepicker]="picker"
+            placeholder="dd/mm/yyyy"
+            autocomplete="off"
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker startView="month"></mat-datepicker>
+          <!-- <mat-error>This field is mandatory</mat-error> -->
+        </mat-form-field>
+
+        <mat-radio-group formControlName="gender">
+          <mat-label class="matLabel">Gender</mat-label>
+          <mat-radio-button value="male">Male</mat-radio-button>
+          <mat-radio-button value="female">Female</mat-radio-button>
+          <mat-radio-button value="other">Other</mat-radio-button>
+        </mat-radio-group>
+      </div>
+    </mat-grid-tile>
+
+    <mat-grid-tile>
+      <div class="controls-container" class="adjust-div">
+        <mat-form-field class="w-100">
+          <input
+            matInput
+            placeholder="Email"
+            name="email"
+            formControlName="email"
+            autocomplete="off"
+          />
+          <mat-error>Email is not valid.</mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="w-100">
+          <input
+            matInput
+            placeholder="Team Id"
+            name="team_id"
+            formControlName="team_id"
+            type="number"
+            autocomplete="off"
+          />
+          <mat-error
+            *ngIf="nfcRegistrationForm.controls.team_id.errors?.required"
+            >This field is mandatory</mat-error
+          >
+          <mat-error
+            *ngIf="
+              nfcRegistrationForm.controls.team_id.errors?.incorrect &&
+              !nfcRegistrationForm.controls.team_id.errors?.required
+            "
+            >Team Id is not valid.</mat-error
+          >
+        </mat-form-field>
+
+        <mat-form-field class="w-100">
+          <input
+            matInput
+            readonly
+            placeholder="Team Name"
+            name="team_name"
+            formControlName="team_name"
+          /><mat-hint> Readonly field. </mat-hint>
+        </mat-form-field>
+      </div>
+    </mat-grid-tile>
+  </mat-grid-list>
+
+  <mat-dialog-actions align="end">
+
+  <button
+    mat-raised-button
+    color="warn"
+    class="custom-btn m-2"
+    (click)="clearForm()"
+  >Clear
+  </button>
+
+  
+  <button
+  mat-raised-button
+  color="primary"
+  [disabled]="nfcRegistrationForm.invalid"
+  class="custom-btn m-2"
+  appDebounceClick
+  (debounceClick)="AddPlayer()"
+  [debounceTime]="350"
+>
+  Submit
+</button>
+</mat-dialog-actions>  
+</form>

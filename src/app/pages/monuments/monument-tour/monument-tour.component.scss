@@ -1,0 +1,78 @@
+@import '../../../theme/styles/variables';
+
+
+.mat-mini-fab {
+  width: 2rem;
+  height: 2rem;
+  outline: none;
+  border: none;
+  .mat-icon {
+    font-size: 1.5rem;
+    margin-top: -10px;
+    cursor: pointer;
+  }
+}
+
+.mat-column-serial_number {
+  max-width: 80px;
+}
+
+.mat-column-startDate {
+  max-width: 95px;
+  padding: 0px 10px;
+}
+
+.mat-column-image {
+  max-width: 110px;
+}
+
+button:disabled:hover,
+button[disabled]:hover {
+  cursor: no-drop;
+}
+
+agm-map {
+  height: 390px;
+  width: 840px;
+  border-radius: 5px;
+}
+
+mat-footer-row mat-footer-cell {
+  justify-content: center;
+  font-style: italic;
+}
+
+.hide {
+  display: none;
+}
+
+.incDecButtons {
+  position: relative;
+  right: 3rem;
+  top: 1.5rem;
+  justify-content: flex-end;
+  display: flex;
+  height: 0px;
+}
+
+.btn-dialog-close {
+  width: 45px;
+  min-width: 0px !important;
+  height: 40px;
+  padding: 0px !important;
+  &:hover{
+    background-color:$bg-danger;
+    color: #fff;
+  }
+}
+
+
+.mat-cell:nth-child(8),
+.mat-header-cell:nth-child(8) {
+  flex: 0 0 4rem;
+}
+
+.mat-cell:nth-child(9),
+.mat-header-cell:nth-child(9) {
+  flex: 0 0 4rem;
+}

@@ -1,0 +1,22 @@
+.erorr_color {
+    color: red;
+}
+
+.link-custom {
+    text-decoration: none;
+    color: white;
+}
+
+.mat-cell:nth-child(6),
+.mat-header-cell:nth-child(6) {
+  flex: 0 0 6rem;
+}
+
+.hide{
+    display: none;
+}
+
+mat-footer-row mat-footer-cell{
+    justify-content: center;
+    font-style: italic;
+}

@@ -1,0 +1,136 @@
+
+<div class="container">
+  <form (ngSubmit)="onSubmit(searchForm.value)" #searchForm="ngForm">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <!-- <select class="form-control" #test   (change)="test2(test)"> -->
+          <select class="form-control" name="location_name" [(ngModel)]="location_name"
+            (ngModelChange)="get_location_id($event)">
+            <option value="">Select Location</option>
+            <option *ngFor="let food of dataSourceLocation" [value]="food.id"> {{food.location_name}}</option>
+
+          </select>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <select class="form-control" name="circuit_name" [(ngModel)]="circuit_name" ngModel>
+            <option value="">Circuit Name</option>
+            <option *ngFor="let food of dataSourceCircuit" [value]="food.id">{{food.circuit_name}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary btn-md">Submit</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- <div align="center">
+  <mat-spinner *ngIf="spinner; else elseBlock"></mat-spinner>
+</div> -->
+
+<!-- <div fxLayout="column" class="p-2">
+  <div class="p-2">
+    <div fxLayout="column" class="mat-elevation-z8">
+      <mat-form-field class="px-3 py-1">
+        <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Type to filter all columns">
+      </mat-form-field>
+    </div>
+    <mat-table #table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+      <div>
+        hello
+      </div>
+      <ng-container matColumnDef="rank">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Rank </mat-header-cell>
+        <div *ngIf="true">
+          <mat-cell [style.background-color]="'red'" *matCellDef="let element"> {{element.s_no}} </mat-cell>
+        </div>
+        <div  *ngIf="false">
+          <mat-cell [style.background-color]="'green'" *matCellDef="let element"> {{element.s_no}} </mat-cell>
+        </div>
+      </ng-container>
+      <ng-container matColumnDef="team_name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Team Name </mat-header-cell>
+        <mat-cell [style.background-color]="'red'" *matCellDef="let element"> {{element.team_name | decode}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="total_points">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Total Points </mat-header-cell>
+        <mat-cell [style.background-color]="'red'" *matCellDef="let element"> {{element.totalpoints}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="number_of_players">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Number of Players </mat-header-cell>
+        <mat-cell [style.background-color]="'red'" *matCellDef="let element"> {{element.totalplayer}} </mat-cell>
+      </ng-container>
+
+
+
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+    <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]"></mat-paginator>
+  </div>
+</div> -->
+
+
+<div class="container">
+  <div align="center">
+    <mat-spinner *ngIf="spinner"></mat-spinner>
+  </div>
+  <table class="table">
+
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Team Name</th>
+        <th>Total Points</th>
+        <th>Number of Players</th>
+      </tr>
+    </thead>
+    <!-- <tbody>
+      <tr *ngFor="let res of dataSource2" [ngSwitch]="res.s_no">
+        <td [style.background-color]="'#303f9f'" *ngSwitchCase="1"> {{res.s_no}} </td>
+        <td [style.background-color]="'#303f9f'" *ngSwitchCase="1"> {{res.team_name | decode}} </td>
+        <td [style.background-color]="'#303f9f'" *ngSwitchCase="1"> {{res.totalpoints}} </td>
+        <td [style.background-color]="'#303f9f'" *ngSwitchCase="1"> {{res.totalplayer}} </td>
+        <td [style.background-color]="'#7682d6'" *ngSwitchCase="2"> {{res.s_no}} </td>
+        <td [style.background-color]="'#7682d6'" *ngSwitchCase="2"> {{res.team_name | decode}} </td>
+        <td [style.background-color]="'#7682d6'" *ngSwitchCase="2"> {{res.totalpoints}} </td>
+        <td [style.background-color]="'#7682d6'" *ngSwitchCase="2"> {{res.totalplayer}} </td>
+        <td [style.background-color]="'#c4caed'" *ngSwitchCase="3"> {{res.s_no}} </td>
+        <td [style.background-color]="'#c4caed'" *ngSwitchCase="3"> {{res.team_name | decode}} </td>
+        <td [style.background-color]="'#c4caed'" *ngSwitchCase="3"> {{res.totalpoints}} </td>
+        <td [style.background-color]="'#c4caed'" *ngSwitchCase="3"> {{res.totalplayer}} </td>
+        <td *ngSwitchDefault> {{res.s_no}} </td>
+        <td *ngSwitchDefault> {{res.team_name | decode}} </td>
+        <td *ngSwitchDefault> {{res.totalpoints}} </td>
+        <td *ngSwitchDefault> {{res.totalplayer}} </td>
+      </tr>
+    </tbody> -->
+    <tbody>
+      <tr *ngFor="let res of dataSource2" [ngSwitch]="res.s_no">
+        <td [style.background-color]="'#303f9f'" *ngSwitchCase="1"> {{res.s_no}} <i class="material-icons">accessibility_new</i> </td>
+        <td [style.background-color]="'#303f9f'" *ngSwitchCase="1"> {{res.team_name | decode}} </td>
+        <td [style.background-color]="'#303f9f'" *ngSwitchCase="1"> {{res.totalpoints}} </td>
+        <td [style.background-color]="'#303f9f'" *ngSwitchCase="1"> {{res.totalplayer}} </td>
+        <td [style.background-color]="'#7682d6'" *ngSwitchCase="2"> {{res.s_no}} <i class="material-icons">accessibility_new</i> </td>
+        <td [style.background-color]="'#7682d6'" *ngSwitchCase="2"> {{res.team_name | decode}} </td>
+        <td [style.background-color]="'#7682d6'" *ngSwitchCase="2"> {{res.totalpoints}} </td>
+        <td [style.background-color]="'#7682d6'" *ngSwitchCase="2"> {{res.totalplayer}} </td>
+        <td [style.background-color]="'#c4caed'" *ngSwitchCase="3"> {{res.s_no}} <i class="material-icons">accessibility_new</i> </td>
+        <td [style.background-color]="'#c4caed'" *ngSwitchCase="3"> {{res.team_name | decode}} </td>
+        <td [style.background-color]="'#c4caed'" *ngSwitchCase="3"> {{res.totalpoints}} </td>
+        <td [style.background-color]="'#c4caed'" *ngSwitchCase="3"> {{res.totalplayer}} </td>
+        <td [style.background-color]="'#ebedf9'" *ngSwitchDefault> {{res.s_no}} </td>
+        <td [style.background-color]="'#ebedf9'" *ngSwitchDefault> {{res.team_name | decode}} </td>
+        <td [style.background-color]="'#ebedf9'" *ngSwitchDefault> {{res.totalpoints}} </td>
+        <td [style.background-color]="'#ebedf9'" *ngSwitchDefault> {{res.totalplayer}} </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

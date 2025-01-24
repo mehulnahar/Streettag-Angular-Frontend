@@ -1,0 +1,45 @@
+<mat-toolbar fxLayout="row" fxLayoutAlign="space-between center">
+<h3 style="margin: 0px auto;">Broadcast List</h3>
+<button mat-stroked-button mat-dialog-close class="btn-dialog_close" ><mat-icon>clear</mat-icon></button>
+</mat-toolbar>
+    <div style="margin-bottom:10px; margin-top: 5px;">
+        <select class="form-control" name="Category" #cate (change)="getBroadcastList(cate.value)">
+          <option *ngFor="let option of categoryArray" [value]="option.value"> {{option.name}}</option>
+        </select>
+    </div>
+
+
+        <mat-table #table [dataSource]="b_dataSource" matSort class="mat-elevation-z8">       
+
+            <ng-container matColumnDef="category">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Category</mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.category}} </mat-cell>
+            </ng-container> 
+
+            <ng-container matColumnDef="description">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Description</mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.description || 'N/A'}} </mat-cell>
+            </ng-container>   
+            
+            <ng-container matColumnDef="address">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Address</mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.full_address}} </mat-cell>
+            </ng-container>  
+
+            <ng-container matColumnDef="image">
+                <mat-header-cell *matHeaderCellDef >Posted Images</mat-header-cell>
+                <mat-cell *matCellDef="let element"> <img src='{{element.boradcast_image}}' 
+                    style=" margin:10px; height:120px; width:120px; border-radius: 8px;"></mat-cell>
+            </ng-container>  
+
+            <ng-container matColumnDef="created_at">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Creation Date</mat-header-cell>
+              <mat-cell *matCellDef="let element"> {{element.created_at | date}} </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+        
+            <!-- Conditional Spinner -->
+            <mat-spinner style="margin: 30px auto;" *ngIf="spiner"></mat-spinner> 
+        <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[5,10,15,20]"></mat-paginator>      

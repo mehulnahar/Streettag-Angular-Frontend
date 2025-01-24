@@ -1,0 +1,666 @@
+
+import { Component, OnInit, ViewEncapsulation, ViewChild, HostListener, Inject } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { MatSnackBar, MatTableDataSource, MatPaginator } from '@angular/material';
+import { AppSettings } from '../../app.settings';
+import { Settings } from '../../app.settings.model';
+import { AjaxService } from 'src/app/ajax.service';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { Router } from '@angular/router';
+import { MatSort } from '@angular/material/sort';
+
+@Component({
+  selector: 'app-sponsor',
+  templateUrl: './sponsor.component.html',
+  styleUrls: ['./sponsor.component.scss'],
+  encapsulation: ViewEncapsulation.None,
+  providers: []
+})
+export class SponsorComponent implements OnInit {
+
+  @ViewChild('sidenav') sidenav: any;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+
+  public settings: Settings;
+  public sidenavOpen: boolean = true;
+
+  public newMail: boolean;
+  public type: string = 'all';
+  public showSearch: boolean = false;
+  public searchText: string;
+  public form: FormGroup;
+
+  public show_dialog: boolean = false;
+  public button_name: any = 'Show Login Form!';
+  groupList = [] as any;
+  delresult: any;
+  resData: any;
+  allLocations = [] as any;
+  Location_name = '';
+  public lat: number = 45.421530;
+  public lng: number = -75.697193;
+  public zoom: number = 15;
+  public displayedColumns = ['id', 'sponsor_name', 'sponsor_image', 'diameter', 'action'];
+  public dataSource: any;
+
+  constructor(public appSettings: AppSettings,
+    public formBuilder: FormBuilder,
+    public snackBar: MatSnackBar,
+    public dialog: MatDialog,
+    public router: Router,
+    private ajaxService: AjaxService) {
+    this.settings = this.appSettings.settings;
+    this.checkuserlogin();
+
+  }
+
+  checkuserlogin() {
+    var username = localStorage.getItem('username');
+    var password = localStorage.getItem('password');
+
+    if (username == null && password == null) {
+      this.snackBar.open('You must login', null, {
+        duration: 1700,
+        verticalPosition: 'top'
+      });
+      this.router.navigate(['/login']);
+    }
+
+  }
+
+
+  ngAfterViewInit() {
+    setTimeout(() => { this.dataSource.paginator = this.paginator; }, 1500);
+    setTimeout(() => { this.dataSource.sort = this.sort; }, 3000);
+
+
+  }
+
+  applyFilter(filterValue: string) {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  ngOnInit() {
+
+    if (window.innerWidth <= 992) {
+      this.sidenavOpen = false;
+    }
+
+
+
+    // $('#spinner').show();
+
+    // var thisone = this;
+    //          setTimeout(function(){
+    //           thisone.getMsggroups()
+    //           thisone.getgroupList()
+    //           thisone.getallSponsor()
+    //           thisone.viewDetail(this.glist);
+    //      $('#spinner').hide();
+    //     },2000);
+
+    this.getallSponsor()
+
+
+  }
+
+  @HostListener('window:resize')
+  public onWindowResize(): void {
+    (window.innerWidth <= 992) ? this.sidenavOpen = false : this.sidenavOpen = true;
+  }
+
+  public getMails() {
+    switch (this.type) {
+
+    }
+  }
+
+  // public viewDetail(mail){
+  //   this.mail = this.mailboxService.getMail(mail.id);    
+  //   this.mails.forEach(m => m.selected = false);
+  //   this.mail.selected = true;
+  //   this.mail.unread = false;
+  //   this.newMail = false;
+  //   if(window.innerWidth <= 992){
+  //     this.sidenav.close(); 
+  //   }
+  // }
+
+
+  ////////////////open edit dialoge/////////////////////////
+  openEditDialog(event): void {
+
+    //console.log("edit called");
+    let dialogRef = this.dialog.open(DialogEditSponsor, {
+      data: { event }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      ////console.log('The dialog was closed');
+      //  this.name = result;
+      //this.openDialog();
+      //  this.getMsggroups();
+
+      //  this.getallevent();
+      //  this.viewDetail(result);
+      //  this.toggle();
+      this.getallSponsor();
+    });
+  }
+
+  openAddMessageDialog(): void {
+    let dialogRef = this.dialog.open(DialogAddSponsor, {
+      data: { groups: this.groupList.result }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      ////console.log('The dialog was closed');
+      //  this.name = result;
+      //this.openDialog()
+
+      this.getallSponsor();
+      this.toggle();
+    });
+  }
+
+  toggle() {
+
+    if (!this.show_dialog)
+      this.show_dialog = !this.show_dialog;
+
+  }
+  ///////////////get all event//////////////////
+
+  getallSponsor() {
+    ////console.log("here inside conact details");
+
+    var getdata = {};
+
+    var url = "https://wearestreettag.co.uk/api/admin/getSponsors";
+
+    var data = {};
+
+    //console.log(url);
+
+    this.ajaxService.get(url).subscribe(
+      data => {
+
+
+
+        //dataSource = data['response'];
+        this.dataSource = new MatTableDataSource<Element>(data['response']);
+        //console.log(this.dataSource);
+        this.dataSource.paginator = this.paginator;
+
+      })
+
+  }
+  ////////////////delete Dialoge///////////////////   
+  OpenDelete(id): void {
+
+
+    //console.log("************:" + id)
+
+
+    let dialogRef = this.dialog.open(DialogDeleteSponsor, {
+      data: { name: "" }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+
+      this.delresult = result;
+      if (this.delresult == "1")
+        this.deleteSponsor(id);
+    });
+  }
+
+  deleteSponsor(id) {
+    //console.log("id:" + id)
+
+    var getdata = {};
+    var url = "https://wearestreettag.co.uk/api/admin/deleteSponsor";
+    var data = { "sponsor_id": id };
+
+    //console.log("data 89889 : ", data)
+    this.ajaxService.post(data, url).subscribe(
+      data => {
+        this.resData = data;
+        this.getallSponsor();
+
+        this.snackBar.open(' deleted Successfully!', null, {
+          duration: 2000,
+          verticalPosition: 'top'
+        });
+      }
+    );
+  }
+
+
+
+
+}
+
+
+
+@Component({
+  templateUrl: 'sponsor_add_modal.component.html',
+})
+export class DialogAddSponsor {
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
+
+  public lat: number = 45.421530;
+  public lng: number = -75.697193;
+  public zoom: number = 15;
+  public settings: Settings;
+  form: FormGroup;
+  groupList = [] as any;
+  delresult: any;
+  resData: any;
+  allLocations = [] as any;
+  location_name = '';
+  building_name = '';
+  tag_image: any;
+  public showMap =  true;
+  public tagLatings : any;
+
+  public displayedColumns = ['serialno', 'location_name', 'date', 'action'];
+  public dataSource: any;
+
+  angForm: FormGroup;
+
+  constructor(
+    public dialogRef: MatDialogRef<DialogAddSponsor>, private fb: FormBuilder,
+    @Inject(MAT_DIALOG_DATA) public data: any, private ajaxService: AjaxService, public snackBar: MatSnackBar, public formBuilder: FormBuilder
+  ) {
+
+    this.createForm();
+
+  }
+  groups = this.data;
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
+  public tagDiameter = "0";
+  getDiameter(e) {
+    this.tagDiameter = e.target.value;
+    this.tagInsideDiameter(this.lat, this.lng);
+  }
+
+  tagInsideDiameter(lat, lng) {
+
+    var url = "https://wearestreettag.co.uk/api/admin/getTagsInsideDiameter";
+    var data1 = {
+      "diameter": this.tagDiameter,
+      "lat": this.lat,
+      "lng": this.lng,
+
+    };
+
+    if(data1.diameter==""){
+      data1.diameter="0";
+    }
+
+    
+
+    //console.log(data1);
+
+    this.ajaxService.post(data1, url).subscribe(
+      data1 => {
+        
+
+        this.showMap = false;
+        this.tagLatings = data1['response'];
+        //console.log(this.tagLatings)
+        
+
+      }
+    )
+
+
+
+  }
+
+
+
+  getallSponsor() {
+
+    var getdata = {};
+
+    var url = "https://wearestreettag.co.uk/api/admin/getSponsors";
+
+    var data = {};
+
+    this.ajaxService.get(url).subscribe(
+      data => {
+
+
+
+        //console.log("getting buiding-------------------------------------------------");
+        this.dataSource = new MatTableDataSource<Element>(data['response']);
+        //console.log(this.dataSource);
+        //console.log("getting buiding-------------------------------------------------")
+        this.dataSource.paginator = this.paginator;
+
+      })
+
+  }
+
+
+  createForm() {
+    this.angForm = this.fb.group({
+      sponsor_name: ['', Validators.required],
+      lat: [this.lat, Validators.required],
+      lng: [this.lng, Validators.required],
+      diameter: ['', Validators.required],
+    });
+  }
+
+  markerDragEnd($event: any) {
+    //console.log($event);
+    this.lat = $event.coords.lat;
+    this.lng = $event.coords.lng;
+    this.angForm.patchValue({ lat: this.lat, lng: this.lng });
+    this.tagInsideDiameter(this.lat, this.lng)
+
+  }
+
+
+
+  setlocation(res) {
+    //this.location=this.location;
+    //console.log("getting location");
+    //console.log(res);
+
+    var url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + res + "&key=AIzaSyB9stNP2UYOkJCJkR2CfnabPiNP6g08UH8";
+
+    this.ajaxService.get(url).subscribe(
+      (data: any) => {
+
+        if (typeof data != "undefined" && data != '' && typeof data.results != "undefined" && data.results != '') {
+          ////console.log(data);
+          var lattitude = data.results[0].geometry.location.lat;
+          var longitude = data.results[0].geometry.location.lng;
+
+          this.lat = lattitude;
+          this.lng = longitude;
+
+          //console.log("getting lat of" + this.lat)
+          //console.log("getting long of" + this.lng)
+
+          this.angForm.patchValue({ lat: this.lat, lng: this.lng });
+          this.tagInsideDiameter(this.lat, this.lng)
+
+        }
+      });
+  }
+
+
+  handleInputChange(e) {
+    var file = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0];
+    var reader = new FileReader();
+    reader.onload = this._handleReaderLoaded.bind(this);
+    reader.readAsDataURL(file);
+  }
+  _handleReaderLoaded(e) {
+    let reader = e.target;
+    this.tag_image = reader.result;
+  }
+
+
+  //addevent(data) {
+  addevent() {
+
+    //console.log(this.angForm.value);
+
+    if (typeof this.tag_image == 'undefined') {
+      this.snackBar.open('Please select image', null, {
+        duration: 2000,
+        verticalPosition: 'top'
+      });
+      return false;
+    }
+
+    if (this.angForm.status == "VALID") {
+
+      var url = "https://wearestreettag.co.uk/api/admin/addSponsors";
+      var data1 = {
+        "sponsor_name": this.angForm.value.sponsor_name,
+        "lat": this.angForm.value.lat,
+        "lng": this.angForm.value.lng,
+        "tag_image": this.tag_image,
+        "diameter": this.angForm.value.diameter,
+
+      };
+      //console.log("request parameter is:")
+      //console.log(data1)
+
+      this.ajaxService.post(data1, url).subscribe(
+        data1 => {
+
+          this.resData = data1;
+          //console.log(this.resData)
+          this.getallSponsor();
+          let dynamicSnackColor = 'blue-snackbar';
+          if (this.resData.status == "false") {
+            dynamicSnackColor = 'red-snackbar';
+          }
+          this.snackBar.open(this.resData.msg, null, {
+            duration: 2000,
+            verticalPosition: 'top',
+            panelClass: dynamicSnackColor
+          });
+
+          this.dialogRef.close();
+
+        }
+      )
+    }
+
+
+
+
+
+  }
+
+}
+
+@Component({
+  templateUrl: 'sponsor_edit_modal.component.html',
+})
+export class DialogEditSponsor {
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
+
+  //public lat: number = 48.421530;
+  //public lng: number = -75.697193;
+  public lat = this.data.event.lat;
+  public lng = this.data.event.lng;
+  public zoom: number = 15;
+  public settings: Settings;
+  form: FormGroup;
+  groupList = [] as any;
+  delresult: any;
+  resData: any;
+  allLocations = [] as any;
+  location_name = '';
+  building_name = '';
+  tag_image = this.data.event.tag_image;
+
+  public displayedColumns = ['serialno', 'location_name', 'date', 'action'];
+  public dataSource: any;
+
+  angForm: FormGroup;
+
+  constructor(
+    public dialogRef: MatDialogRef<DialogAddSponsor>, private fb: FormBuilder,
+    @Inject(MAT_DIALOG_DATA) public data, private ajaxService: AjaxService, public snackBar: MatSnackBar, public formBuilder: FormBuilder
+  ) {
+
+    this.createForm();
+    //console.log('---------edit data -----------------');
+    //console.log(this.data)
+
+
+  }
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
+  getallSponsor() {
+    ////console.log("here inside conact details");
+
+    var getdata = {};
+
+    var url = "https://wearestreettag.co.uk/api/admin/getSponsors";
+
+    var data = {};
+
+    this.ajaxService.get(url).subscribe(
+      data => {
+
+        this.dataSource = new MatTableDataSource<Element>(data['response']);
+        //console.log(this.dataSource);
+        this.dataSource.paginator = this.paginator;
+
+      })
+
+  }
+
+
+  createForm() {
+    this.angForm = this.fb.group({
+      sponsor_name: [this.data.event.sponsor_name, Validators.required],
+      lat: [this.data.event.lat, Validators.required],
+      lng: [this.data.event.lng, Validators.required],
+      diameter: [this.data.event.diameter, Validators.required],
+    });
+  }
+
+  markerDragEnd($event: any) {
+    //console.log($event);
+    this.lat = $event.coords.lat;
+    this.lng = $event.coords.lng;
+    this.angForm.patchValue({ lat: this.lat, lng: this.lng });
+
+  }
+
+  setlocation(res) {
+    //this.location=this.location;
+    //console.log("getting location");
+    //console.log(res);
+
+    var url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + res + "&key=AIzaSyB9stNP2UYOkJCJkR2CfnabPiNP6g08UH8";
+
+    this.ajaxService.get(url).subscribe(
+      (data: any) => {
+
+        if (typeof data != "undefined" && data != '' && typeof data.results != "undefined" && data.results != '') {
+          ////console.log(data);
+          var lattitude = data.results[0].geometry.location.lat;
+          var longitude = data.results[0].geometry.location.lng;
+
+          this.lat = lattitude;
+          this.lng = longitude;
+
+          //console.log("getting lat of" + this.lat)
+          //console.log("getting long of" + this.lng)
+
+          this.angForm.patchValue({ lat: this.lat, lng: this.lng });
+
+        }
+      });
+  }
+
+
+  handleInputChange(e) {
+    var file = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0];
+    var reader = new FileReader();
+    reader.onload = this._handleReaderLoaded.bind(this);
+    reader.readAsDataURL(file);
+  }
+  _handleReaderLoaded(e) {
+    let reader = e.target;
+    this.tag_image = reader.result;
+  }
+
+
+  updateevent() {
+
+    if (typeof this.tag_image == 'undefined') {
+      this.snackBar.open('Please select image', null, {
+        duration: 2000,
+        verticalPosition: 'top'
+      });
+      return false;
+    }
+
+    if (this.angForm.status == "VALID") {
+
+      var url = "https://wearestreettag.co.uk/api/admin/editSponsors";
+      var data1 = {
+        "id": this.data.event.id,
+        "sponsor_name": this.angForm.value.sponsor_name,
+        "lat": this.angForm.value.lat,
+        "lng": this.angForm.value.lng,
+        "tag_image": this.tag_image,
+        "diameter": this.angForm.value.diameter,
+
+      };
+      //console.log("request parameter is:---------------")
+      //console.log(data1)
+      //console.log("request parameter is:---------------")
+
+      this.ajaxService.post(data1, url).subscribe(
+        data1 => {
+
+          this.resData = data1;
+          //console.log(this.resData)
+          this.getallSponsor();
+          let dynamicSnackColor = 'blue-snackbar';
+          if (this.resData.status == "false") {
+            dynamicSnackColor = 'red-snackbar';
+          }
+          this.snackBar.open(this.resData.msg, null, {
+            duration: 2000,
+            verticalPosition: 'top',
+            panelClass: dynamicSnackColor
+          });
+
+          this.dialogRef.close();
+
+        }
+      )
+    }
+
+  }
+
+}
+
+@Component({
+  templateUrl: './sponsor_delete_modal.component.html',
+
+})
+
+
+
+export class DialogDeleteSponsor {
+
+  constructor(
+    public dialogRef: MatDialogRef<DialogDeleteSponsor>,
+    @Inject(MAT_DIALOG_DATA) public data: any) {
+
+  }
+
+
+
+  Submit(x) {
+    this.dialogRef.close(x);
+  }
+
+}

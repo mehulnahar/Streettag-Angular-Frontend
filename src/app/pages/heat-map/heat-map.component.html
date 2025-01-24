@@ -1,0 +1,59 @@
+<app-content-header
+  [title]="'Heat-Map'"
+  [icon]="'map'"
+  [hideBreadcrumb]="true"
+  [hasBgImage]="true"
+  [class]="'pb-2 pt-2'"
+>
+</app-content-header>
+<div class="container pt-3">
+  <div fxLayout="row">
+    <div class="col-md-4" [formGroup]="angForm">
+      <select formControlName="duration" (ngModelChange)="disableDownloadButton()" class="form-control" name="duration">
+        <option value="" disabled>Select Duration</option>
+        <option value="today">Today</option>
+        <option value="week">Week</option>
+        <option value="month">Month</option>
+      </select>
+    </div>
+    <div>
+      <button
+        style="padding: 5px 25px"
+        type="button"
+        [disabled]="!angForm.valid"
+        class="btn btn-primary btn-md"
+        (click)="onSubmit()"
+      >
+        Generate
+      </button>
+    </div>
+    <div fxFlex="38" style="margin: auto 15px">
+      <div *ngIf="spinner">
+        <mat-progress-spinner
+          diameter="21"
+          mode="indeterminate"
+        ></mat-progress-spinner>
+      </div>
+    </div>
+    <div>
+      <button
+        [disabled]="downloadButton"
+        mat-raised-button
+        color="accent"
+        (click)="download()"
+      ><span style="color: whitesmoke" class="material-icons">get_app</span>
+        Download
+      </button>
+    </div>
+  </div>
+  <div class="container pt-3" #map>
+    <agm-map  (boundsChange)="updateMarkers($event)" [latitude]="51.5339834" [longitude]="0.0753218" [zoom]="11" [maxZoom]="13" [minZoom]="12" [scrollwheel]="false" [streetViewControl]="false" [disableDefaultUI]="true" [fullscreenControl]="true">
+      <agm-marker-cluster>
+        <agm-marker *ngFor="let marker of displayedMarkers"
+          [latitude]="marker.lat"
+          [longitude]="marker.lng"
+        ></agm-marker>
+      </agm-marker-cluster>
+    </agm-map>
+  </div>
+</div>

@@ -1,0 +1,72 @@
+<app-content-header 
+    [icon]="'collections'" 
+    [title]="'הוסף תמונה מתחלפת'" 
+    [hideBreadcrumb]="false"
+    [hasBgImage]="true" 
+    [class]="'pb-4'"></app-content-header>
+  
+
+    <mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="space-between center" class="px-2 user-toolbar">
+        <div fxLayout="row">
+            <p>
+                <button mat-raised-button color="accent" class="m-1"  (click)="openDialog()">הוספת תמונה</button>
+                
+            </p>
+           
+        </div>
+    
+        <div fxLayout="row">
+            <button mat-icon-button (click)="changeView('grid')" class="mx-2">
+                <mat-icon>view_module</mat-icon>
+            </button>
+            <button mat-icon-button (click)="changeView('list')">
+                <mat-icon>view_list</mat-icon>
+            </button>
+        </div>
+    </mat-toolbar>
+
+
+    
+<div class="users-wrapper p-2">
+    <div *ngIf="viewType == 'grid'" fxLayout="row wrap">    
+        <div *ngFor="let element of allimgs.response" fxFlex="100" fxFlex.gt-md="33.3" fxFlex.md="50" fxFlex.sm="50" class="p-2"> 
+            <mat-card fxLayout="row" class="p-0 user-content">  
+                <mat-card-content>
+                    <img src={{this.img+element.image}} style=" margin:10px; height:200px; width:250px;">
+                    <a (click)="openDeleteDialog(element.coupon_id)"  style="margin: 10px; cursor:pointer;" class="icon"><mat-icon matListIcon>delete</mat-icon> </a> 
+             
+                  
+                </mat-card-content>
+            </mat-card>        
+        </div>
+    </div>
+    <div *ngIf="viewType == 'list'" fxLayout="row wrap">
+        <div *ngFor="let element of allimgs.response" fxFlex="75" class="p-2"> 
+            <mat-card class="p-0 user-content"> 
+                <mat-card-content>
+                  
+                   <img src={{this.img+element.image}} style=" margin:10px; height:200px; width:250px;">
+                    <a (click)="openDeleteDialog(element.coupon_id)"  style="margin: 10px; cursor:pointer;" class="icon"><mat-icon matListIcon>delete</mat-icon> </a> 
+             
+                  
+                </mat-card-content>
+            </mat-card>
+        </div>  
+    </div>
+   
+</div>
+
+<div id="spinner" style="display:none;">
+        <mat-spinner></mat-spinner>
+    </div>
+
+
+
+
+
+
+
+
+
+
+

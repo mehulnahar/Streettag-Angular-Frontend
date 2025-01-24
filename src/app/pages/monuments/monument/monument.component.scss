@@ -1,0 +1,142 @@
+@import '../../../theme/styles/variables';
+agm-map {
+  height: 390px;
+  width: 100%;
+  border-radius: 5px;
+}
+
+input[type="file"] {
+  display: none;
+ }
+
+ 
+.example-full-width{
+  width: 85%;
+}
+
+.custom-file-upload {
+  border: 1px solid #ccc;
+  display: inline-block;
+  border-radius: 10px;
+  padding: 4px 12px;
+  cursor: pointer;
+}
+
+.mat-header-cell {
+  flex-direction: column;
+  justify-content: center;
+ }
+
+.mat-column-serial_number {
+  max-width: 72px;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.mat-column-name {
+  max-width: 13rem;
+ }
+
+
+.mat-column-lat,
+.mat-column-lng
+ {
+  max-width : 10rem;
+}
+
+.mat-column-basketFlag{
+  max-width: 6rem;
+}
+
+.mat-column-link{
+  max-width: 70px;
+}
+
+.mat-cell {
+  padding: 3px 5px;
+}
+
+.mat-grid-list {
+  background: rgb(243, 240, 240);
+  border-radius: 3px;
+}
+
+img,
+iframe {
+  border-radius: 8px;
+}
+
+img:hover{
+  cursor: -webkit-zoom-in;
+  cursor: zoom-in;
+  cursor: -moz-zoom-in;
+}
+
+button:disabled:hover,
+button[disabled]:hover {
+  cursor: no-drop;
+}
+
+.mat-mini-fab {
+  width: 30px;
+  height: 30px;
+  outline: none;
+  border: none;
+  .mat-icon {
+    font-size: 25px;
+    margin-top: -13px;
+    cursor: pointer;
+    
+  }
+}
+
+.btn-dialog-close {
+  width: 45px;
+  min-width: 0px !important;
+  height: 40px;
+  padding: 0px !important;
+  &:hover{
+    background-color:$bg-danger;
+    color: #fff;
+  }
+}
+
+.mat-radio-button ~ .mat-radio-button {
+  margin-left: 16px;
+}
+
+
+mat-footer-row mat-footer-cell{
+  justify-content: center;
+  font-style: italic;
+}
+
+.line-clamp{
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.hide{
+  display: none;
+}
+
+.polaroid {
+  background-color: white;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.polaroid:hover {
+  border: 1px solid #777;
+}
+
+.mat-cell:nth-child(8),
+.mat-header-cell:nth-child(8) {
+  flex: 0 0 4rem;
+}
+
+.mat-cell:nth-child(9),
+.mat-header-cell:nth-child(9) {
+  flex: 0 0 4rem;
+}

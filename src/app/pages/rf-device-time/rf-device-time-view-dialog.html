@@ -1,0 +1,126 @@
+<mat-toolbar class="mb-2 d-flex justify-content-center">
+  <span class="w-100 d-flex justify-content-center">RF BOX Time Details</span>
+  <span class="fill-remaining-space"></span>
+</mat-toolbar>
+
+<div fxLayout="row wrap">
+  <div fxFlex="100" fxFlex.lt-sm="100">
+    <table class="w-100">
+      <tr>
+        <th>Device Id</th>
+        <td class="pr-1">:</td>
+        <td>{{rfDeviceTimeDetail[0]?.device_id || 'N/A'}}</td>
+      </tr>
+      <tr>
+        <th>Device Name</th>
+        <td class="pr-1">:</td>
+        <td>{{rfDeviceTimeDetail[0]?.device_name || 'N/A'}}</td>
+      </tr>
+      <tr>
+        <th>Score</th>
+        <td class="pr-1">:</td>
+        <td>{{rfDeviceTimeDetail[0]?.score || 'N/A'}}</td>
+      </tr>
+      <tr>
+        <th>Lat</th>
+        <td class="pr-1">:</td>
+        <td>{{rfDeviceTimeDetail[0]?.lat || 'N/A'}}</td>
+      </tr>
+      <tr>
+        <th>Lng</th>
+        <td class="pr-1">:</td>
+        <td>{{rfDeviceTimeDetail[0]?.lng || 'N/A'}}</td>
+      </tr>
+      <tr>
+        <th>Monday</th>
+        <td class="pr-1">:</td>
+        <td>
+          <span *ngIf="weekwiseday?.monday.length">
+            <span class="hrs" *ngFor="let hr of weekwiseday?.monday; let isLast=last"
+              >{{hr}}{{isLast ? '' : ', '}}</span
+            >
+            Hours
+          </span>
+        </td>
+      </tr>
+      <tr>
+        <th>Tuesday</th>
+        <td class="pr-1">:</td>
+        <td>
+          <span *ngIf="weekwiseday?.tuesday.length">
+            <span class="hrs" *ngFor="let hr of weekwiseday?.tuesday; let isLast=last"
+              >{{hr}}{{isLast ? '' : ', '}}</span
+            >
+            Hours
+          </span>
+        </td>
+        <!-- <td>{{weekwiseday?.tuesday }}</td> -->
+      </tr>
+      <tr>
+        <th>Wednesday</th>
+        <td class="pr-1">:</td>
+        <td>
+          <span *ngIf="weekwiseday?.wednesday.length">
+            <span class="hrs" *ngFor="let hr of weekwiseday?.wednesday; let isLast=last"
+              >{{hr}}{{isLast ? '' : ', '}}</span
+            >
+             Hours
+          </span>
+        </td>
+        <!-- <td>{{weekwiseday?.wednesday }}</td> -->
+      </tr>
+      <tr>
+        <th>Thursday</th>
+        <td class="pr-1">:</td>
+        <td>
+          <span *ngIf="weekwiseday?.thursday.length">
+            <span class="hrs" *ngFor="let hr of weekwiseday?.thursday; let isLast=last"
+              >{{hr}}{{isLast ? '' : ', '}}</span
+            >
+            Hours
+          </span>
+        </td>
+        <!-- <td>{{weekwiseday?.thursday }}</td> -->
+      </tr>
+      <tr>
+        <th>Friday</th>
+        <td class="pr-1">:</td>
+        <td>
+          <span *ngIf="weekwiseday?.friday.length">
+            <span class="hrs" *ngFor="let hr of weekwiseday?.friday; let isLast=last"
+              >{{hr}}{{isLast ? '' : ', '}}</span
+            >
+            Hours
+          </span>
+        </td>
+        <!-- <td>{{weekwiseday?.friday }}</td> -->
+      </tr>
+      <tr>
+        <th>Saturday</th>
+        <td class="pr-1">:</td>
+        <td>
+          <span *ngIf="weekwiseday?.saturday.length">
+            <span class="hrs" *ngFor="let hr of weekwiseday?.saturday; let isLast=last"
+              >{{hr}}{{isLast ? '' : ', '}}</span
+            >
+            Hours
+          </span>
+        </td>
+        <!-- <td>{{weekwiseday?.saturday }}</td> -->
+      </tr>
+      <tr>
+        <th>Sunday</th>
+        <td class="pr-1">:</td>
+        <td>
+          <span *ngIf="weekwiseday?.sunday.length">
+            <span class="hrs" *ngFor="let hr of weekwiseday?.sunday; let isLast=last"
+              >{{hr}}{{isLast ? '' : ', '}}</span
+            >
+            Hours
+          </span>
+        </td>
+        <!-- <td>{{weekwiseday?.sunday }}</td> -->
+      </tr>
+    </table>
+  </div>
+</div>

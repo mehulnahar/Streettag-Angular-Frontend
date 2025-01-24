@@ -1,0 +1,71 @@
+<app-content-header     
+[title]="'Broadcast Category'" 
+    [icon]="'category'"
+    [hideBreadcrumb]="true"
+    [hasBgImage]="true" 
+    [class]="'pt-2'"></app-content-header>
+<mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="space-between center" >
+        <button mat-raised-button color="accent" (click)="openAddMessageDialog()" class="compose" fxShow="false" fxShow.gt-xs>Add Category</button>       
+  </mat-toolbar>
+ 
+<div fxLayout="column" class="p-2">
+    <div class="p-2"> 
+        <div fxLayout="column" class="mat-elevation-z8">           
+            <mat-form-field class="px-3 py-1">
+                <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Type to filter all columns">
+            </mat-form-field> 
+        </div>
+        <mat-table #table [dataSource]="dataSource" matSort class="mat-elevation-z8">       
+          <ng-container matColumnDef="serial_number">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>S.No.</mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.serial_number}} </mat-cell>
+        </ng-container>
+
+          <ng-container matColumnDef="category">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Category</mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.category}} </mat-cell>
+        </ng-container> 
+
+        <ng-container matColumnDef="image">
+            <mat-header-cell *matHeaderCellDef >Posted Images</mat-header-cell>
+            <mat-cell *matCellDef="let element"> <img src='{{element.image}}' 
+                style=" margin:10px; height:100px; width:110px; border-radius: 8px;"></mat-cell>
+        </ng-container>  
+
+        <ng-container matColumnDef="created_at">
+          <mat-header-cell *matHeaderCellDef >Date</mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.created_at | date}}</mat-cell>
+        </ng-container> 
+
+        <!-- <ng-container matColumnDef="action">
+            <mat-header-cell *matHeaderCellDef> Action </mat-header-cell>
+            <mat-cell *matCellDef="let element"> <a (click)="openEditDialog(element)"><mat-icon mat-raised-button
+                matTooltip="Edit" style="color: dimgrey;margin-right: 10px; cursor: pointer;">edit</mat-icon> </a> 
+                    
+            <a (click)="OpenConfirmBox(element)"><mat-icon matListIcon class="pointer" style="color: dimgrey;margin-right: 10px; cursor: pointer;">delete</mat-icon> </a> 
+            </mat-cell> 
+        </ng-container> -->
+
+        <!-- Action Column -->
+        <ng-container matColumnDef="edit">
+            <mat-header-cell *matHeaderCellDef > Edit </mat-header-cell>
+            <mat-cell *matCellDef="let element"> <button mat-icon-button matTooltip="Click to Edit" class="remove-border"
+                color="primary" (click)="openEditDialog(element)">
+                <mat-icon>edit</mat-icon>
+            </button> </mat-cell>
+       
+        </ng-container>
+        <ng-container matColumnDef="delete">
+            <mat-header-cell *matHeaderCellDef> Delete </mat-header-cell>
+            <mat-cell *matCellDef="let element"> <button mat-icon-button matTooltip="Click to Delete" class="remove-border"
+                (click)="OpenConfirmBox(element)" color="warn">
+                <mat-icon>delete</mat-icon>
+            </button> </mat-cell>
+        </ng-container>
+            
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+        <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]"></mat-paginator>        
+    </div>
+</div>

@@ -1,0 +1,151 @@
+    <mat-toolbar >
+        <span>Add Tour</span>
+        <span class="fill-remaining-space"></span>
+        <button
+        [mat-dialog-close]="true"
+          class="btn-dialog-close"
+          mat-stroked-button
+          tabindex="-1"
+        >
+          <mat-icon>clear</mat-icon>
+        </button>
+      </mat-toolbar>   
+
+ <mat-dialog-content> 
+  <mat-form-field [formGroup]="angForm" novalidate class="w-100 pt-2" hintLabel="Max 50 characters">
+    <mat-label>Tour name</mat-label>
+    <input
+      matInput
+      placeholder="Ex. Tower of London Tour"
+      name="tourName"
+      #inputTitle 
+      maxlength="50"
+      formControlName="tourName"
+    />
+    <mat-hint align="end">{{inputTitle.value?.length || 0}}/50</mat-hint>
+    <mat-error
+      *ngIf="angForm.controls.tourName.invalid && (angForm.controls.tourName.dirty || angForm.controls.tourName.touched) && angForm.controls.tourName.errors.required"
+    >
+      <span> &#9888; Tour name is <strong>required</strong>.</span>
+    </mat-error>
+  </mat-form-field>
+
+  <!-- Description-->
+  <mat-form-field [formGroup]="angForm" hintLabel="Max 150 characters" class="w-100 pt-2" >
+    <mat-label>Description</mat-label>
+    <input
+      matInput
+      placeholder="Ex. This is one of the most famous monuments..."
+      name="description"
+      formControlName="description"
+      #input maxlength="150"
+    />
+    <mat-hint align="end">{{input.value?.length || 0}}/150</mat-hint>
+    <!--error -->
+    <mat-error
+      *ngIf="angForm.controls.description.invalid && (angForm.controls.description.dirty || angForm.controls.description.touched) && angForm.controls.description.errors"
+    >
+      <ng-container *ngIf="angForm.controls.description.errors.required">
+        <span>&#9888; Description field is <strong>required</strong>.</span>
+      </ng-container>
+    </mat-error>
+  </mat-form-field>
+
+  
+  <div class="incDecButtons">
+    <button
+      style="margin-right: 40px"
+      (click)="addMoreLocation()"
+      [disabled]="!angForm.controls['location'].valid"
+      mat-mini-fab
+      color="primary"
+    >
+      <mat-icon>add</mat-icon>
+    </button>
+    <button (click)="RemoveLocation()" mat-mini-fab color="primary">
+      <mat-icon>remove</mat-icon>
+    </button>
+  </div>
+
+  <!-- Selected monument -->
+  <div
+    [formGroup]="angForm"
+    *ngFor="let location of location['controls'] ;let i=index"
+  >
+    <mat-form-field
+      formArrayName="location"
+      class="mx-2"
+      style="margin-top: 15px"
+    >
+      <mat-select
+        (ngModelChange)="remove_monument($event)"
+        placeholder="Select Monument"
+        name="location"
+        [formControlName]="i"
+      >
+        <mat-option
+          *ngFor="let monument of Monumentdata"
+          [disabled]="monument.disable || false"
+          [value]="monument.id"
+          >{{monument.name}}</mat-option
+        >
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+
+  <!-- Image -->
+  Tour Image
+  <input
+    name="tour_image"
+    type="file"
+    #takeInput
+    (change)="handleInputChange($event)"
+    accept="image/jpeg,image/png,image/jpg"
+    required
+  /><br /><br />
+
+  <mat-form-field>
+    <mat-label>Search Location</mat-label>
+    <input
+      matInput
+      placeholder="Ex. London"
+      [(ngModel)]="address"
+      name="address"
+      (keydown.enter)="setlocation()"
+    />
+  </mat-form-field>
+
+  <button
+    mat-raised-button
+    color="accent"
+    style="border-radius: 30px; margin-left: 30px"
+    (click)="setlocation()"
+  >
+    Set Location
+  </button>
+
+  <agm-map [latitude]="default_lat" [longitude]="default_lng" [zoom]="zoom" [fullscreenControl]="true" (mapClick)="markerDragEnd($event)">
+    <agm-marker
+      [latitude]="lat"
+      [longitude]="lng"
+      [markerDraggable]="true"
+      [animation]="'BOUNCE'"
+      (dragEnd)="markerDragEnd($event)"
+    ></agm-marker>
+    </agm-map>
+
+ 
+</mat-dialog-content> 
+
+<mat-dialog-actions align="end">
+  <button 
+    class="m-2"
+    mat-raised-button
+    color="primary"
+    [disabled]="!angForm.valid || clicked"
+    (click)="addevent()"
+  >
+    Add Tour
+  </button>
+</mat-dialog-actions>  

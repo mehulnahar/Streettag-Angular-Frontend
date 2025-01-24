@@ -1,0 +1,25 @@
+
+<div > 
+<h1 mat-dialog-title>הוסף תמונה מתחלפת</h1>
+<div mat-dialog-content  >
+
+<div >
+
+  
+    
+ 
+<p>
+    <img [src]="imageSrc" height="200" *ngIf="imageSrc">
+     <input type="file" id="image" name="file" id="file" (change)="handleInputChange($event)" required [(ngModel)]="image" name="image"  multiple="multiple" accept="image/gif,image/jpeg,image/png,image/jpg"> 
+
+     <mat-dialog-actions>
+    <button mat-raised-button color="primary" class="m-1" (click)="upload()">שמור</button>
+    <button mat-raised-button color="primary" class="m-1"  (click)="cancel()">ביטול</button>
+    </mat-dialog-actions>
+</p>
+
+</div>
+
+</div>
+
+</div>

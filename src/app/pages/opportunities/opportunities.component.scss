@@ -1,0 +1,38 @@
+.hide{
+    display: none;
+}
+
+mat-footer-row mat-footer-cell{
+    justify-content: center;
+    font-style: italic;
+}
+
+.mat-cell:nth-child(8),
+.mat-header-cell:nth-child(8) {
+  flex: 0 0 5rem;
+}
+
+.mat-cell:nth-child(9),
+.mat-header-cell:nth-child(9) {
+  flex: 0 0 4rem;
+}
+
+.mat-column-likes,
+.mat-column-dislikes {
+    max-width: 5rem;
+  }
+
+.mat-column-opportunity_data{
+    min-width:250px;
+}  
+
+.mat-column-opportunity_image,
+.mat-column-circuits{
+    min-width: 8rem;
+}
+
+.mat-column-opportunity_link{
+    text-align: center;
+    justify-content: center;
+}
+

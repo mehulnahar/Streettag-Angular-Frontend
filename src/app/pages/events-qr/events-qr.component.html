@@ -1,0 +1,91 @@
+<app-content-header [title]="'Event QR'" [icon]="'event'" [hideBreadcrumb]="false" [hasBgImage]="true" [class]="'pb-4'">
+</app-content-header>
+
+<br>
+<div class="container">
+  <form (ngSubmit)="onSubmit(searchForm.value)" #searchForm="ngForm">
+    <div class="row">
+      <div class="col-md-3">
+        <div class="form-group">
+          <!-- <select class="form-control" #test   (change)="test2(test)"> -->
+          <input type="text" class="form-control" placeholder="Enter lat" name="lat" #lattitude="ngModel"
+            [(ngModel)]="lat" pattern="^[0-9]+(\.[0-9]{1,})?$" required>
+
+        </div>
+        <div *ngIf="lattitude.invalid && (lattitude.dirty || lattitude.touched)" class="alert alert-danger">
+          <div *ngIf="lattitude.errors.required">
+            Required
+          </div>
+          <div *ngIf="lattitude.errors.pattern">
+            Must be valid number
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Enter lng" name="lng" #longitude="ngModel"
+            [(ngModel)]="lng" pattern="^[0-9]+(\.[0-9]{1,})?$" required>
+        </div>
+        <div *ngIf="longitude.invalid && (longitude.dirty || longitude.touched)" class="alert alert-danger">
+          <div *ngIf="longitude.errors.required">
+            Required
+          </div>
+          <div *ngIf="longitude.errors.pattern">
+            Must be valid number
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Enter Diameter" name="diameter" #dia="ngModel"
+            [(ngModel)]="diameter" pattern="^[0-9]+(\.[0-9]{1,})?$" required>
+        </div>
+        <div *ngIf="dia.invalid && (dia.dirty || dia.touched)" class="alert alert-danger">
+          <div *ngIf="dia.errors.required">
+            Required
+          </div>
+          <div *ngIf="dia.errors.pattern">
+            Must be valid number
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary btn-md" [disabled]="searchForm.invalid">Submit</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+
+
+
+
+<div class="container" align="center">
+
+  <div style="width:100%; height:50%" *ngIf = "showmap1">
+
+    <agm-map [latitude]="default_lat" [longitude]="default_lng" [zoom]="zoom" [mapTypeControl]="true" (mapClick)="markerDragEnd($event)">
+
+      <div *ngFor="let val of allTags">
+        <agm-marker [latitude]="val.lat" [longitude]="val.lng">
+        </agm-marker>
+      </div>
+    </agm-map>
+
+  </div>
+
+  <div style="width:100%; height:50%" *ngIf = "showmap2">
+
+    <agm-map [latitude]="selected_lat" [longitude]="selected_lng" [zoom]="zoom" [mapTypeControl]="true" (mapClick)="markerDragEnd($event)">
+
+      <div *ngFor="let val of allTags2">
+        <agm-marker [latitude]="val.lat" [longitude]="val.lng">
+        </agm-marker>
+      </div>
+    </agm-map>
+
+  </div>
+  
+</div>

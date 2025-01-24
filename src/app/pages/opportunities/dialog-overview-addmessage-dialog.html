@@ -1,0 +1,86 @@
+<div style="width:600px; height: 100%" perfectScrollbar>
+  <h3>Add Opportunity</h3>
+
+  <div style="width: 99.4%; float: left; margin-bottom: 10px">
+    <mat-form-field
+      [formGroup]="angForm"
+      novalidate
+      class="w-100"
+      style="margin-top: 15px"
+    >
+      <input
+        matInput
+        placeholder="Opportunity Text"
+        [(ngModel)]="opportunity_data"
+        name="opportunity_data"
+        formControlName="opportunity_data"
+      />
+    </mat-form-field>
+
+    <div
+      *ngIf="angForm.controls['opportunity_data'].invalid && (angForm.controls['opportunity_data'].dirty || angForm.controls['opportunity_data'].touched)"
+      class="alert alert-danger"
+    >
+      <div *ngIf="angForm.controls['opportunity_data'].errors.required">
+        Opportunity text required
+      </div>
+    </div>
+
+    <input
+      name="profile_pic"
+      type="file"
+      (change)="handleInputChange($event)"
+      accept="image/gif,image/jpeg,image/png,image/jpg"
+      required
+    />
+
+    <mat-form-field class="w-100" style="margin-top: 15px">
+      <input
+        matInput
+        placeholder="Opportunity Link"
+        [(ngModel)]="opportunity_link"
+        name="opportunity_link"
+      />
+    </mat-form-field>
+
+    <mat-form-field [formGroup]="angForm" novalidate class="mx-2">
+      <mat-select
+        placeholder="Circuit"
+        [(ngModel)]="circuit_name"
+        name="food"
+        multiple
+        formControlName="circuit_name"
+      >
+        <mat-option
+          *ngFor="let food of dataSourceCircuit "
+          [value]="food.circuit_name" 
+        >
+          {{food.circuit_name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div
+      *ngIf="angForm.controls['circuit_name'].invalid && (angForm.controls['circuit_name'].dirty || angForm.controls['circuit_name'].touched)"
+      class="alert alert-danger"
+    >
+      <div *ngIf="angForm.controls['circuit_name'].errors.required">
+        Circuit required
+      </div>
+    </div>
+
+    <div >
+      <button
+        style="
+          border-radius: 40px;
+        "
+        mat-raised-button
+        color="primary"
+        (click)="addevent()"
+        [disabled]="!angForm.valid"
+      >
+        Add Opportunity
+      </button>
+    </div>
+  </div>
+</div>

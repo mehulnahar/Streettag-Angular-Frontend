@@ -1,0 +1,51 @@
+<div style="width:800px; height:350px;" perfectScrollbar>
+    <div style="width:800px;height:250px;">
+
+        <h3 style="background:#283593; text-align: center; color: #fff; padding: 10px; margin-bottom: 60px;">Create Gift Card</h3>
+
+        <div style="width:99.4%;float: left;margin-bottom:10px;">
+
+            <!--[request id]-->
+            <!-- <mat-form-field [formGroup]="angForm" novalidate class="w-100" style="margin-top:5px;">
+                <input matInput placeholder="Request Id" [(ngModel)]="request_id" formControlName="request_id"
+                    name="request_id">
+
+            </mat-form-field> -->
+            <!-- <div *ngIf="angForm.controls['location_name'].invalid && (angForm.controls['location_name'].dirty || angForm.controls['location_name'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="angForm.controls['location_name'].errors.required">
+                    Location is required.
+                </div>
+            </div> -->
+             <!--[request id]-->
+
+             <!--[amount]-->
+             <mat-form-field [formGroup]="angForm" novalidate class="w-100" style="margin-top:5px;">
+                <input matInput placeholder="Amount" [(ngModel)]="amount" formControlName="amount"
+                    name="amount"  >
+
+            </mat-form-field>
+            <div *ngIf="angForm.controls['amount'].invalid && (angForm.controls['amount'].dirty || angForm.controls['amount'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="angForm.controls['amount'].errors.required">
+                    Amount is required.
+                </div>
+                <div *ngIf="angForm.controls['amount'].errors.pattern">
+                    Number is required
+                </div>
+            </div>
+             <!--[amount]-->
+
+            <br />
+
+
+            <div style="position: unset;margin:auto;">
+            <button style="align-content: center;border-radius: 40px; position: unset;margin:auto;
+        display:block; text-align: center;" mat-raised-button color="primary" (click)="addevent($event)" [disabled]="!angForm.valid">
+        Create Gift Card
+    </button>
+</div>
+
+
+        </div>
+        <br><br><br>

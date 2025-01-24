@@ -1,0 +1,154 @@
+<app-content-header
+  [title]="'RF Management'"
+  [icon]="'sd_card'"
+  [hideBreadcrumb]="true"
+  [hasBgImage]="true"
+  [class]="'pt-3'"
+></app-content-header>
+
+<mat-toolbar
+  color="primary"
+  fxLayout="row"
+  fxLayoutAlign="space-between center"
+>
+  <div fxLayout="row" fxLayoutAlign="center center">
+    <button
+      mat-raised-button
+      color="accent"
+      (click)="openAddMessageDialog()"
+      class="compose"
+      fxShow="false"
+      fxShow.gt-xs
+    >
+      Add Player
+    </button>
+  </div>
+</mat-toolbar>
+
+<div fxLayout="column" class="p-2">
+  <div class="p-2">
+    <div fxLayout="column" class="mat-elevation-z8 r-4">
+      <mat-form-field class="px-3 py-1">
+        <input
+          matInput
+          (keyup)="applyFilter($event.target.value)"
+          placeholder="Type to filter all columns"
+        />
+      </mat-form-field>
+    </div>
+    <mat-table
+      #table
+      [dataSource]="dataSource"
+      matSort
+      class="mat-elevation-z8 "
+    >
+      <ng-container matColumnDef="id">
+        <mat-header-cell *matHeaderCellDef>S No. </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.id }}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="rf_id">
+        <mat-header-cell *matHeaderCellDef mat-sort-header
+          >RF Id
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.rf_id }}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="player_id">
+        <mat-header-cell *matHeaderCellDef mat-sort-header
+          >Player Id
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.player_id }}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="fullname">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          Full Name
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.fullname }}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="email">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          Email
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.email }}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="date_of_birth">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          Date of Birth
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.date_of_birth }}
+        </mat-cell>
+      </ng-container>
+      <!-- <ng-container matColumnDef="gender">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          Gender
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.gender }}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="postal_code">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          Postal code
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.postal_code }}
+        </mat-cell>
+      </ng-container> -->
+
+      <!-- Action Column -->
+      <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef class="w-100 d-flex justify-content-center"> Actions </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <button
+            mat-icon-button
+            matTooltip="Click to Edit"
+            class="remove-border"
+            (click)="openDetailDialog(element)"
+          >
+            <mat-icon class="iconfont">remove_red_eye</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            matTooltip="Click to Edit"
+            class="remove-border"
+            color="primary"
+            (click)="openEditDialog(element)"
+          >
+            <mat-icon class="iconfont">edit</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            matTooltip="Click to Delete"
+            class="remove-border"
+            (click)="confirmDialog(element)"
+            color="warn"
+          >
+            <mat-icon class="iconfont">delete</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+      
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    </mat-table>
+    <mat-paginator
+      #paginator
+      [pageSize]="10"
+      [pageSizeOptions]="[15, 20, 30]"
+      showFirstLastButtons
+    ></mat-paginator>
+  </div>
+</div>
+
+

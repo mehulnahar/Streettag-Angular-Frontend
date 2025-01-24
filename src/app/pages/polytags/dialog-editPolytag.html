@@ -1,0 +1,85 @@
+<div style= "width:400px; height:300px;" perfectScrollbar>
+        <div  style= "width:400px;height:300px;">
+            
+            <h3>Update PolyTag </h3>
+        
+            <div style="width:99.4%;float: left;margin-bottom:10px;">
+        
+
+            <mat-form-field [formGroup]="angForm" novalidate class="w-100" style= "margin-top:15px;">
+                <input matInput placeholder="Title" [(ngModel)]="polytag_name" name="polytag_name" formControlName="polytag_name">
+
+            </mat-form-field>
+
+            <div *ngIf="angForm.controls['polytag_name'].invalid && (angForm.controls['polytag_name'].dirty || angForm.controls['polytag_name'].touched)" class="alert alert-danger">
+                <div *ngIf="angForm.controls['polytag_name'].errors.required">
+                PolyTag name is required and must be number
+              </div>
+            </div>
+
+
+            <mat-form-field [formGroup]="angForm" novalidate class="w-100" style= "margin-top:15px;">
+                <input matInput placeholder="Score" [(ngModel)]="score" name="score" formControlName="score">
+
+            </mat-form-field>            
+
+            <div *ngIf="angForm.controls['score'].invalid && (angForm.controls['score'].dirty || angForm.controls['score'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="angForm.controls['score'].errors.required || angForm.controls['score'].errors.pattern">
+                    Score is required and must be number
+                </div>
+            </div>            
+        
+            
+
+
+            <!-- <mat-form-field class="w-100" style= "margin-top:5px;">
+                <input matInput placeholder="Location Name" [(ngModel)]="location_name" name="location_name">
+
+            </mat-form-field> -->
+            
+            
+               
+
+             
+            <!-- 
+                <mat-form-field [formGroup]="angForm" novalidate class="w-100" style= "margin-top:15px;">
+                        <input matInput [matDatepicker]="picker1" placeholder="Start Date" [(ngModel)]="start_date" name="start_date" formControlName="start_date">
+                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                        <mat-datepicker #picker1></mat-datepicker>
+                </mat-form-field>
+
+                <div *ngIf="angForm.controls['start_date'].invalid && (angForm.controls['start_date'].dirty || angForm.controls['start_date'].touched)" class="alert alert-danger">
+                    <div *ngIf="angForm.controls['start_date'].errors.required">
+                    Please select start date
+                  </div>
+                </div>
+            -->    
+
+            <!--
+                <mat-form-field [formGroup]="angForm" novalidate class="w-100" style= "margin-top:15px;">
+                        <input matInput [matDatepicker]="picker2" placeholder="End Date" [(ngModel)]="end_date" name="end_date" formControlName="end_date">
+                        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                        <mat-datepicker #picker2 ></mat-datepicker>
+                </mat-form-field> 
+
+                <div *ngIf="angForm.controls['end_date'].invalid && (angForm.controls['end_date'].dirty || angForm.controls['end_date'].touched)" class="alert alert-danger">
+                    <div *ngIf="angForm.controls['end_date'].errors.required">
+                    Please select end date
+                  </div>
+                </div>
+            -->    
+        
+        <div style="position: absolute;margin:auto;"><button style="align-content: center;border-radius: 40px; position: absolute;margin:auto;
+        display:block;" mat-raised-button color="primary" (click)="updateevent()" >Update PolyTag</button></div>     
+        
+        
+        </div>
+        
+        
+        
+        
+        
+        
+        
+     

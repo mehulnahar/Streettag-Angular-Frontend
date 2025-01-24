@@ -1,0 +1,119 @@
+<app-content-header
+  [title]="'NFC Child Registration'"
+  [icon]="'nfc'"
+  [hideBreadcrumb]="true"
+  [hasBgImage]="true"
+  [class]="'pt-2'"
+></app-content-header>
+<mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="space-between center" class="px-2 mailbox-toolbar">
+  <div fxLayout="row" fxLayoutAlign="center center" >
+  <button mat-button mat-raised-button color="accent" (click)="openAddMessageDialog()" class="compose" fxShow="false" fxShow.gt-xs>
+    Register Child</button>       
+  </div>
+</mat-toolbar> 
+<div fxLayout="column" class="p-2">
+  <div class="p-2">
+    <div fxLayout="column" class="mat-elevation-z8">
+      <mat-form-field class="px-3 py-1">
+        <input
+          matInput
+          (keyup)="applyFilter($event.target.value)"
+          placeholder="Type to filter all columns"
+        />
+      </mat-form-field>
+    </div>
+ 
+    <mat-table
+      #table
+      [dataSource]="dataSource"
+      matSort
+      class="mat-elevation-z8"
+    >
+      <ng-container matColumnDef="serial_number">
+        <mat-header-cell *matHeaderCellDef mat-sort-header
+          >S No.
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element; index as i">
+          {{i | serialNumber: paginator.pageSize : paginator.pageIndex}}
+         </mat-cell>
+      </ng-container>
+     
+      <ng-container matColumnDef="player_id">
+        <mat-header-cell *matHeaderCellDef mat-sort-header
+          >Player Id
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.player_id  | decode}}
+        </mat-cell>
+      </ng-container>
+      
+      <ng-container matColumnDef="userName">
+        <mat-header-cell *matHeaderCellDef 
+          >UserName
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{element.fullname | decode}}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="dob">
+        <mat-header-cell *matHeaderCellDef 
+          >Date of Birth
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{element.date_of_birth || 'N/A'}}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="gender">
+        <mat-header-cell *matHeaderCellDef mat-sort-header
+          >Gender
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.gender || 'N/A'}}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="team_name">
+        <mat-header-cell *matHeaderCellDef 
+          >Team Name
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{element.team_name | decode}}
+        </mat-cell>
+      </ng-container>
+
+      
+      <ng-container matColumnDef="created_at">
+        <mat-header-cell *matHeaderCellDef mat-sort-header
+          >Creation Date
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.created_at | date}}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="loading">
+        <mat-footer-cell *matFooterCellDef colspan="6">
+          Loading data...
+        </mat-footer-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="no-data">
+        <mat-footer-cell *matFooterCellDef colspan="6">
+          No Data
+        </mat-footer-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+      <mat-footer-row *matFooterRowDef="['loading']" [ngClass]="{'hide': dataSource!=null}"></mat-footer-row>
+      <mat-footer-row *matFooterRowDef="['no-data']" [ngClass]="{'hide': !(dataSource!=null && dataSource.data.length==0)}"></mat-footer-row>
+    </mat-table>
+    
+    <mat-paginator
+      #paginator
+      [pageSize]="10"
+      [pageSizeOptions]="[20, 30, 40]"
+    ></mat-paginator>
+  </div>
+</div>

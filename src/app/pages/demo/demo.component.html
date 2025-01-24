@@ -1,0 +1,23 @@
+<app-content-header     
+[title]="'Fruit Details'" 
+    [icon]="'outlet'"
+    [hideBreadcrumb]="true"
+    [hasBgImage]="true" 
+    [class]="'pt-2'"></app-content-header>
+
+ <mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="space-between center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+    <button mat-raised-button color="accent" (click)="openAddMessageDialog()" class="compose" fxShow="false" fxShow.gt-xs>Add Fruit Details</button>       
+    </div>
+</mat-toolbar> 
+
+
+<div fxLayout="column" class="p-2">
+    <div class="p-2"> 
+      <h1>Peaches</h1>
+      <label>Don’t be fooled by a peach’s small size and delicate skin. Just one medium peach has about 11% of the vitamin C you need each day. This nutrient helps your body heal wounds and keeps your immune system going strong. It also helps get rid of “free radicals” -- chemicals that have been linked to cancer because they can damage your cells.</label>
+
+      <h2>Help Your Eyesight</h2>
+      <label>An antioxidant called beta-carotene gives peaches their pretty golden-orange color. When you eat it, your body turns it into vitamin A, which is key for healthy vision. It also helps keep other parts of your body, like your immune system, working like it should.</label>
+    </div>
+</div>

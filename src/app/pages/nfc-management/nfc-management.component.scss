@@ -1,0 +1,47 @@
+  
+
+  .mat-option:hover:not(.mat-option-disabled){
+    background: #414fac !important;
+    color: whitesmoke;
+    border-radius: 2px;
+  }
+
+  .mat-option.mat-active:not(.mat-option-disabled) {
+    background: #414fac !important;
+    color: whitesmoke;
+    border-radius: 2px;
+  }
+
+
+  .fill-remaining-space {
+    flex: 1 1 auto;
+  }
+  
+  .btn-dialog-close {
+    width: 45px;
+    min-width: 0px !important;
+    height: 40px;
+    padding: 0px !important;
+    &:hover{
+      background-color:#F44336;
+      color: #fff;
+    }
+  }
+
+  .hide{
+    display: none;
+}
+ 
+mat-footer-row mat-footer-cell{
+     justify-content: center;
+     font-style: italic;
+ }
+
+ table {
+    width: 100%;
+  }
+
+  .mat-icon-button .mat-button-wrapper {
+    display: flex;
+    justify-content: center;
+  }

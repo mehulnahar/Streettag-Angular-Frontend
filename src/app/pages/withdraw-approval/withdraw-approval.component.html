@@ -1,0 +1,66 @@
+<app-content-header [title]="'Withdrawal Request'" [icon]="'account_balance_wallet'" [hideBreadcrumb]="true" [hasBgImage]="true"
+    [class]="'pb-3 pt-3'"></app-content-header>
+<!-- 
+<mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="space-between center" class="px-2 mailbox-toolbar">
+
+
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <button mat-raised-button color="accent" (click)="openAddMessageDialog()" class="compose" fxShow="false"
+            fxShow.gt-xs>Add Location</button>
+    </div> 
+</mat-toolbar> -->
+
+
+<div fxLayout="column" class="p-2">
+    <div class="p-2">
+        <div fxLayout="column" class="mat-elevation-z8">
+            <mat-form-field class="px-3 py-1">
+                <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Type to filter all columns">
+            </mat-form-field>
+        </div>
+        <mat-table #table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+            <ng-container matColumnDef="serial_number" >
+                <mat-header-cell *matHeaderCellDef mat-sort-header >S No. </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.serial_number}} </mat-cell>
+            </ng-container> 
+             <ng-container matColumnDef="player_id">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Player Id </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.player_id}} </mat-cell>
+            </ng-container> 
+            <ng-container matColumnDef="email_id">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Email Id </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.email_id }} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="ac_name">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Account Name </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.ac_name }} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="ac_no">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Account Number </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.ac_no }} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="withdrawal_amount">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Requested Amount </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.withdrawal_amount }} </mat-cell>
+              </ng-container>
+            <ng-container matColumnDef="requested_date">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Requested Date </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.requested_date }} </mat-cell>
+              </ng-container>
+            
+            <ng-container matColumnDef="action">
+                <mat-header-cell *matHeaderCellDef> Action </mat-header-cell>
+                <mat-cell *matCellDef="let element"> <a>
+                      <button mat-raised-button style="background-color: green; color: white;" (click)="openDialog(element.id)">
+                        Approve
+                      </button>
+                    </a>
+                </mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+        <mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[10, 20, 30]"></mat-paginator>
+    </div>
+</div>

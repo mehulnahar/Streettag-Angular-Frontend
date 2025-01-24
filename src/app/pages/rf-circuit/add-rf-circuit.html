@@ -1,0 +1,85 @@
+<mat-toolbar class="mb-2">
+  <span>{{edit?'Edit':'Add'}} RF Circuit</span>
+  <span class="fill-remaining-space"></span>
+</mat-toolbar>
+
+<form [formGroup]="angForm" (submit)="formsubmit()">
+  <div fxLayout="row wrap" fxLayoutGap="8px grid">
+    <div fxFlex="100" fxFlex.lt-sm="100">
+      <mat-form-field class="w-100">
+        <mat-label>Circuit Name</mat-label>
+        <input
+          matInput
+          placeholder="Circuit Name"
+          formControlName="circuit_name"
+          required
+        />
+        <mat-error
+          *ngIf="fc['circuit_name'].invalid && (fc['circuit_name'].dirty || fc['circuit_name'].touched)"
+        >
+          {{getErrorMessage('circuit_name','Circuit Name')}}
+        </mat-error>
+      </mat-form-field>
+    </div>
+  </div>
+  <div fxLayout="row wrap" fxLayoutGap="8px grid">
+    <div fxFlex="50" fxFlex.lt-sm="100">
+      <mat-form-field class="w-100">
+        <mat-label>Start Date</mat-label>
+        <input
+          formControlName="start_date"
+          matInput
+          [matDatepicker]="picker1"
+          placeholder="DD/MM/YYYY"
+          autocomplete="off"
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="picker1"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #picker1 startView="month"></mat-datepicker>
+        <mat-error>Start Date is required</mat-error>
+      </mat-form-field>
+    </div>
+    <div fxFlex="50" fxFlex.lt-sm="100">
+      <mat-form-field class="w-100">
+        <mat-label>End Date</mat-label>
+        <input
+          formControlName="end_date"
+          matInput
+          [matDatepicker]="picker2"
+          placeholder="DD/MM/YYYY"
+          autocomplete="off"
+          [min]="angForm.controls['start_date'].value"
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="picker2"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #picker2 startView="month"></mat-datepicker>
+        <mat-error>End Date is required</mat-error>
+      </mat-form-field>
+    </div>
+  </div>
+  <mat-dialog-actions align="end">
+    <button *ngIf="!edit"
+      mat-raised-button
+      color="warn"
+      class="custom-btn m-2"
+      (click)="angForm.reset()"
+    >
+      Clear
+    </button>
+
+    <button
+      mat-raised-button
+      type="submit"
+      color="primary"
+      [disabled]="angForm.invalid"
+      class="custom-btn m-2"
+      appDebounceClick
+    >
+      Submit
+    </button>
+  </mat-dialog-actions>
+</form>

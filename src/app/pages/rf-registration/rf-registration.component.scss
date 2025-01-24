@@ -1,0 +1,55 @@
+.mat-cell:nth-child(4),
+.mat-header-cell:nth-child(4) {
+  flex: 0 0 5rem;
+}
+
+.mat-radio-button ~ .mat-radio-button {
+    margin-left: 16px;
+}
+
+.mat-column-id {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 6% !important;
+}
+
+.mat-column-gender {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 6% !important;
+}
+.mat-column-date_of_birth {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 9% !important;
+}
+.mat-column-postal_code {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 8% !important;
+}
+
+.mat-column-fullname {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 12% !important;
+}
+
+.mat-column-email {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 20% !important;
+}
+.mat-column-actions {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 12% !important;
+}
+
+.mat-radio-button ~ .mat-radio-button {
+    margin-left: 16px;
+  }
+
+  .iconfont{
+    font-size: 21px!important;
+  }

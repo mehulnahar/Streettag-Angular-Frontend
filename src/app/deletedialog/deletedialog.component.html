@@ -1,0 +1,9 @@
+<h1 mat-dialog-title>אתה רוצה למחוק אותו</h1>
+<div mat-dialog-content>
+ 
+ 
+<div mat-dialog-actions style="margin:auto;">
+  <button mat-button [mat-dialog-close]="data.name" tabindex="2" (click)="Submit(1)">כן</button>
+  <button mat-button (click)="Submit(0)" tabindex="-1">לא</button>
+</div>
+</div>

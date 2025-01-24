@@ -1,0 +1,37 @@
+<div style="width:700px; height:530px;" perfectScrollbar>
+    <div style="width:700px; height:530px;">
+        <h4>Add/Edit Geo-Location </h4>
+
+            <mat-form-field >
+                <input  matInput placeholder="Event Location" [(ngModel)]="location" name="location">
+            </mat-form-field>
+      
+            <button mat-raised-button color="accent" style="border-radius: 30px; margin-left: 30px;"
+                (click)="setlocation()">Set Location</button>
+      
+        
+        <div style="padding: 8px 0px;"> 
+            <agm-map [latitude]="default_lat" [longitude]="default_lng" [scrollwheel]="false" [zoom]="13" [mapTypeControl]="true" (mapClick)="markerDragEnd($event)">
+                     <agm-circle 
+                     [latitude]="this.angForm.get('lat').value" 
+                     [longitude]="this.angForm.get('lng').value" 
+                     [radius]="this.angForm.get('radius').value"
+                     [fillColor]="'red'"
+                     [circleDraggable]="false"
+                     [editable]="true"
+                    (radiusChange)="radiusChange($event)">
+                 </agm-circle>
+              </agm-map>
+       </div>
+       
+    <div class="alert alert-info" fxLayout="row" fxLayoutAlign="space-between center">
+            <div><strong> Latitude:- {{this.angForm.get('lat').value || 0}}</strong></div>
+            <div><strong> Longitude:- {{this.angForm.get('lng').value || 0}}</strong></div>
+            <div><strong> Radius in meters :- {{this.angForm.get('radius').value || 0}}</strong></div>
+      </div>
+
+       <button style="align-content:center ;border-radius:8px; padding: 0px 20px;" mat-raised-button color="primary" [disabled]="!angForm.valid || clicked" (click)="addlocation()">Set Geo-Location </button>
+
+        </div>
+        </div>
+        

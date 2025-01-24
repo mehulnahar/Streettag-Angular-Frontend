@@ -1,0 +1,224 @@
+<app-content-header
+  [icon]="'multiline_chart'"
+  [title]="'Graphical Analytics'"
+  [hideBreadcrumb]="true"
+  [hasBgImage]="true"
+  [class]="'pb-2 pt-2'"
+></app-content-header>
+<br />
+<div class="container" #download>
+  <form
+    (ngSubmit)="onSubmit(searchForm.value)"
+    [formGroup]="angForm"
+    #searchForm="ngForm"
+  >
+    <div class="row">
+      <div class="col-md-3">
+        <select
+          formControlName="location_id"
+          (ngModelChange)="get_location_id($event)"
+          class="form-control"
+          name="location_id"
+        >
+          <option value="" disabled>Select Location</option>
+          <option *ngFor="let option of dataSourceLocation$ | async" [value]="option.id">
+            {{ option.location_name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="col-md-3">
+        <select (ngModelChange)="DisableDownloadButton()"
+          formControlName="circuit_id"
+          class="form-control"
+          name="circuit_id"
+        >
+          <option value="" disabled>Select Circuit</option>
+          <option
+            *ngFor="let option1 of dataSourceCircuit$ | async"
+            [ngValue]="option1.id"
+          >
+            {{ option1.circuit_name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="col-md-3" *ngIf="showDurationOption">
+        <select
+          formControlName="duration"
+          class="form-control"
+          name="duration"
+          (ngModelChange)="getDatePicker($event)"
+        >
+          <option value="" disabled>Select Duration</option>
+          <option *ngFor="let option2 of dataSourceMonths" [ngValue]="option2">
+            {{ option2.text }}
+          </option>
+          <option [ngValue]="1">Choose Start/End Date</option>
+        </select>
+      </div>
+
+      <div class="col-md-3" class="date" *ngIf="showDatePicker">
+        <mat-form-field>
+          <input
+            matInput
+            [min]="minDate"
+            [max]="maxDate"
+            placeholder="Choose Start Date"
+            formControlName="start_date"
+            [matDatepicker]="dp1"
+          />
+          <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
+          <mat-datepicker #dp1></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div class="col-md-3" fxLayout="row" *ngIf="showDatePicker">
+        <mat-form-field class="date">
+          <input
+            matInput
+            [min]="minDate"
+            [max]="maxDate"
+            placeholder="Choose End Date"
+            formControlName="end_date"
+            [matDatepicker]="dp2"
+          />
+          <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
+          <mat-datepicker #dp2></mat-datepicker>
+        </mat-form-field>
+
+        <a
+          data-html2canvas-ignore="true"
+          mat-mini-fab
+          color="primary"
+          (click)="CloseStartEndDate()"
+        >
+          <mat-icon>clear</mat-icon>
+        </a>
+      </div>
+
+      <div class="col-md-3">
+        <select (ngModelChange)="DisableDownloadButton()"
+          formControlName="report_type"
+          class="form-control"
+          name="report_type"
+          
+        >
+          <option value="" disabled>Select Report Type</option>
+          <option value="1">Steps Pie-Chart</option>
+          <option value="2">Steps Line-Chart</option>
+          <option value="3">Scanned Tags</option>
+          <option value="4">New Registered Players</option>
+        </select>
+      </div>
+    </div>
+
+    <div
+      data-html2canvas-ignore="true"
+      fxLayout="row"
+      fxLayoutAlign="space-evenly center"
+    >
+      <button
+        style="padding: 5px 25px; margin-top: 10px; margin-bottom: 10px"
+        type="submit"
+        [disabled]="!angForm.valid"
+        class="btn btn-primary btn-md"
+      >
+        Generate
+      </button>
+
+      <button
+        type="button"
+        [disabled]="disableDownloadButton"
+        mat-raised-button
+        color="accent"
+        (click)="Download()"
+      >
+        <span style="color: whitesmoke" class="material-icons"> get_app</span>
+        Download
+      </button>
+    </div>
+  </form>
+
+  <!-- Conditional Show data -->
+  <div fxLayoutAlign="center center" *ngIf="spinner">
+    <mat-progress-spinner
+      diameter="100"
+      mode="indeterminate"
+    ></mat-progress-spinner>
+  </div>
+  <div *ngIf="showgraph == 1">
+    <div fxLayout="column" class="p-1">
+      <div class="p-1">
+        <mat-card>
+          <mat-card-header fxLayoutAlign="center center">
+            <mat-card-subtitle
+              ><h2>Activities by Category</h2></mat-card-subtitle
+            >
+          </mat-card-header>
+          <div class="w-100 h-300p">
+            <ngx-charts-pie-chart
+              [scheme]="colorScheme"
+              [results]="dataSource"
+              [legend]="showLegend"
+              [explodeSlices]="explodeSlices"
+              [labels]="showLabels"
+              [doughnut]="doughnut"
+              [gradient]="gradient"
+            >
+            </ngx-charts-pie-chart>
+          </div>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+  <!-- Line chart -->
+  <div *ngIf="showgraph == 2">
+    <mat-card>
+      <mat-card-header fxLayoutAlign="center center">
+        <mat-card-subtitle
+          ><h2>{{ LineBarLabel }}</h2></mat-card-subtitle
+        >
+      </mat-card-header>
+      <div class="w-100 h-400p">
+        <ngx-charts-line-chart
+          [scheme]="colorScheme"
+          [results]="LineBarData"
+          [gradient]="false"
+          [xAxis]="true"
+          [yAxis]="true"
+          [legend]="legend"
+          [legendTitle]="legendTitle"
+          [showXAxisLabel]="true"
+          [showYAxisLabel]="true"
+          [xAxisLabel]="xAxisLabel"
+          [yAxisLabel]="yAxisLabel"
+          [autoScale]="true"
+        ></ngx-charts-line-chart>
+      </div>
+    </mat-card>
+  </div>
+
+  <!-- Bar Chart -->
+  <div *ngIf="showgraph == 3">
+    <mat-card>
+      <mat-card-header fxLayoutAlign="center center">
+        <mat-card-subtitle
+          ><h2>{{ LineBarLabel }}</h2></mat-card-subtitle
+        >
+      </mat-card-header>
+      <div class="w-100 h-400p">
+        <ngx-charts-bar-vertical
+          [scheme]="colorScheme"
+          [xAxis]="true"
+          [yAxis]="true"
+          [showXAxisLabel]="true"
+          [showYAxisLabel]="true"
+          [xAxisLabel]="xAxisLabel"
+          [yAxisLabel]="yAxisLabel"
+          [results]="BarData"
+        >
+        </ngx-charts-bar-vertical>
+      </div>
+    </mat-card>
+  </div>
+</div>

@@ -1,0 +1,64 @@
+<div style="width: 600px; height: 100%" perfectScrollbar>
+  <div style="width: 600px; height: 100%">
+    <h4 style="margin: auto">Edit Category</h4>
+
+    <mat-progress-bar
+      *ngIf="showBar"
+      mode="determinate"
+      [value]="progrees"
+    ></mat-progress-bar>
+
+    <mat-form-field
+      [formGroup]="angForm"
+      novalidate
+      class="w-100"
+      style="margin-top: 15px"
+    >
+      <input
+        matInput
+        placeholder="Category"
+        name="category"
+        formControlName="category"
+      />
+    </mat-form-field>
+
+    <div
+      style="width: 550px"
+      *ngIf="angForm.controls['category'].invalid && (angForm.controls['category'].dirty || angForm.controls['category'].touched)"
+      class="alert alert-danger"
+    >
+      <div>
+        &#x26A0; Category is required.
+      </div>
+    </div>
+
+    <label class="custom-file-upload">
+      <input
+        type="file"
+        accept="image/*"
+        (change)="onFileChangeImage($event)"
+        #fileInput
+      />
+      <span class="material-icons">backup</span>
+      &nbsp;Select Images File
+    </label>
+    <img
+      style="margin-left: 100px; border-radius: 8px"
+      [src]="imgURL"
+      height="160"
+      width="160"
+      *ngIf="imgURL"
+    />
+    <br />
+
+    <button
+      style="align-content: center; border-radius: 8px"
+      mat-raised-button
+      color="primary"
+      [disabled]="!angForm.valid"
+      (click)="editCategory();"
+    >
+      Update
+    </button>
+  </div>
+</div>

@@ -1,0 +1,49 @@
+.mat-radio-button ~ .mat-radio-button {
+  margin-left: 16px;
+}
+
+.matLabel {
+  margin-right: 40px;
+  margin-bottom: 20px;
+  color: gray;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: medium;
+  font-weight: 400;
+  line-height: 1.125;
+  padding: 0;
+  position: relative;
+  padding-bottom: 1.25em;
+}
+
+.controls-container {
+  widows: 100px;
+  padding: 5px;
+}
+
+.controls-container > * {
+  width: 100px;
+}
+
+.fill-remaining-space {
+  flex: 1 1 auto;
+}
+
+.btn-dialog-close {
+  width: 45px;
+  min-width: 0px !important;
+  height: 40px;
+  padding: 0px !important;
+  &:hover{
+    background-color:#F44336;
+    color: #fff;
+  }
+}
+
+.custom-btn {
+  width: 90px;
+  margin-right: 10px;
+}
+
+.adjust-div {
+  margin-bottom: 30px;
+}

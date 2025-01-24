@@ -1,0 +1,162 @@
+<div style="width:800px; height:500px;" perfectScrollbar>
+   
+        <h3>Add School</h3>
+      
+        <div style="width:99.4%;float: left;margin-bottom:10px;">
+
+            <!-- <mat-form-field [formGroup]="angForm" novalidate class="w-100" style="margin-top:5px;">
+                <input matInput placeholder="Circuit ID" [(ngModel)] = "circuit_id" readonly>
+
+            </mat-form-field>             -->
+
+
+            <mat-form-field class="w-100" [formGroup]="angForm" novalidate>
+                <mat-select placeholder="School Leaderboard" [(ngModel)]="circuit_id" name="food"
+                    formControlName="circuit_id">
+                    <mat-option *ngFor="let food of dataSourceCircuits" [value]="food.id">
+                        {{food.circuit_name}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>           
+
+            <!--
+            <div *ngIf="angForm.controls['circuit_name'].invalid && (angForm.controls['circuit_name'].dirty || angForm.controls['circuit_name'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="angForm.controls['circuit_name'].errors.required">
+                    Leaderboard is required.
+                </div>
+            </div>
+-->
+
+            <mat-form-field [formGroup]="angForm" novalidate class="w-100" style="margin-top:5px;">
+                <input matInput placeholder="School Name" formControlName="team_name">
+
+            </mat-form-field>
+
+
+            <div *ngIf="angForm.controls['team_name'].invalid && (angForm.controls['team_name'].dirty || angForm.controls['team_name'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="angForm.controls['team_name'].errors.required">
+                    School Name is required.
+                </div>
+
+            </div>
+
+
+            <mat-form-field [formGroup]="angForm" novalidate class="w-100" style="margin-top:5px;">
+                <input matInput placeholder="Full Name" formControlName="full_name">
+
+            </mat-form-field>
+
+            <div *ngIf="angForm.controls['full_name'].invalid && (angForm.controls['full_name'].dirty || angForm.controls['full_name'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="angForm.controls['full_name'].errors.required">
+                    Full Name is required.
+                </div>
+            </div>
+
+            <mat-form-field [formGroup]="angForm" novalidate class="w-100" style="margin-top:5px;">
+                <input matInput placeholder="User Name" formControlName="user_name" (keyup)="onKey($event)">
+
+            </mat-form-field>
+
+            <div *ngIf="angForm.controls['user_name'].invalid && (angForm.controls['user_name'].dirty || angForm.controls['user_name'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="angForm.controls['user_name'].errors.required">
+                    User Name is required.
+                </div>
+            </div>
+
+            <mat-form-field [formGroup]="angForm" novalidate class="w-100" style="margin-top:5px;">
+                <input matInput placeholder="Email" formControlName="email" (keyup)="onKey1($event)">
+
+            </mat-form-field>
+
+            <div *ngIf="angForm.controls['email'].invalid && (angForm.controls['email'].dirty || angForm.controls['email'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="angForm.controls['email'].errors.required">
+                    Email is required.
+                </div>
+                <div *ngIf="angForm.controls['email'].errors.email">
+                    Invalid email
+                </div>
+            </div>
+
+            <!-- <mat-form-field [formGroup]="angForm" novalidate class="w-100" style="margin-top:5px;">
+                <input matInput type="password" placeholder="Password" formControlName="password" (keyup)="blank()">
+
+            </mat-form-field>
+
+            <div *ngIf="angForm.controls['password'].invalid && (angForm.controls['password'].dirty || angForm.controls['password'].touched)"
+                class="alert alert-danger">
+                <div *ngIf="angForm.controls['password'].errors.required">
+                    Password is required.
+                </div>
+            </div>
+
+            <mat-form-field [formGroup]="angForm" novalidate class="w-100" style="margin-top:5px;">
+                <input matInput type="password" placeholder="Confirm Password" formControlName="confirm_password">
+
+            </mat-form-field>
+
+            <div *ngIf="angForm.controls['confirm_password'].invalid && (angForm.controls['confirm_password'].dirty || angForm.controls['confirm_password'].touched)"
+                class="alert alert-danger">
+
+               //<div *ngIf="angForm.controls['confirm_password'].errors.required">
+                 //   Confirm Password is required
+                //</div> 
+                <div *ngIf="angForm.controls['confirm_password'].errors.isError">
+                    Password not matched
+                </div>
+ -->
+
+
+            <!-- <mat-form-field [formGroup]="angForm" novalidate class="w-100" style="margin-top:5px;">
+                <input matInput placeholder="Referral Code (optional)" formControlName="referral_code">
+
+            </mat-form-field> -->
+
+
+
+
+            <mat-form-field [formGroup]="angForm" novalidate class="w-100" style="margin-top:5px;">
+                <input matInput placeholder="Postal Code (optional)" formControlName="postal_code">
+
+            </mat-form-field>
+
+            <!-- <mat-form-field [formGroup]="angForm" novalidate class="w-100" style="margin-top:5px;">
+                <input matInput placeholder="Gender" formControlName="gender">
+
+            </mat-form-field> -->
+
+            <!-- <mat-form-field  novalidate class="w-100" style="margin-top:5px;"> -->
+
+            <mat-radio-group [(ngModel)]="gender" class="w-100" style="margin-top:5px;">
+                <mat-radio-button [value]="'male'">Male</mat-radio-button>&nbsp;
+                <mat-radio-button [value]="'female'">Female</mat-radio-button>&nbsp;
+                <mat-radio-button [value]="'other'">Other</mat-radio-button>
+            </mat-radio-group>
+
+            <!-- </mat-form-field> -->
+
+            <mat-form-field [formGroup]="angForm" novalidate class="w-100" style="margin-top:5px;">
+                <input matInput [matDatepicker]="picker" placeholder="Date of Birth  (optional)"
+                    formControlName="date_of_birth">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+        
+        <div>
+            <button style="align-content: center;border-radius: 10px; width:130px" mat-raised-button color="primary" (click)="addevent()" [disabled]="!angForm.valid || spinner ">Add
+                    School</button>
+    <div fxFlex="38" style="margin: auto 15px">
+            <div *ngIf="spinner">
+              <mat-progress-spinner
+                diameter="21"
+                mode="indeterminate"
+              ></mat-progress-spinner>
+            </div>
+           </div> 
+        </div>
+</div>
+        

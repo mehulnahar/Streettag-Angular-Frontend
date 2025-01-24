@@ -1,0 +1,140 @@
+    <mat-toolbar >
+        <span>Add Monument</span>
+        <span class="fill-remaining-space"></span>
+        <button
+        class="btn-dialog-close"
+        [mat-dialog-close]="true"
+          mat-stroked-button
+          tabindex="-1"
+        >
+          <mat-icon>clear</mat-icon>
+        </button>
+      </mat-toolbar>    
+    
+    <mat-dialog-content> 
+        <mat-form-field [formGroup]="angForm" class="w-100 pt-2 pb-0" hintLabel="Max 50 characters" >
+            <mat-label>Monument Name</mat-label>
+                <input matInput placeholder="Ex. Tower of London" name="name"
+                    formControlName="name" #inputTitle 
+                    maxlength="50">
+           <mat-hint align="end">{{inputTitle.value?.length || 0}}/50</mat-hint>
+            <!-- error -->
+            <mat-error style="color: red;" *ngIf="angForm.controls.name.invalid && (angForm.controls.name.dirty || angForm.controls.name.touched)">
+              <span> &#9888; Monument name is <strong>required</strong>.</span> 
+            </mat-error>
+            </mat-form-field>
+
+            
+            <div style="position:relative; right:1rem; top:50px; justify-content:flex-end; display: flex;">
+                <button style="margin-right: 40px;" (click)="addMoreDecription()" matTooltip="Add Description Field"  mat-mini-fab color="primary">
+                    <mat-icon>add</mat-icon>
+                </button>
+                <button (click)="RemoveDecription()" matTooltip="Remove Description Field" mat-mini-fab color="primary">
+                    <mat-icon>remove</mat-icon>
+                </button>
+            </div> 
+
+
+                    <div [formGroup]="angForm"   *ngFor="let description of description['controls']; let i=index">
+            <mat-form-field formArrayName="description" hintLabel="Max 400 characters" class="example-full-width pb-2">
+                <mat-label>Description</mat-label>
+      <textarea cdkTextareaAutosize matInput maxlength="400" #inputDesc placeholder="Ex. This is one of the most famous monuments..."
+      [formControlName]="i"></textarea>
+      <mat-hint align="end">{{inputDesc.value?.length || 0}}/400</mat-hint>
+
+            </mat-form-field>
+            </div>
+
+             
+
+            <mat-form-field [formGroup]="angForm" novalidate class="w-100" >
+            <mat-label>Link</mat-label>
+                <input type="url" matInput placeholder="Ex. https://www.google.com" name="link"
+                    formControlName="link">
+                    <mat-error  *ngIf="angForm.controls.link.invalid && (angForm.controls.link.dirty || angForm.controls.link.touched)">
+                        <span *ngIf="angForm.controls.link.errors.required">
+                            &#9888; URL is <strong>required</strong>.
+                        </span>
+                        <span *ngIf="angForm.controls.link.errors.pattern">
+                            &#9888; Please enter valid url.
+                        </span>
+                    </mat-error>
+            </mat-form-field>
+            <div  [formGroup]="angForm">
+            <mat-radio-group  formControlName="basketFlag">
+                <mat-label>Do you want to Activate Basket Option? &nbsp;&nbsp;</mat-label>
+                <mat-radio-button value="0">No</mat-radio-button>
+                <mat-radio-button value="1">Yes</mat-radio-button>
+            </mat-radio-group>
+        </div> 
+        <br/>
+
+            <div fxLayout="row" fxLayoutAlign="space-between center">
+            <div>
+                <label class="custom-file-upload">
+                        <input type="file" class="custom-file-upload" accept="video/mp4" (change)="onFileChange($event)" #fileInput multiple/><span class="material-icons">backup</span>
+                        &nbsp;Select Video File
+                </label>
+                <small>&nbsp; <strong>{{SelectedVideoCount}}</strong> File Selected</small>
+            </div>
+
+            <div>
+                <label class="custom-file-upload">
+                    <input type="file" accept="audio/mpeg" (change)="onFileChange1($event)" #fileInput multiple/>
+                        <span class="material-icons">backup</span>
+                        &nbsp;Select Audio File
+                </label>  
+                <small>&nbsp; <strong>{{SelectedAudioCount}}</strong> File Selected</small>
+            </div>
+   
+            <div>
+                <label class="custom-file-upload">
+                    <input type="file" accept="image/png , image/jpeg , image/jpg" (change)="onFileChangeImage($event)" #fileInput  multiple/>
+                        <span class="material-icons">backup</span>
+                        &nbsp;Select Images File
+                </label> 
+                <small>&nbsp; <strong>{{SelectedImgCount}}</strong> File Selected</small>
+            </div>
+    
+            </div>                 
+                
+            <mat-form-field >
+                <mat-label>Search Location</mat-label>
+                <input matInput placeholder="Ex. London" [(ngModel)]="location" name="location" (keydown.enter)="setlocation()">
+            </mat-form-field>
+      
+            <button mat-raised-button color="accent" style="border-radius: 30px; margin-left: 30px;"
+            (click)="setlocation()">Set Location</button>
+
+           
+                   
+      
+      <agm-map [latitude]="default_lat" [longitude]="default_lng" [zoom]="zoom" [mapTypeControl]="true" (mapClick)="markerDragEnd($event)" [fullscreenControl]="true">
+                    <ng-container *ngIf="lat">
+                        <agm-marker [latitude]="lat" [longitude]="lng" [markerDraggable]="true"
+                        (dragEnd)="markerDragEnd($event)" [animation]="'BOUNCE'"></agm-marker>
+                        <agm-circle [latitude]="lat | float" [longitude]="lng | float" [radius]="42" [fillColor]="'green'">
+                        </agm-circle>  
+                    </ng-container>
+
+                    <!-- nearByTags -->                    
+                    <agm-marker *ngFor="let val of nearByLatLng | async" [latitude]="val.lat | float" 
+                    [longitude]="val.lng | float"                        
+                    (mouseOver)="infoWindow.open();" 
+                    (mouseOut)="infoWindow.close();" 
+                    (markerClick) = "confirmDialog(val.qid)"                                               
+                >
+                    <agm-info-window #infoWindow> 
+                        <strong> {{ val.street_name }}</strong>
+                    </agm-info-window> 
+                </agm-marker> 
+                              
+                       </agm-map>
+            </mat-dialog-content>
+            
+<mat-dialog-actions align="end">
+           
+            <mat-progress-bar *ngIf="showBar" mode="determinate" [value]="progrees"></mat-progress-bar>
+                       
+            <button class="m-2" mat-raised-button color="primary" [disabled]="!angForm.valid " (click)="addevent()">Add Monument</button>
+</mat-dialog-actions>      

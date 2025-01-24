@@ -1,0 +1,46 @@
+<mat-toolbar class="mb-2 d-flex justify-content-center">
+  <span class="w-100 d-flex justify-content-center">Player Details</span>
+  <span class="fill-remaining-space"></span>
+</mat-toolbar>
+
+  <div fxLayout="row wrap" >
+    <div fxFlex="100" fxFlex.lt-sm="100">
+      <table class="w-100">
+        <tr>
+            <th>Leader Board</th>
+            <td class="pr-1" > : </td>
+            <td>{{data.circuit_id[0]?.circuit_name}}</td>
+        </tr>
+        <tr>
+            <th>RF Id</th>
+            <td class="pr-1" > : </td>
+            <td>{{data?.rf_id}}</td>
+        </tr>
+        <tr>
+            <th>Player Id</th>
+            <td class="pr-1" > : </td>
+            <td>{{data?.player_id}}</td>
+        </tr>
+        <tr>
+            <th>Full Name</th>
+            <td class="pr-1" > : </td>
+            <td>{{data?.fullname}}</td>
+        </tr>
+        <tr>
+            <th>Date of Birth</th>
+            <td class="pr-1" > : </td>
+            <td>{{data?.date_of_birth}}</td>
+        </tr>
+        <tr>
+            <th>Postal Code</th>
+            <td class="pr-1" > : </td>
+            <td>{{data?.postal_code}}</td>
+        </tr>
+        <tr>
+            <th>Gender</th>
+            <td class="pr-1" > : </td>
+            <td>{{data?.gender}}</td>
+        </tr>
+      </table>
+    </div>
+  </div>

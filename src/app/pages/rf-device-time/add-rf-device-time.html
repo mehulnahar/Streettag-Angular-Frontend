@@ -1,0 +1,359 @@
+<mat-toolbar class="mb-2">
+  <span>{{edit?'Edit':'Add'}} RF Box Time</span>
+  <span class="fill-remaining-space"></span>
+</mat-toolbar>
+
+<mat-dialog-content>
+  <div fxLayout="row wrap" fxLayoutGap="8px grid">
+    <div fxFlex="100" fxFlex.lt-sm="100">
+      <mat-form-field id="select_device" class="w-100" style="flex-flow: column wrap;">
+        <mat-label>Select Device</mat-label>
+        <mat-select [(ngModel)]="selectdevice">
+          <mat-option value="all"> All </mat-option>
+          <mat-option *ngFor="let device of devices" [value]="device.id">
+            {{device.device_name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  <div fxLayout="row wrap" fxLayoutGap="8px grid">
+    <div fxFlex="25" fxFlex.lt-sm="25">
+      <h6 style="margin: 12px">Monday Timings:</h6>
+    </div>
+    <div fxFlex="75" fxFlex.lt-sm="75">
+      <mat-form-field class="w-100">
+        <mat-label>Select Hours:</mat-label>
+        <mat-select [formControl]="mondayselect" multiple>
+          <mat-select-trigger>
+            <mat-chip-list>
+              <mat-chip
+                *ngFor="let category of mondayselect.value"
+                [removable]="true"
+                (removed)="onCatRemoved(category,'mondayselect')"
+                
+                selected
+              >
+                {{ category }}
+                <mat-icon matChipRemove>cancel</mat-icon>
+              </mat-chip>
+            </mat-chip-list>
+          </mat-select-trigger>
+
+          <mat-option *ngFor="let category of categories" [value]="category">
+            {{ category }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  <div fxLayout="row wrap" fxLayoutGap="8px grid">
+    <div fxFlex="25" fxFlex.lt-sm="25">
+      <h6 style="margin: 12px">Tuesday Timings:</h6>
+    </div>
+    <div fxFlex="75" fxFlex.lt-sm="75">
+      <mat-form-field class="w-100">
+        <mat-label>Select Hours:</mat-label>
+        <mat-select [formControl]="tuesdayselect" multiple>
+          <mat-select-trigger>
+            <mat-chip-list>
+              <mat-chip
+                *ngFor="let category of tuesdayselect.value"
+                [removable]="true"
+                (removed)="onCatRemoved(category,'tuesdayselect')"
+                selected
+              >
+                {{ category }}
+                <mat-icon matChipRemove>cancel</mat-icon>
+              </mat-chip>
+            </mat-chip-list>
+          </mat-select-trigger>
+
+          <mat-option *ngFor="let category of categories" [value]="category">
+            {{ category }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  <div fxLayout="row wrap" fxLayoutGap="8px grid">
+    <div fxFlex="25" fxFlex.lt-sm="25">
+      <h6 style="margin: 12px">Wednesday Timings:</h6>
+    </div>
+    <div fxFlex="75" fxFlex.lt-sm="75">
+      <mat-form-field class="w-100">
+        <mat-label>Select Hours:</mat-label>
+        <mat-select [formControl]="wednesdayselect" multiple>
+          <mat-select-trigger>
+            <mat-chip-list>
+              <mat-chip
+                *ngFor="let category of wednesdayselect.value"
+                [removable]="true"
+                (removed)="onCatRemoved(category,'wednesdayselect')"
+                selected
+              >
+                {{ category }}
+                <mat-icon matChipRemove>cancel</mat-icon>
+              </mat-chip>
+            </mat-chip-list>
+          </mat-select-trigger>
+
+          <mat-option *ngFor="let category of categories" [value]="category">
+            {{ category }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  <div fxLayout="row wrap" fxLayoutGap="8px grid">
+    <div fxFlex="25" fxFlex.lt-sm="25">
+      <h6 style="margin: 12px">Thursday Timings:</h6>
+    </div>
+    <div fxFlex="75" fxFlex.lt-sm="75">
+      <mat-form-field class="w-100">
+        <mat-label>Select Hours:</mat-label>
+        <mat-select [formControl]="thursdayselect" multiple>
+          <mat-select-trigger>
+            <mat-chip-list>
+              <mat-chip
+                *ngFor="let category of thursdayselect.value"
+                [removable]="true"
+                (removed)="onCatRemoved(category,'thursdayselect')"
+                selected
+              >
+                {{ category }}
+                <mat-icon matChipRemove>cancel</mat-icon>
+              </mat-chip>
+            </mat-chip-list>
+          </mat-select-trigger>
+
+          <mat-option *ngFor="let category of categories" [value]="category">
+            {{ category }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  <div fxLayout="row wrap" fxLayoutGap="8px grid">
+    <div fxFlex="25" fxFlex.lt-sm="25">
+      <h6 style="margin: 12px">Friday Timings:</h6>
+    </div>
+    <div fxFlex="75" fxFlex.lt-sm="75">
+      <mat-form-field class="w-100">
+        <mat-label>Select Hours:</mat-label>
+        <mat-select [formControl]="fridayselect" multiple>
+          <mat-select-trigger>
+            <mat-chip-list>
+              <mat-chip
+                *ngFor="let category of fridayselect.value"
+                [removable]="true"
+                (removed)="onCatRemoved(category,'fridayselect')"
+                
+                selected
+              >
+                {{ category }}
+                <mat-icon matChipRemove>cancel</mat-icon>
+              </mat-chip>
+            </mat-chip-list>
+          </mat-select-trigger>
+
+          <mat-option *ngFor="let category of categories" [value]="category">
+            {{ category }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  <div fxLayout="row wrap" fxLayoutGap="8px grid">
+    <div fxFlex="25" fxFlex.lt-sm="25">
+      <h6 style="margin: 12px">Saturday Timings:</h6>
+    </div>
+    <div fxFlex="75" fxFlex.lt-sm="75">
+      <mat-form-field class="w-100">
+        <mat-label>Select Hours:</mat-label>
+        <mat-select [formControl]="saturdayselect" multiple>
+          <mat-select-trigger>
+            <mat-chip-list>
+              <mat-chip
+                *ngFor="let category of saturdayselect.value"
+                [removable]="true"
+                (removed)="onCatRemoved(category,'saturdayselect')"
+                
+                selected
+              >
+                {{ category }}
+                <mat-icon matChipRemove>cancel</mat-icon>
+              </mat-chip>
+            </mat-chip-list>
+          </mat-select-trigger>
+
+          <mat-option *ngFor="let category of categories" [value]="category">
+            {{ category }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  <div fxLayout="row wrap" fxLayoutGap="8px grid">
+    <div fxFlex="25" fxFlex.lt-sm="25">
+      <h6 style="margin: 12px">Sunday Timings:</h6>
+    </div>
+    <div fxFlex="75" fxFlex.lt-sm="75">
+      <mat-form-field class="w-100">
+        <mat-label>Select Hours:</mat-label>
+        <mat-select [formControl]="sundayselect" multiple>
+          <mat-select-trigger>
+            <mat-chip-list>
+              <mat-chip
+                *ngFor="let category of sundayselect.value"
+                [removable]="true"
+                (removed)="onCatRemoved(category,'sundayselect')"
+                
+                selected
+              >
+                {{ category }}
+                <mat-icon matChipRemove>cancel</mat-icon>
+              </mat-chip>
+            </mat-chip-list>
+          </mat-select-trigger>
+
+          <mat-option *ngFor="let category of categories" [value]="category">
+            {{ category }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+</mat-dialog-content>
+<!-- <mat-dialog-content>
+  <div fxLayout="row wrap" fxLayoutGap="8px grid">
+    <div fxFlex="100" fxFlex.lt-sm="100">
+      <mat-form-field class="w-100">
+        <mat-label>Select Device</mat-label>
+        <mat-select [(ngModel)]="selectdevice">
+          <mat-option value="all"> All </mat-option>
+          <mat-option *ngFor="let device of devices" [value]="device.id">
+            {{device.device_name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  <div fxLayout="row wrap" fxLayoutGap="8px grid">
+    <div fxFlex="25" fxFlex.lt-sm="25">
+      <h6 style="margin: 12px">Monday Timings:</h6>
+    </div>
+    <div fxFlex="75" fxFlex.lt-sm="75">
+      <mat-form-field class="w-100">
+        <mat-label>Select Hours</mat-label
+        ><mat-select multiple placeholder="Monday" [(ngModel)]="mondayselect">
+          <mat-option *ngFor="let el of toppingList" [value]="el">
+            {{el}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div fxFlex="25" fxFlex.lt-sm="25">
+      <h6 style="margin: 12px">Tuesday Timings:</h6>
+    </div>
+    <div fxFlex="75" fxFlex.lt-sm="75">
+      <mat-form-field class="w-100">
+        <mat-label>Select Hours</mat-label
+        ><mat-select multiple placeholder="Tuesday" [(ngModel)]="tuesdayselect">
+          <mat-option *ngFor="let el of toppingList" [value]="el">
+            {{el}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div fxFlex="25" fxFlex.lt-sm="25">
+      <h6 style="margin: 12px">Wednesday Timings:</h6>
+    </div>
+    <div fxFlex="75" fxFlex.lt-sm="75">
+      <mat-form-field class="w-100">
+        <mat-label>Select Hours</mat-label
+        ><mat-select
+          multiple
+          placeholder="Wednesday"
+          [(ngModel)]="wednesdayselect"
+        >
+          <mat-option *ngFor="let el of toppingList" [value]="el">
+            {{el}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div fxFlex="25" fxFlex.lt-sm="25">
+      <h6 style="margin: 12px">Thursday Timings:</h6>
+    </div>
+    <div fxFlex="75" fxFlex.lt-sm="75">
+      <mat-form-field class="w-100">
+        <mat-label>Select Hours</mat-label
+        ><mat-select
+          multiple
+          placeholder="Thursday"
+          [(ngModel)]="thursdayselect"
+        >
+          <mat-option *ngFor="let el of toppingList" [value]="el">
+            {{el}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div fxFlex="25" fxFlex.lt-sm="25">
+      <h6 style="margin: 12px">Friday Timings:</h6>
+    </div>
+    <div fxFlex="75" fxFlex.lt-sm="75">
+      <mat-form-field class="w-100">
+        <mat-label>Select Hours</mat-label
+        ><mat-select multiple placeholder="Friday" [(ngModel)]="fridayselect">
+          <mat-option *ngFor="let el of toppingList" [value]="el">
+            {{el}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div fxFlex="25" fxFlex.lt-sm="25">
+      <h6 style="margin: 12px">Saturday Timings:</h6>
+    </div>
+    <div fxFlex="75" fxFlex.lt-sm="75">
+      <mat-form-field class="w-100">
+        <mat-label>Select Hours</mat-label
+        ><mat-select
+          multiple
+          placeholder="Saturday"
+          [(ngModel)]="saturdayselect"
+        >
+          <mat-option *ngFor="let el of toppingList" [value]="el">
+            {{el}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div fxFlex="25" fxFlex.lt-sm="25">
+      <h6 style="margin: 12px">Sunday Timings:</h6>
+    </div>
+    <div fxFlex="75" fxFlex.lt-sm="75">
+      <mat-form-field class="w-100">
+        <mat-label>Select Hours</mat-label
+        ><mat-select multiple placeholder="Sunday" [(ngModel)]="sundayselect">
+          <mat-option *ngFor="let el of toppingList" [value]="el">
+            {{el}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+</mat-dialog-content> -->
+<mat-dialog-actions align="end">
+  <button
+    mat-raised-button
+    type="submit"
+    color="primary"
+    class="custom-btn m-2"
+    appDebounceClick
+    (click)="formdatasubmit()"
+  >
+    Submit
+  </button>
+</mat-dialog-actions>

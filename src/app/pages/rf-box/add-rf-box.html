@@ -1,0 +1,161 @@
+<mat-toolbar class="mb-2">
+  <span>{{edit?'Edit':'Add'}} RF Box</span>
+  <span class="fill-remaining-space"></span>
+</mat-toolbar>
+<mat-dialog-content>
+  <form [formGroup]="angForm" (submit)="formsubmit()">
+    <div fxLayout="row wrap" fxLayoutGap="8px grid">
+      <div fxFlex="50" fxFlex.lt-sm="100">
+        <mat-form-field class="w-100">
+          <mat-label>Box Id</mat-label>
+          <input
+            matInput
+            placeholder="Box Id"
+            formControlName="device_id"
+            required [readonly]="edit"
+          />
+          <mat-hint *ngIf="edit">This field is locked</mat-hint>
+          <mat-error
+            *ngIf="fc['device_id'].invalid && (fc['device_id'].dirty || fc['device_id'].touched)"
+          >
+            {{getErrorMessage('device_id','Device Id')}}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div fxFlex="50" fxFlex.lt-sm="100">
+        <mat-form-field class="w-100">
+          <mat-label>Box Tag Name</mat-label>
+          <input
+            matInput
+            placeholder="Box Tag Name"
+            formControlName="device_name"
+            required [readonly]="edit"
+          />
+          <mat-error
+            *ngIf="fc['device_name'].invalid && (fc['device_name'].dirty || fc['device_name'].touched)"
+          >
+            {{getErrorMessage('device_name','Device Name')}}
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+    <div fxLayout="row wrap" fxLayoutGap="8px grid">
+      <div fxFlex="50" fxFlex.lt-sm="100">
+        <mat-form-field class="w-100">
+          <mat-label>Score</mat-label>
+          <input
+            matInput
+            placeholder="Score"
+            formControlName="score"
+            required
+            type="number"
+            min="0"
+            oninput="validity.valid||(value='');"
+          />
+          <mat-error
+            *ngIf="fc['score'].invalid && (fc['score'].dirty || fc['score'].touched)"
+          >
+            {{getErrorMessage('score','Score')}}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div fxFlex="50" fxFlex.lt-sm="100">
+        <mat-form-field class="w-100">
+          <mat-label>Location search</mat-label>
+          <input
+            matInput
+            placeholder="Event Location"
+            name="location"
+            [(ngModel)]="location"
+            [ngModelOptions]="{standalone: true}"
+          />
+          <button
+            mat-button
+            matSuffix
+            type="button"
+            aria-label="search"
+            (click)="setlocation()"
+          >
+            <mat-icon>search</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+    </div>
+    <div fxLayout="row wrap" fxLayoutGap="8px grid">
+      <div fxFlex="100" fxFlex.lt-sm="100">
+        <agm-map
+          [latitude]="lat"
+          [longitude]="lng"
+          [scrollwheel]="false"
+          [zoom]="10"
+          [mapTypeControl]="true"
+          (mapClick)="markerDragEnd($event)"
+        >
+          <agm-marker
+            [latitude]="lat"
+            [longitude]="lng"
+            [markerDraggable]="true"
+            (dragEnd)="markerDragEnd($event)"
+          ></agm-marker>
+        </agm-map>
+      </div>
+    </div>
+    <div fxLayout="row wrap" fxLayoutGap="8px grid">
+      <div fxFlex="50" fxFlex.lt-sm="100">
+        <mat-form-field class="w-100">
+          <mat-label>Latitude</mat-label>
+          <input
+            matInput
+            placeholder="Latitude"
+            formControlName="lat"
+            [(ngModel)]="lat"
+            required
+          />
+          <mat-error
+            *ngIf="fc['lat'].invalid && (fc['lat'].dirty || fc['lat'].touched)"
+          >
+            {{getErrorMessage('lat','Latitude')}}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div fxFlex="50" fxFlex.lt-sm="100">
+        <mat-form-field class="w-100">
+          <mat-label>Longitude</mat-label>
+          <input
+            matInput
+            placeholder="Longitude"
+            formControlName="lng"
+            [(ngModel)]="lng"
+            required
+          />
+          <mat-error
+            *ngIf="fc['lng'].invalid && (fc['lng'].dirty || fc['lng'].touched)"
+          >
+            {{getErrorMessage('lng','Longitude')}}
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+    <mat-dialog-actions align="end">
+      <button *ngIf="!edit"
+        mat-raised-button
+        color="warn"
+        class="custom-btn m-2"
+        (click)="angForm.reset()"
+      >
+        Clear
+      </button>
+
+      <button
+        mat-raised-button
+        type="submit"
+        color="primary"
+        [disabled]="angForm.invalid"
+        class="custom-btn m-2"
+        appDebounceClick
+      >
+        Submit
+      </button>
+    </mat-dialog-actions>
+  </form>
+</mat-dialog-content>

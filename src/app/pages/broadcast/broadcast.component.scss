@@ -1,0 +1,48 @@
+.mat-column-serial_number {
+    max-width: 80px;
+    justify-content: center;
+  }
+
+  .mat-column-geoLocation,
+  .mat-column-action {
+    max-width: 150px;
+    justify-content: center;
+  }
+
+  .mat-column-geoLocation,
+  .mat-column-action :hover {
+    cursor: pointer;
+  }
+
+
+agm-map {
+  height: 350px;
+}
+
+.mat-header-cell{
+  flex-direction: column;
+  justify-content: center;
+}
+ 
+.mat-cell{
+  padding: 0px 10px;
+}
+::ng-deep snack-bar-container.warn-snackbar {
+    background: rgb(214, 141, 4) !important;
+  }
+
+::ng-deep .red-snackbar .mat-simple-snackbar {
+    color: rgb(255, 255, 255);
+  }
+
+button:disabled:hover,
+button[disabled]:hover{
+    cursor:no-drop;
+}
+
+.btn-dialog_close{
+  width: 45px;
+  min-width: 0px !important;
+  height: 40px;
+  padding: 0px !important; 
+}

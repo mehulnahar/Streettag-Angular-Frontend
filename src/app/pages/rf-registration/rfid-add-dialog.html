@@ -1,0 +1,111 @@
+<mat-toolbar class="mb-2">
+    <span>{{edit?'Edit':'Add'}} Player</span>
+    <span class="fill-remaining-space"></span>
+</mat-toolbar>
+
+<form [formGroup]="angForm" (submit)="formsubmit()">
+    <div fxLayout="row wrap" fxLayoutGap="8px grid">
+        <div fxFlex="50" fxFlex.lt-sm="100">
+            <mat-form-field class="w-100">
+                <mat-label>Select Circuit</mat-label>
+                <mat-select formControlName="circuit_id" [disabled]="edit">
+                    <mat-option *ngFor="let circuit of circuits" [value]="circuit.id">
+                        {{circuit.circuit_name}}
+                    </mat-option>
+                </mat-select>
+                <mat-hint *ngIf="edit">This field is locked</mat-hint>
+                <mat-error *ngIf="fc['circuit_id'].invalid && (fc['circuit_id'].dirty || fc['circuit_id'].touched)">
+                    {{getErrorMessage('circuit_id','Circuit ID')}}
+                </mat-error>
+            </mat-form-field>
+
+        </div>
+        <div fxFlex="50" fxFlex.lt-sm="100">
+            <mat-form-field class="w-100">
+                <mat-label>RF ID</mat-label>
+                <input matInput placeholder="RF ID" formControlName="rf_id" #rf_id
+                    onkeypress="return event.charCode != 32" required [readonly]="edit"/>
+                    <mat-hint *ngIf="edit">This field is locked</mat-hint>
+                    <mat-error *ngIf="fc['rf_id'].invalid && (fc['rf_id'].dirty || fc['rf_id'].touched)">
+                        {{getErrorMessage('rf_id','RF ID')}}
+                    </mat-error>
+            </mat-form-field>
+        </div>
+        
+    </div>
+    <div fxLayout="row wrap" fxLayoutGap="8px grid">
+        <div fxFlex="50" fxFlex.lt-sm="100">
+            <mat-form-field class="w-100">
+                <mat-label>Player ID</mat-label>
+                <input matInput placeholder="Player ID" formControlName="player_id" #player_id
+                    (input)="player_id.value = player_id.value.toLowerCase()" onkeypress="return event.charCode != 32"  [required]="!edit" [readonly]="edit" />
+                <mat-hint *ngIf="edit">This field is locked</mat-hint>
+                <mat-error *ngIf="fc['player_id'].invalid && (fc['player_id'].dirty || fc['player_id'].touched)">
+                    {{getErrorMessage('player_id','Player ID')}}
+            </mat-error>
+            </mat-form-field>
+        </div>
+        <div fxFlex="50" fxFlex.lt-sm="100">
+            <mat-form-field class="w-100">
+                <mat-label>Full Name</mat-label>
+                <input matInput placeholder="Full Name" formControlName="fullname" required />
+                <mat-error *ngIf="fc['fullname'].invalid && (fc['fullname'].dirty || fc['fullname'].touched)">
+                    {{getErrorMessage('fullname','Full Name')}}
+                </mat-error>
+            </mat-form-field>
+        </div>
+    </div>
+    <div fxLayout="row wrap" fxLayoutGap="8px grid">
+        <div fxFlex="50" fxFlex.lt-sm="100">
+            <mat-form-field validate class="w-100">
+                <mat-label>Email</mat-label>
+                <input matInput placeholder="Email" formControlName="email" #email
+                    (input)="email.value = email.value.toLowerCase()"  />
+                    <mat-error *ngIf="fc['email'].invalid && (fc['email'].dirty || fc['email'].touched)">
+                        {{getErrorMessage('email','Email')}}
+                    </mat-error>
+            </mat-form-field>
+        </div>
+        <div fxFlex="50" fxFlex.lt-sm="100">
+            <mat-form-field class="w-100">
+                <mat-label>Date of birth</mat-label>
+                <input formControlName="date_of_birth" matInput [matDatepicker]="picker" placeholder="DD/MM/YYYY"
+                    autocomplete="off" />
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker startView="multi-year"></mat-datepicker>
+            </mat-form-field>
+        </div>
+    </div>
+    <div fxLayout="row wrap" fxLayoutGap="8px grid">
+        <div fxFlex="50" fxFlex.lt-sm="100">
+            <mat-form-field class="w-100">
+                <mat-label>Postal Code</mat-label>
+                <input matInput placeholder="Ex. 94105" formControlName="postal_code" />
+                
+            <mat-error *ngIf="fc['postal_code'].invalid && (fc['postal_code'].dirty || fc['postal_code'].touched)">
+                {{getErrorMessage('postal_code','Postal Code')}}
+            </mat-error>
+            </mat-form-field>
+        </div>
+        <div fxFlex="50" fxFlex.lt-sm="100">
+            <mat-radio-group formControlName="gender">
+                <mat-label class="matLabel">Gender</mat-label>
+                <mat-radio-button class="mx-1" value="male"
+                    [checked]="angForm.get('gender').value?angForm.get('gender').value == 'male':true">Male
+                </mat-radio-button>
+                <mat-radio-button value="female" [checked]="angForm.get('gender').value == 'female'">Female
+                </mat-radio-button>
+                <mat-radio-button [checked]="angForm.get('gender').value == 'other'" value="other">Other
+                </mat-radio-button>
+            </mat-radio-group>
+        </div>
+    </div>
+    <mat-dialog-actions align="end">
+        <button *ngIf="!edit" mat-raised-button color="warn" class="custom-btn m-2" (click)="angForm.reset()">Clear
+        </button>
+        <button mat-raised-button type="submit" color="primary" [disabled]="angForm.invalid" class="custom-btn m-2"
+            appDebounceClick>
+            Submit
+        </button>
+    </mat-dialog-actions>
+</form>

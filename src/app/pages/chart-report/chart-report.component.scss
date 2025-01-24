@@ -1,0 +1,24 @@
+::ng-deep snack-bar-container.warn-snackbar {
+    background: rgb(214, 141, 4) !important;
+  }
+
+::ng-deep .red-snackbar .mat-simple-snackbar {
+    color: rgb(255, 255, 255);
+  }
+
+button:disabled:hover,
+button[disabled]:hover{
+    cursor:no-drop;
+}
+
+.date{
+  display: block;
+  padding: .0rem .75rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border-radius: .25rem;
+}
+

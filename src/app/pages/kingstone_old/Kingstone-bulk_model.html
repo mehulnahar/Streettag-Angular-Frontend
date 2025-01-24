@@ -1,0 +1,73 @@
+<div style="width:1200px; height:400px;" perfectScrollbar>
+    <div style="width:1200px;height:400px;">
+
+        <h3>Bulk Add School</h3>
+
+        <div style="width:99.4%;float: left;margin-bottom:10px;">
+
+            <input name="csv_file" type="file" (change)="handleInputChange($event)" accept=".csv" required>
+
+            <br><br>
+
+            <button style="align-content: center;border-radius: 40px; position: absolute;margin:auto;
+            display:block;" mat-raised-button color="primary" (click)="uploadCSV()">Upload
+                Schools</button>
+
+            <button mat-raised-button color="primary" (click)="uploadCSV()">Upload
+                Schools</button>
+
+        </div>
+        <br><br><br>
+
+        
+
+        <!-- <button mat-raised-button color="primary" (click)="downloadCSV()">Download Sample</button> -->
+        <!-- <button mat-raised-button color="primary"><a href="http://52.56.93.181:4200/assets/img/sampleCSV/sample.csv" ><span class="link-custom">Download Sample</span>
+        </a></button> -->
+        <button mat-raised-button color="primary"><a href="https://wearestreettag.co.uk/SampleCSV/sample.csv" ><span class="link-custom">Download Sample</span>
+        </a></button>
+
+        <div>
+            <mat-spinner *ngIf="spinner"></mat-spinner>
+        </div>
+
+        <div *ngIf="show_table" class="erorr_color">
+            This could not be uploaded either due to invalid format or already exist user/team
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>school_name</th>
+                        <th>full_name</th>
+                        <th>user_name</th>
+                        <th>email</th>
+                        <th>password</th>
+                        <th>confirm_password</th>
+                        <th>postal_code</th>
+                        <th>gender</th>
+                        <th>date_of_birth</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let item of csv_url2">
+                        <td>{{item.school_name}}</td>
+                        <td>{{item.full_name}}</td>
+                        <td>{{item.user_name}}</td>
+                        <td>{{item.email}}</td>
+                        <td>{{item.password}}</td>
+                        <td>{{item.confirm_password}}</td>
+                        <td>{{item.postal_code}}</td>
+                        <td>{{item.gender}}</td>
+                        <td>{{item.date_of_birth}}</td>
+
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+        <div *ngIf="show_table2">
+            Uploaded with no errors
+        </div>
+
+    </div>

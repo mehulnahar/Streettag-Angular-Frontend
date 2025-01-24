@@ -1,0 +1,23 @@
+.datediv{
+   position: revert;
+}
+ 
+.center {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   margin-top: 10px;
+   letter-spacing: 0.02em;
+   opacity: 0;
+   text-transform: uppercase;
+   -moz-animation: loading-text-opacity 2s linear 0s infinite normal;
+   -o-animation: loading-text-opacity 2s linear 0s infinite normal;
+   -webkit-animation: loading-text-opacity 2s linear 0s infinite normal;
+   animation: loading-text-opacity 2s linear 0s infinite normal;
+}
+
+.btn{
+   text-transform: uppercase;
+   padding: 5px 30px; 
+   margin-top: 16px; 
+}

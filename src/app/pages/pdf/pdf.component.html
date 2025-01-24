@@ -1,0 +1,252 @@
+<app-content-header     
+    [title]="'דף קשר שבועי'" 
+    [hideBreadcrumb]="false"
+    [hasBgImage]="true" 
+    [class]="'pb-5'"></app-content-header>
+
+
+
+
+
+
+
+
+
+<!--*******************Pdf********************************-->
+
+ 
+<mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="space-between center" class="px-2 mailbox-toolbar">
+        <div fxLayout="row">
+
+
+            
+           
+        </div>
+        <form class="mail-search" [class.show]="showSearch">
+            <mat-form-field class="mail-search-input">
+                <input matInput placeholder="Search mail..." [(ngModel)]="searchText" name="search">
+            </mat-form-field>
+        </form>
+        <div fxLayout="row" fxLayoutAlign="center center">
+            <button *ngIf="mail && type !='trash'" mat-icon-button matTooltip="Reply" matTooltipPosition="above">
+                <mat-icon>reply</mat-icon>
+            </button>
+            <!-- <button *ngIf="newMail" mat-icon-button (click)="newMail = false;" matTooltip="Back" matTooltipPosition="above">
+                <mat-icon>arrow_back</mat-icon>
+            </button> -->
+            <button *ngIf="mail && type !='trash'" mat-icon-button (click)="changeStarStatus()" matTooltip="Mark as inportant" matTooltipPosition="above" fxShow="false" fxShow.gt-xs>
+                <mat-icon *ngIf="mail.starred">star</mat-icon>
+                <mat-icon *ngIf="!mail.starred">star_border</mat-icon>
+            </button> 
+            <button *ngIf="mail && type=='trash'" mat-icon-button (click)="restore()" matTooltip="Restore" matTooltipPosition="above">
+                <mat-icon>undo</mat-icon>
+            </button> 
+            <button *ngIf="mail" mat-icon-button matTooltip="Report spam" matTooltipPosition="above" fxShow="false" fxShow.gt-xs>
+                <mat-icon>error</mat-icon>
+            </button> 
+            <button *ngIf="mail && type !='trash'" mat-icon-button (click)="delete()" matTooltip="Move to trash" matTooltipPosition="above">
+                <mat-icon>delete</mat-icon>
+            </button>
+            <button mat-icon-button [matMenuTriggerFor]="moreMenu" #moreMenuTrigger="matMenuTrigger" [style.display]="(mail) ? 'block' : 'none'">
+                <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #moreMenu="matMenu" xPosition="before">
+                <span (mouseleave)="moreMenuTrigger.closeMenu()">
+                    <button mat-menu-item (click)="setAsRead()">Mark as read</button>
+                    <button mat-menu-item (click)="setAsUnRead()">Mark as unread</button>
+                    <button mat-menu-item (click)="delete()">Delete</button>
+                </span>
+            </mat-menu>
+            <button mat-icon-button (click)="compose()" fxHide="false" fxHide.gt-xs>
+                <mat-icon>fiber_new</mat-icon>
+            </button> 
+            <button type="reset" mat-raised-button color="accent" (click)="compose()" class="compose" fxShow="false" fxShow.gt-xs>הוסף PDF</button>       
+        </div>
+    </mat-toolbar>
+
+
+    <div id="spinner" style="display:none;">
+        <mat-card-content fxLayoutAlign="center">
+
+        <mat-spinner></mat-spinner>
+    </mat-card-content>
+      </div>
+
+    
+    <div fxLayout="row wrap">
+    
+    
+    
+        <div fxFlex="100"> 
+            <mat-card class="p-0 mailbox">
+                <mat-drawer-container class="mailbox-container">
+                    <!-- <mat-drawer #sidenav [opened]="sidenavOpen" [mode]="sidenavOpen ? 'side' : 'over'" class="mailbox-sidenav mat-elevation-z1" autoFocus="false">
+                        <mat-nav-list class="p-0 mailbox-sidenav-list" perfectScrollbar>
+                            <div  *ngFor="let list of pdfList.result">
+                                <mat-list-item [ngClass]>
+                                   <div matLine fxLayout="row" fxLayoutAlign="space-between space-between">   
+                              <div style="width:250px"><img src="assets/img/pdf/pdficon.jfif" alt="image" style="height:55%; width:20%;margin-top:20px; " class="mat-elevation-z3">
+                              <h4 class="text-truncate sender" style="margin-top:30px;margin-right:100px; float:right; ">{{list.file_desc}}</h4></div> 
+                                        <div style="margin-right: 0px;">
+                                            <a (click)="toggle(list)"><mat-icon matListIcon style="margin-top:25px;color: dimgrey">edit</mat-icon> </a> 
+                                            <a href="http://185.106.129.16:1337/PdfFiles/{{list.file_name}}"><mat-icon matListIcon style="margin-top:10px;color: dimgrey">visibility</mat-icon> </a> 
+
+                                            <a (click)="openDeleteDialog(list.pdf_id)" ><mat-icon matListIcon style="margin-top:20px;color: dimgrey">delete</mat-icon> </a>
+                                        </div>                         
+               
+                                    </div>
+                                    <p matLine class="text-truncate subject"></p>
+                                </mat-list-item> 
+                                <mat-divider></mat-divider>
+                            </div>                        
+                        </mat-nav-list>
+                    </mat-drawer>               -->
+
+                    <mat-drawer #sidenav [opened]="sidenavOpen" [mode]="sidenavOpen ? 'side' : 'over'" class="mailbox-sidenav mat-elevation-z1" autoFocus="false">
+                        <mat-nav-list class="p-0 mailbox-sidenav-list" perfectScrollbar>
+                            <div  *ngFor="let list of pdfList.result">
+<div class="a">
+<div class="a1"><img src="assets/img/pdf/pdficon.jfif" alt="image" style="height:60%; width:60%;margin-left: 5px;margin-top: 10px;margin-right: 10px;" class="mat-elevation-z3"></div>
+<div class="a2" >{{list.file_desc}}</div>
+<div class="a3">
+
+    <a (click)="toggle(list)"><mat-icon matListIcon style="color: dimgrey;margin-right: 5px;">edit</mat-icon> </a> 
+    <a href="http://185.106.129.16:1337/PdfFiles/{{list.file_name}}"><mat-icon matListIcon style="color: dimgrey;margin-right: 5px;">visibility</mat-icon> </a> 
+
+    <a (click)="openDeleteDialog(list.pdf_id)" ><mat-icon matListIcon style="color: dimgrey;margin-right: 5px;">delete</mat-icon> </a>
+
+
+</div>
+<br/>
+</div>
+<br/>
+<br/>
+
+<hr>
+
+
+
+
+   
+                            </div>
+
+
+
+
+
+
+
+
+                        </mat-nav-list>
+
+
+                    </mat-drawer>
+
+
+
+
+
+
+
+
+
+                   
+                    <div class="mailbox-content" >
+                        
+                        <div *ngIf="!mail && !newMail" fxLayout="column" fxLayoutAlign="center center" class="h-100 empty">
+                         
+                                <div *ngIf="show_dialog" style="width:100%; height:100%; margin-top:10px;margin-left: 10px;">
+                
+    
+    
+                                    <form style="margin-top: 10px;"> 
+                                                 
+                                        <mat-form-field class="w-100">
+                                            <textarea matInput placeholder="תיאור" name="message"  [(ngModel)]="message" rows="4" cols="50" value="{{pdfdata.file_desc}}"></textarea>
+                                        </mat-form-field>       
+
+                                         <div style="text-align: center">                                          
+
+                                            <img src="assets/img/pdf/pdficon.jfif" alt="image" style="height:30px; width:30px;" class="mat-elevation-z3">
+                                          <br/>
+
+                                          {{pdfdata.file_name}}  
+                                           </div>
+                                        <br/>
+                                        <div style="margin-left:260px;"><input type="file" style="align-items: center" id="image" (change)="onFileChanged($event)" required [(ngModel)]="image" name="image" enctype="multipart/form-data" accept=".pdf" multiple="multiple" value="בחר PDF"></div>                                         
+
+                                
+
+                                
+                                         <!-- <button mat-raised-button color="primary" type="button"  (click)="setEditPdf()" [disabled]=is_edit style="margin-left:100px">Upload Pdf</button> -->
+                                         <!-- <button  mat-raised-button color="primary" type="button" >
+                                            <label>
+                                              Select Pdf
+                                              <input style="display: none;align-items: center" type="file"  id="image" (change)="onFileChanged($event)" required [(ngModel)]="image" name="image" enctype="multipart/form-data" accept=".pdf" multiple="multiple" >
+                                            
+                                            </label>
+                                          </button> -->
+                                        
+                                        
+                                        <div fxLayout="row" fxLayoutAlign="space-between center">
+                                        
+                                            <button class="buttonalign" style="margin-left: 230px; margin-top: 20px;"  mat-raised-button (click)="newMail = false;" type="button">ביטול</button> 
+                                           
+
+                                            <button class="buttonalign" style="margin-right: 230px; margin-top: 20px;" mat-raised-button (click)="editPdf()" color="primary" type="button"  >שמור שמורי</button>
+                                        </div> 
+                                   
+                                    </form> 
+    
+    
+                               
+                                </div>
+                        </div> 
+                        <div style="margin:auto; ">
+                        <form style=" margin-top: 10px;" id="pdf-form" method="post"> 
+                                                     
+                            <mat-form-field class="w-100"  required style="margin-left:5px;">
+                                <textarea matInput placeholder="תיאור" name="message1"  [(ngModel)]="message1"  rows="4" cols="50" ></textarea>
+                            </mat-form-field> 
+                            
+                            
+                            <div style="text-align: center">                                          
+
+                                    <img src="assets/img/pdf/pdficon.jfif" alt="image" style="height:30px; width:30px;" class="mat-elevation-z3">
+                                
+                                  </div>
+                                  <br/>
+                             <!-- <form #myform="ngForm" (ngSubmit)="onFileChanged(myform)" class="form form-register"> -->
+                                <div style="margin-left:260px;"><input type="file" style="align-items: center" id="image" (change)="onFileChanged($event)" required [(ngModel)]="image" name="image" enctype="multipart/form-data" accept=".pdf" multiple="multiple" value="בחר PDF"></div>                                         
+
+                         <!-- <input type="file" id="files" class="hidden"/>
+                         <label for="files">Select file</label> -->
+
+                             <!-- </form> -->
+                                <!-- <button mat-raised-button color="primary" type="button"  (click)="setPdfData()" [disabled]=is_edit style="margin-left:100px">Upload Pdf</button> -->
+                          
+                        
+
+                        <div fxLayout="row" fxLayoutAlign="space-between center">
+                            <button class="buttonalign" style="margin-left: 230px; margin-top: 20px;"  mat-raised-button (click)="newMail = false;" type="button">ביטול</button> 
+                            <button class="buttonalign" style="margin-right: 230px; margin-top: 20px; "  type="reset"   mat-raised-button color="primary" (click)="createPdf()" >שמור שמורי</button>
+                        </div> 
+                       
+                    
+                    </form> 
+                </div>
+                    </div>          
+                </mat-drawer-container>
+            </mat-card>
+        </div>
+    </div>  
+    <!--*******************Pdf********************************-->
+
+
+
+
+
+
+
+
+    

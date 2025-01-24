@@ -1,0 +1,69 @@
+<app-content-header     
+[title]="'Broadcast Management'" 
+    [icon]="'wifi_tethering'"
+    [hideBreadcrumb]="true"
+    [hasBgImage]="true" 
+    [class]="'pb-0 pt-2'"></app-content-header>
+    <mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="space-between center" >
+        <button mat-raised-button color="accent" (click)="openAddMessageDialog()" class="compose" fxShow="false" fxShow.gt-xs>Add/Edit Authority Email</button>       
+        <button mat-raised-button color="accent" (click)="openBroadcastDialog()" class="compose" fxShow="false" fxShow.gt-xs>Broadcast List</button>       
+</mat-toolbar>
+ 
+<div fxLayout="column" class="p-2">
+    <div class="p-2"> 
+        <div fxLayout="column" class="mat-elevation-z8">           
+            <mat-form-field class="px-3 py-1">
+                <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Type to filter all columns">
+            </mat-form-field> 
+        </div>
+        <mat-table #table [dataSource]="dataSource" matSort class="mat-elevation-z8">       
+            <ng-container matColumnDef="serial_number">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>S No. </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.serial_number}} </mat-cell>
+            </ng-container>
+
+             <ng-container matColumnDef="circuit_name">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Circuit Name </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.circuit_name}} </mat-cell>
+            </ng-container> 
+
+            <ng-container matColumnDef="location_name">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Location Name </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.location_name}} </mat-cell>
+            </ng-container>   
+            
+            <ng-container matColumnDef="authority_email">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Authority Email</mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.broadcast_authority_email}} </mat-cell>
+            </ng-container>   
+
+            <ng-container matColumnDef="action">
+                <mat-header-cell *matHeaderCellDef> On/Off Broadcast </mat-header-cell>
+                <mat-cell *matCellDef="let element"> <a *ngIf="element.broadcast_flag != 0 ; else elseBlock">
+                  <button mat-raised-button style="background-color: rgb(18, 133, 18); color: white; width:115px;" (click)="openDialog(element.id ,0,element.broadcast_authority_email,element.broadcast_radius)">
+                    Broadcast On 
+                 </button>
+                  </a>
+                  <ng-template #elseBlock>
+                    <button mat-raised-button style="background-color:rgb(238, 41, 41); color: white; width:115px;" (click)="openDialog(element.id , 1 ,element.broadcast_authority_email,element.broadcast_radius)">
+                        Broadcast Off
+                    </button>
+                  </ng-template>
+                </mat-cell>
+            </ng-container>   
+            
+            <ng-container matColumnDef="geoLocation">
+                <mat-header-cell *matHeaderCellDef>Set Geo-Location</mat-header-cell>
+                <mat-cell *matCellDef="let element"> 
+                  <a  (click)="opengeofence(element)">
+                    <mat-icon matListIcon class="material-icons" matTooltip="Set Geo-Loction" >add_location_alt</mat-icon> 
+                </a> 
+            </mat-cell>
+            </ng-container> 
+            
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+        <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]"></mat-paginator>        
+    </div>
+</div>

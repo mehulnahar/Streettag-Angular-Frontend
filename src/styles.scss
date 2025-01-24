@@ -1,0 +1,77 @@
+//@import url('https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css');
+@import "../src/assets/css/bootstrap.min.css";
+@import url('https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+@import url('https://cdn.quilljs.com/1.2.2/quill.snow.css');
+@import url('https://cdn.quilljs.com/1.2.2/quill.bubble.css');
+
+// indigo-pink, deeppurple-amber, purple-green and pink-bluegrey.
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+
+@import "./app/theme/styles/variables";
+@import "app/theme/styles/base";
+@import "app/theme/styles/spaces";
+@import "app/theme/styles/libs-override";
+@import "app/theme/styles/theme";
+@import "app/theme/styles/gradients";
+@import "app/theme/styles/rtl";
+
+//Global styles
+.fill-remaining-space {
+    flex: 1 1 auto;
+  }
+
+  .zoom:hover{
+    cursor: zoom-in;
+    cursor: -moz-zoom-in;
+    cursor: -webkit-zoom-in;
+  }
+
+  .btn-dialog-close {
+    width: 45px;
+    min-width: 0px !important;
+    height: 40px;
+    padding: 0px !important;
+    &:hover{
+      background-color:#F44336 !important;
+      color: #fff !important;
+    }
+  }
+
+  .mat-table {
+    font-family: "Open Sans", sans-serif !important;
+    word-break: break-word !important;
+  }
+
+  .remove-border{
+    border: none !important;
+    outline: none !important;
+  }
+
+  ::ng-deep snack-bar-container.blue-snackbar {
+    background-color: $bg-success !important;
+  }
+  
+  ::ng-deep snack-bar-container.red-snackbar {
+    background-color: $bg-danger !important;
+  }
+  
+  ::ng-deep snack-bar-container.warning-snackbar {
+    background-color: $bg-warning !important;
+  }
+  
+  ::ng-deep .red-snackbar .mat-simple-snackbar,
+  ::ng-deep .blue-snackbar .mat-simple-snackbar {
+    color: lightgoldenrodyellow !important;
+    font-weight: 500 !important;
+    display: flex !important;
+    justify-content: center !important;
+  }
+  
+  ::ng-deep .warning-snackbar .mat-simple-snackbar {
+    color: black !important ;
+    font-weight: 500 !important;
+    display: flex !important;
+    justify-content: center !important;
+  }
+  
