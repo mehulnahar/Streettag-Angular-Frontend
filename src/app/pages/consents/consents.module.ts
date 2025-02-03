@@ -5,6 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { PipesModule } from 'src/app/theme/pipes/pipes.module';
 import { ConsentsComponent } from './consents.component';
+import { ExcelService } from 'src/app/excel.service';
 
 export const routes: Routes = [
   { path: '', component: ConsentsComponent }
@@ -19,6 +20,7 @@ export const routes: Routes = [
     PipesModule,
     RouterModule.forChild(routes),
   ],
-  declarations: [ConsentsComponent]
+  declarations: [ConsentsComponent],
+  providers: [ExcelService]
 })
 export class ConsentsModule { }

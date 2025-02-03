@@ -18,7 +18,7 @@ import { Router } from "@angular/router";
 import { MatSort } from "@angular/material/sort";
 import { ExcelService } from "../../excel.service";
 import { environment } from "src/environments/environment";
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 export interface ConsentElement {
   serial_number: number;
@@ -133,20 +133,50 @@ export class ConsentsComponent implements OnInit {
   }
 
   public getConsents() {
-    this.http.get(`${environment.baseUrl}api/admin/consents`).subscribe({
+    const token = localStorage.getItem('JWTtoken');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
+
+    this.http.get(`${environment.baseUrl}getConsents`, { headers }).subscribe({
       next: (response: any) => {
+        console.log('API Response:', response);
+        
         if (response && response.response) {
-          this.data = response.response;
-          this.dataSource = new MatTableDataSource<ConsentElement>(response.response);
+          const mappedData = response.response.map((item: any, index: number) => ({
+            serial_number: index + 1,
+            fullname: item.fullname || '',
+            email: item.email || '',
+            phone_number: item.phone_number || '',
+            created_at: item.created_at || '',
+            share_info: item.share_info || ''
+          }));
+
+          console.log('Mapped Data:', mappedData);
+          
+          this.data = mappedData;
+          this.dataSource = new MatTableDataSource<ConsentElement>(mappedData);
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.sort;
+        } else {
+          console.log('No response data found');
+          this.data = [];
+          this.dataSource = new MatTableDataSource<ConsentElement>([]);
         }
       },
       error: (error) => {
         console.error('Error fetching consents:', error);
-        this.snackBar.open('Error loading consents', undefined, {
-          duration: 2000
-        });
+        if (error.status === 401) {
+          this.snackBar.open('Session expired. Please login again', undefined, {
+            duration: 3000
+          });
+          this.router.navigate(['/login']);
+        } else {
+          this.snackBar.open('Error loading consents', undefined, {
+            duration: 2000
+          });
+        }
       }
     });
   }
