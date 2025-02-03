@@ -1,0 +1,52 @@
+<h2 mat-dialog-title>Add Circuit</h2>
+
+<form [formGroup]="angForm" (ngSubmit)="addevent()">
+  <mat-dialog-content>
+    <div fxLayout="column" fxLayoutGap="16px">
+      <mat-form-field>
+        <mat-label>Circuit Name</mat-label>
+        <input matInput formControlName="circuit_name" required>
+        <mat-error *ngIf="angForm.get('circuit_name')?.hasError('required')">
+          Circuit name is required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Location</mat-label>
+        <mat-select formControlName="location_name" required>
+          <mat-option *ngFor="let location of dataSourceLocation" [value]="location.location_name">
+            {{location.location_name}}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="angForm.get('location_name')?.hasError('required')">
+          Location is required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Start Date</mat-label>
+        <input matInput [matDatepicker]="picker1" formControlName="start_date" required>
+        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+        <mat-datepicker #picker1></mat-datepicker>
+        <mat-error *ngIf="angForm.get('start_date')?.hasError('required')">
+          Start date is required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>End Date</mat-label>
+        <input matInput [matDatepicker]="picker2" formControlName="end_date" required>
+        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+        <mat-datepicker #picker2></mat-datepicker>
+        <mat-error *ngIf="angForm.get('end_date')?.hasError('required')">
+          End date is required
+        </mat-error>
+      </mat-form-field>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="onNoClick()">Cancel</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="!angForm.valid">Add</button>
+  </mat-dialog-actions>
+</form>

@@ -1,0 +1,23 @@
+.chart-container {
+  padding: 1rem;
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  
+  h3 {
+    margin: 0 0 1rem;
+    color: rgba(0,0,0,0.87);
+  }
+}
+
+::ng-deep {
+  .ngx-charts {
+    .grid-line-path {
+      stroke: rgba(0,0,0,0.1);
+    }
+    
+    .tick text {
+      fill: rgba(0,0,0,0.5);
+    }
+  }
+} 

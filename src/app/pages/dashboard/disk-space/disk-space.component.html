@@ -1,0 +1,86 @@
+<!-- <div class="parent-div">
+    <span class="class-div1">
+        <mat-form-field>
+            <mat-label>Select Location</mat-label>
+            <mat-select ngModel (ngModelChange)="get_location_id($event)">
+                <mat-option *ngFor="let food of dataSourceLocation" [value]="food.id">
+                    {{food.location_name}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </span>
+
+    <span>
+        <mat-form-field>
+            <mat-label>Select Team</mat-label>
+            <mat-select ngModel (ngModelChange)="get_team_id($event)">
+                <mat-option *ngFor="let food of dataSourceTeam" [value]="food.id">
+                    {{food.team_name | decode}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+    </span>
+</div> -->
+
+<div class="filters-section mat-elevation-z1">
+    <div fxLayout="row wrap" fxLayoutGap="20px" class="p-3">
+        <mat-form-field appearance="outline" fxFlex="calc(50% - 10px)" fxFlex.lt-md="100">
+            <mat-label>Select Location</mat-label>
+            <mat-select ngModel (ngModelChange)="get_location_id($event)">
+                <mat-option *ngFor="let location of dataSourceLocation" [value]="location.id">
+                    {{location.location_name}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" fxFlex="calc(50% - 10px)" fxFlex.lt-md="100">
+            <mat-label>Select Team</mat-label>
+            <mat-select ngModel (ngModelChange)="get_team_id($event)">
+                <mat-option *ngFor="let team of dataSourceTeam" [value]="team.id">
+                    {{team.team_name | decode}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+</div>
+
+<div class="stats-section mt-4">
+    <div fxLayout="row wrap" fxLayoutGap="20px grid">
+        <div fxFlex="calc(33.33% - 20px)" fxFlex.lt-md="100" class="stat-card">
+            <mat-card>
+                <mat-card-content>
+                    <div class="stat-header">
+                        <mat-icon class="text-primary">today</mat-icon>
+                        <span class="stat-label">Daily Total Miles</span>
+                    </div>
+                    <h2 class="stat-value">{{dailyMiles || 0}}</h2>
+                </mat-card-content>
+            </mat-card>
+        </div>
+        
+        <div fxFlex="calc(33.33% - 20px)" fxFlex.lt-md="100" class="stat-card">
+            <mat-card>
+                <mat-card-content>
+                    <div class="stat-header">
+                        <mat-icon class="text-accent">date_range</mat-icon>
+                        <span class="stat-label">Weekly Total Miles</span>
+                    </div>
+                    <h2 class="stat-value">{{weeklyMiles || 0}}</h2>
+                </mat-card-content>
+            </mat-card>
+        </div>
+        
+        <div fxFlex="calc(33.33% - 20px)" fxFlex.lt-md="100" class="stat-card">
+            <mat-card>
+                <mat-card-content>
+                    <div class="stat-header">
+                        <mat-icon class="text-warn">calendar_today</mat-icon>
+                        <span class="stat-label">Monthly Total Miles</span>
+                    </div>
+                    <h2 class="stat-value">{{monthlyMiles || 0}}</h2>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+</div>

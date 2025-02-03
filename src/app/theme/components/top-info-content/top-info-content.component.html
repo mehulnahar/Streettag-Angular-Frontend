@@ -1,0 +1,47 @@
+<div class="top-info-content" [class.show]="showInfoContent">
+    <mat-card>
+        <mat-card-header>
+            <button mat-icon-button (click)="closeInfoContent(false)" class="close-btn">
+                <mat-icon>close</mat-icon>
+            </button>
+        </mat-card-header>
+        <mat-card-content>
+            <div fxLayout="row wrap" fxLayoutGap="16px grid">
+                <div fxFlex="100" fxFlex.gt-sm="50">
+                    <h2>Controls</h2>
+                    <div class="controls">
+                        <mat-checkbox *ngFor="let control of controls" 
+                                    [(ngModel)]="control.checked" 
+                                    color="primary">
+                            {{control.name}}
+                        </mat-checkbox>
+                    </div>
+                </div>
+                <div fxFlex="100" fxFlex.gt-sm="50">
+                    <h2>Contact Us</h2>
+                    <form [formGroup]="contactForm" (ngSubmit)="onContactFormSubmit(contactForm.value)">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>Email</mat-label>
+                            <input matInput formControlName="email" placeholder="Email">
+                            <mat-error *ngIf="contactForm.get('email')?.errors?.['required']">Email is required</mat-error>
+                            <mat-error *ngIf="contactForm.get('email')?.errors?.['email']">Invalid email address</mat-error>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>Subject</mat-label>
+                            <input matInput formControlName="subject" placeholder="Subject">
+                            <mat-error *ngIf="contactForm.get('subject')?.errors?.['required']">Subject is required</mat-error>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>Message</mat-label>
+                            <textarea matInput formControlName="message" placeholder="Message" rows="6"></textarea>
+                            <mat-error *ngIf="contactForm.get('message')?.errors?.['required']">Message is required</mat-error>
+                        </mat-form-field>
+                        <div class="text-center">
+                            <button mat-raised-button color="primary" type="submit">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</div>

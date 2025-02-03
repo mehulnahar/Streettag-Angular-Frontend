@@ -1,0 +1,88 @@
+.content-header{
+    color: #fff !important;
+    text-align: center;
+    background: #283593 !important; // Brighter Material Blue
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    position: relative;
+ 
+    background-image: url("../../../assets/img/app/header-bg.png") !important;
+    background-blend-mode: overlay;
+    background-size: cover !important;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: #283593;
+        z-index: -1;
+    }
+
+    img{
+        width: 130px;
+        height: 130px;
+        border-radius: 50%;
+    }
+    h1{
+        font-size: 36px;
+        font-weight: 400;
+        margin: 0;
+        padding: 15px 0;
+        color: #fff !important;
+    } 
+    h4{
+        font-size: 16px;
+        font-weight: 300;
+        max-width: 580px;
+        text-align: center;
+        margin: 0 auto;
+        padding-bottom: 10px;
+        color: #fff !important;
+    }
+    &.bg-primary {
+        background: linear-gradient(45deg, #1976d2, #2196F3) !important;
+        background-image: url("../../../assets/img/app/header-bg.png") !important;
+        background-blend-mode: overlay;
+        background-size: cover !important;
+    }
+    &.bg-image{
+        background-image: url("../../../assets/img/app/header-bg.png") !important;     
+        background-blend-mode: overlay;
+        background-size: cover !important;
+    }
+    &.bg-image1{
+        background-image: url("../../../assets/img/app/header-bg.png") !important;        
+        background-size: cover !important;
+        background-blend-mode: overlay;
+    }
+
+    ::ng-deep {
+        app-breadcrumb {
+            background: inherit;
+            * {
+                color: #fff !important;
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 960px) {    
+    .content-header{
+        img{
+            width: 150px;
+            height: 150px;
+        }
+        h1{
+            font-size: 48px;
+        } 
+        h4{
+            font-size: 18px;
+        }
+        &.has-bg-image{
+            background-size: cover !important;
+        }
+    }
+}

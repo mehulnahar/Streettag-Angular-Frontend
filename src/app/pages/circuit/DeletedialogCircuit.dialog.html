@@ -1,0 +1,10 @@
+<h2 mat-dialog-title>Delete Circuit</h2>
+
+<mat-dialog-content>
+  <p>Are you sure you want to delete this circuit?</p>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="Submit(0)">No</button>
+  <button mat-raised-button color="warn" (click)="Submit(1)">Yes</button>
+</mat-dialog-actions>

@@ -1,0 +1,75 @@
+<app-content-header 
+  [title]="'Circuit Management'"
+  [icon]="'outlet'"
+  [hideBreadcrumb]="true"
+  [hasBgImage]="true"
+  [class]="'pt-2'">
+</app-content-header>
+
+<div>
+  <div style="margin-bottom: 16px; padding: 0 16px;">
+    <button mat-raised-button style="background: #ff4081; color: white;" (click)="openAddMessageDialog()" class="add-circuit-btn">
+      Add Circuit
+    </button>
+  </div>
+
+  <div class="mat-elevation-z8">
+    <mat-form-field style="width: 100%; background: white;">
+      <input matInput (keyup)="applyFilter($any($event.target).value)" placeholder="Type to filter all columns">
+    </mat-form-field>
+
+    <mat-table #table [dataSource]="dataSource" matSort>
+      <!-- S No. Column -->
+      <ng-container matColumnDef="serial_number">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>S No.</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.serial_number}}</mat-cell>
+      </ng-container>
+
+      <!-- Circuit Name Column -->
+      <ng-container matColumnDef="circuit_name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Circuit Name</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.circuit_name}}</mat-cell>
+      </ng-container>
+
+      <!-- Location Name Column -->
+      <ng-container matColumnDef="location_name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Location Name</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.location_name}}</mat-cell>
+      </ng-container>
+
+      <!-- Start Date Column -->
+      <ng-container matColumnDef="start_date">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Start Date</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.start_date | date}}</mat-cell>
+      </ng-container>
+
+      <!-- End Date Column -->
+      <ng-container matColumnDef="end_date">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>End Date</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.end_date | date}}</mat-cell>
+      </ng-container>
+
+      <!-- Edit Column -->
+      <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef>Edit</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <button mat-icon-button color="primary" (click)="openEditDialog(element)">
+            <mat-icon>edit</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+
+    <mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[15, 20, 30]" showFirstLastButtons></mat-paginator>
+  </div>
+</div>
+
+<style>
+.add-circuit-btn {
+  text-transform: none;
+  font-weight: normal;
+}
+</style>

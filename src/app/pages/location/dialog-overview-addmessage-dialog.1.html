@@ -1,0 +1,66 @@
+<!-- <div style="width:400px; height:250px;" perfectScrollbar>
+    <div style="width:400px;height:150px;">
+
+        <h3>Add Location _ test</h3>
+
+        <div style="width:99.4%;float: left;margin-bottom:10px;">
+
+
+            <mat-form-field [formGroup]="angForm" novalidate class="w-100" style="margin-top:5px;">
+                <input matInput placeholder="Location" [(ngModel)]="location_name" formControlName="location_name"
+                    name="location_name">
+                
+            </mat-form-field>
+            <div *ngIf="angForm.controls['location_name'].invalid && (angForm.controls['location_name'].dirty || angForm.controls['location_name'].touched)" class="alert alert-danger">
+                <div *ngIf="angForm.controls['location_name'].errors.required">
+                Name is required.
+              </div>
+            </div>
+
+
+            <br />
+
+
+            <div style="position: absolute;margin:auto;"><button style="align-content: center;border-radius: 40px; position: absolute;margin:auto;
+        display:block;" mat-raised-button color="primary" (click)="addevent()" [disabled]=is_edit>Add
+                    Location</button></div>
+
+
+        </div>
+        <br><br><br> -->
+
+
+
+
+<div style="width:400px; height:250px;" perfectScrollbar>
+  <div style="width:400px;height:150px;">
+
+    <h3>Add Location _ test</h3>
+
+    <div style="width:99.4%;float: left;margin-bottom:10px;">
+
+
+      <mat-form-field [formGroup]="angForm" novalidate class="w-100" style="margin-top:5px;">
+        <input matInput placeholder="Location" [(ngModel)]="location_name" formControlName="location_name"
+          name="location_name">
+
+      </mat-form-field>
+      <div
+        *ngIf="angForm.controls['location_name'].invalid && (angForm.controls['location_name'].dirty || angForm.controls['location_name'].touched)"
+        class="alert alert-danger">
+        <div *ngIf="angForm.controls['location_name'].errors.required">
+          Name is required.
+        </div>
+      </div>
+
+
+      <br />
+
+
+      <div style="position: absolute;margin:auto;"><button style="align-content: center;border-radius: 40px; position: absolute;margin:auto;
+              display:block;" mat-raised-button color="primary" (click)="addevent()" [disabled]=is_edit>Add
+          Location</button></div>
+
+
+    </div>
+    <br><br><br>

@@ -1,0 +1,28 @@
+@import "../../theme/styles/variables";
+
+::ng-deep snack-bar-container.blue-snackbar {
+  background-color: $bg-success !important;
+}
+
+::ng-deep snack-bar-container.red-snackbar {
+  background-color: $bg-danger !important;
+}
+
+::ng-deep snack-bar-container.warning-snackbar {
+  background-color: $bg-warning !important;
+}
+
+::ng-deep .red-snackbar .mat-simple-snackbar,
+::ng-deep .blue-snackbar .mat-simple-snackbar {
+  color: lightgoldenrodyellow;
+  font-weight: 500;
+  display: flex;
+  justify-content: center;
+}
+
+::ng-deep .warning-snackbar .mat-simple-snackbar {
+  color: black !important;
+  font-weight: 500;
+  display: flex;
+  justify-content: center;
+}

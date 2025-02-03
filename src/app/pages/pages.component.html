@@ -1,0 +1,71 @@
+<div id="main" cdkScrollable (scroll)="onPsScrollY($event)" class="h-100">
+
+    <header class="header" [class.over]="showInfoContent">
+        <app-top-info-content [showInfoContent]="showInfoContent" (onCloseInfoContent)="closeInfoContent(showInfoContent)"></app-top-info-content>
+        
+        <mat-toolbar class="top-toolbar" [class.mat-elevation-z2]="settings.fixedHeader">
+            <div fxLayout="row" fxLayoutAlign="space-between center" fxFlex>           
+                <div fxLayout="row" fxLayoutAlign="center center">               
+                    <button *ngIf="settings.menuType === 'vertical'" mat-icon-button (click)="sidenav.toggle()" style="color: white;">
+                        <mat-icon>menu</mat-icon>
+                    </button> 
+                    <a routerLink="/admin/dashboard" fxLayout="row" fxLayoutAlign="start center" class="logo" ngClass.xs="mobile" (click)="closeSubMenus()" style="text-decoration: none; color:#fff">
+                        <img src="https://images.squarespace-cdn.com/content/v1/5bcb9585b914494328f1d34f/1550504512374-CRRLVP980AZWFJKG6G97/1+new++newest+StreetTaglogo.png" alt="logo" width="52" height="52">
+                        <span class="mx-2">StreetTag</span> 
+                    </a>
+                </div> 
+                <div fxFlex></div>          
+                <div fxLayout="row" fxLayoutAlign="end center">
+                    <div fxLayout="row" fxLayoutAlign="start center" fxShow="false" fxShow.gt-xs class="search-bar">
+                        <form method="get">
+                            <input type="text" placeholder="Type to search..." class="mat-elevation-z3" [class.show]="toggleSearchBar">
+                        </form>
+                    </div>
+                    <app-fullscreen></app-fullscreen> 
+                    <app-user-menu></app-user-menu>
+                </div>
+            </div>               
+        </mat-toolbar>
+    </header>
+
+    <mat-sidenav-container [dir]="settings.isRTL ? 'rtl' : 'ltr'">
+        <mat-sidenav #sidenav [opened]="settings.sidenavIsOpened" 
+                             [mode]="(settings.sidenavIsPinned) ? 'side' : 'over'"
+                             class="sidenav mat-elevation-z6">
+            <!-- <mat-toolbar *ngIf="settings.fixedSidenav" class="top-toolbar">
+                <a routerLink="/" fxLayout="row" fxLayoutAlign="start center" class="logo">
+                    <img src="assets/img/logo.png" alt="logo" [@rotate]="showSidenav">
+                    <span class="mx-2">ANNULAR</span> 
+                </a>
+            </mat-toolbar>             -->
+            <app-sidenav></app-sidenav>
+        </mat-sidenav>
+        <mat-sidenav-content>
+            <mat-toolbar *ngIf="settings.menuType === 'horizontal'" class="horizontal-menu px-0">
+                <div fxLayout="row" fxLayoutAlign="center center" class="w-100">            
+                    <app-horizontal-menu [menuParentId]="0" [class.w-100]="settings.menuType === 'horizontal'"></app-horizontal-menu>
+                </div>            
+            </mat-toolbar>
+            <div class="page-wrapper">
+                <router-outlet></router-outlet>
+            </div>
+            <div class="options">
+                <mat-slide-toggle [checked]="settings.isRTL" 
+                                (change)="settings.isRTL = !settings.isRTL" 
+                                labelPosition="before">
+                    RTL
+                </mat-slide-toggle>
+            </div>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+
+    <!-- <div fxLayout="row" fxLayoutAlign="center center" class="options-icon" (click)="options.toggle()">
+        <mat-icon>settings</mat-icon>
+    </div> -->
+
+    <div #backToTop fxLayout="row" fxLayoutAlign="center center" class="back-to-top" (click)="scrollToTop()">
+        <mat-icon>arrow_upward</mat-icon>
+    </div>
+
+   
+</div>

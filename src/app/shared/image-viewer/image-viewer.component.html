@@ -1,0 +1,22 @@
+
+<mat-toolbar>
+    <span>{{title}}</span>
+    <span class="fill-remaining-space"></span>
+    <button
+    class="btn-dialog-close"
+    [mat-dialog-close]="true"
+      mat-stroked-button
+      tabindex="-1"
+    >
+      <mat-icon>clear</mat-icon>
+    </button>
+  </mat-toolbar>
+
+<div mat-dialog-content>
+    <p>{{message}}</p>
+</div>
+
+          <div class="imageBox" >
+            <img src={{url}} >
+          </div>  
+        

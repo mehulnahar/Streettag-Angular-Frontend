@@ -1,7 +1,44 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { LoginComponent } from './pages/login/login.component';
+import { PagesComponent } from './pages/pages.component';
 
-const routes: Routes = [];
+const routes: Routes = [
+  { path: '', pathMatch: 'full', redirectTo: 'login' },
+  { path: 'login', component: LoginComponent },
+  {
+    path: 'admin',
+    component: PagesComponent,
+    children: [
+      {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+      },
+      {
+        path: 'dashboard',
+        loadChildren: () => import('./pages/dashboard/dashboard.module').then(m => m.DashboardModule),
+        data: { breadcrumb: 'Dashboard' }
+      },
+      {
+        path: 'location',
+        loadChildren: () => import('./pages/location/location.module').then(m => m.LocationModule),
+        data: { breadcrumb: 'Location Management' }
+      },
+      {
+        path: 'circuit',
+        loadChildren: () => import('./pages/circuit/circuit.module').then(m => m.CircuitModule),
+        data: { breadcrumb: 'Circuit Management' }
+      },
+      {
+        path: 'streettags',
+        loadChildren: () => import('./pages/streettags/streettags.module').then(m => m.StreettagsModule),
+        data: { breadcrumb: 'StreetTag Management' }
+      }
+    ]
+  },
+  { path: '**', redirectTo: 'login' }
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

@@ -1,0 +1,30 @@
+<mat-card class="todo-card">
+    <mat-card-header>
+        <mat-card-title>Todo List</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <div class="todo-form">
+            <input class="form-control" type="text" placeholder="Add new todo..." [(ngModel)]="newTodoText" (keyup.enter)="addToDoItem($event)">
+            <button mat-mini-fab color="primary" (click)="addToDoItem($event)" type="button">
+                <mat-icon>add</mat-icon>
+            </button>
+        </div>
+        <div perfectScrollbar class="todo-list">
+            <mat-selection-list>
+                <mat-list-option *ngFor="let item of getNotDeleted(); let i = index" 
+                                 [class.completed]="item.deleted"
+                                 (mouseenter)="item.isActive = true" 
+                                 (mouseleave)="item.isActive = false">
+                    <div fxLayoutAlign="space-between center">
+                        <span class="text-truncate">{{ item.text }}</span>
+                        <button mat-icon-button color="warn" 
+                                *ngIf="item.isActive"
+                                (click)="deleteTodoItem(i)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </div>               
+                </mat-list-option>
+            </mat-selection-list>
+        </div>          
+    </mat-card-content>
+</mat-card>

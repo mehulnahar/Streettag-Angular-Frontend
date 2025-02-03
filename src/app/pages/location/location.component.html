@@ -1,0 +1,66 @@
+<app-content-header
+  [title]="'Location Management'"
+  [icon]="'my_location'"
+  [hideBreadcrumb]="true"
+  [hasBgImage]="true"
+  [class]="'pt-2'">
+</app-content-header>
+
+<div>
+  <div style="margin-bottom: 16px; padding: 0 16px;">
+    <button mat-raised-button style="background: #ff4081; color: white;" (click)="openAddMessageDialog()" class="add-location-btn">
+      Add Location
+    </button>
+  </div>
+
+  <div class="mat-elevation-z8">
+    <mat-form-field style="width: 100%; background: white;">
+      <input matInput (keyup)="applyFilter($any($event.target).value)" placeholder="Type to filter all columns">
+    </mat-form-field>
+
+    <mat-table #table [dataSource]="dataSource" matSort>
+      <!-- S No. Column -->
+      <ng-container matColumnDef="serial_number">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>S No.</mat-header-cell>
+        <mat-cell *matCellDef="let element; let i = index">{{i + 1}}</mat-cell>
+      </ng-container>
+
+      <!-- Location Name Column -->
+      <ng-container matColumnDef="location_name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Location Name</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.location_name}}</mat-cell>
+      </ng-container>
+
+      <!-- Created At Column -->
+      <ng-container matColumnDef="created_at">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Date</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.created_at | date}}</mat-cell>
+      </ng-container>
+
+      <!-- Edit Column -->
+      <ng-container matColumnDef="edit">
+        <mat-header-cell *matHeaderCellDef>Edit</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <button mat-icon-button color="primary" (click)="openEditDialog(element)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="OpenDelete(element.id)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+
+    <mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[15, 20, 30]" showFirstLastButtons></mat-paginator>
+  </div>
+</div>
+
+<style>
+.add-location-btn {
+  text-transform: none;
+  font-weight: normal;
+}
+</style>

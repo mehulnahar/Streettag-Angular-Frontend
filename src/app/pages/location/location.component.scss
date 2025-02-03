@@ -1,0 +1,62 @@
+.mat-cell:nth-child(4),
+.mat-header-cell:nth-child(4) {
+  flex: 0 0 120px;
+  justify-content: center;
+}
+
+.location-container {
+  padding: 20px;
+
+  .mat-card {
+    .mat-card-header {
+      margin-bottom: 20px;
+    }
+  }
+
+  .table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    .mat-form-field {
+      width: 40%;
+    }
+  }
+
+  .mat-elevation-z8 {
+    background: white;
+    
+    .mat-table {
+      width: 100%;
+    }
+    
+    .mat-header-cell {
+      font-weight: bold;
+      color: rgba(0, 0, 0, 0.87);
+    }
+    
+    .mat-cell {
+      padding: 8px;
+    }
+  }
+}
+
+.mat-form-field {
+  font-size: 14px;
+  width: 100%;
+}
+
+.mat-header-cell {
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.w-100 {
+  width: 100%;
+}
+
+mat-dialog-content {
+  min-width: 350px;
+  margin: 16px 0;
+}

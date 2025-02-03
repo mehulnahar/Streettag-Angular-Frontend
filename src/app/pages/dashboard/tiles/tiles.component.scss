@@ -1,0 +1,134 @@
+.dashboard-card {
+    border-radius: 8px;
+    color: white;
+    height: 120px;
+    overflow: hidden;
+    transition: transform 0.3s;
+    cursor: pointer;
+
+    &:hover {
+        transform: translateY(-5px);
+    }
+
+    .card-content {
+        padding: 20px;
+        height: 100%;
+        position: relative;
+
+        .mat-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 28px;
+            opacity: 0.8;
+        }
+
+        .stats {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            text-align: right;
+
+            h2 {
+                margin: 0;
+                font-size: 24px;
+                font-weight: 500;
+                margin-bottom: 5px;
+            }
+
+            p {
+                margin: 0;
+                font-size: 14px;
+                opacity: 0.9;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+        }
+    }
+}
+
+.gradient-purple { background: linear-gradient(45deg, #ff69b4, #da70d6); }
+.gradient-teal { background: linear-gradient(45deg, #20B2AA, #48D1CC); }
+.gradient-indigo { background: linear-gradient(45deg, #4169E1, #1E90FF); }
+.gradient-amber { background: linear-gradient(45deg, #FFA500, #FF8C00); }
+.gradient-brown { background: linear-gradient(45deg, #CD853F, #DEB887); }
+.gradient-pink { background: linear-gradient(45deg, #FF1493, #FF69B4); }
+.gradient-gray { background: linear-gradient(45deg, #5F9EA0, #87CEEB); }
+.gradient-red { background: linear-gradient(45deg, #FF4500, #FF6347); }
+
+.none {
+    text-decoration: none !important;
+    color: white;
+}
+
+.p-2 {
+    padding: 8px !important;
+}
+
+.h-100p{
+    height: 150px;
+    //height: 500%;
+    position: relative
+}
+
+.example-card {
+    width: 100px;
+    height: 200%;
+  }
+
+.stats-section {
+    margin-top: 2rem;
+    
+    .stats-card {
+        background: white;
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+
+            &:last-child {
+                border-bottom: none;
+            }
+
+            .label {
+                color: #666;
+                font-size: 14px;
+            }
+
+            .value {
+                font-size: 18px;
+                font-weight: 500;
+                color: #333;
+            }
+        }
+    }
+}
+
+.tile {
+    color: white;
+    mat-icon {
+        color: white;
+        font-size: 24px;
+    }
+    .bottom {
+        h2, h3, h5, p {
+            color: white;
+            margin: 0;
+        }
+        a {
+            color: white;
+            text-decoration: none;
+            &:hover {
+                color: white;
+            }
+        }
+    }
+}

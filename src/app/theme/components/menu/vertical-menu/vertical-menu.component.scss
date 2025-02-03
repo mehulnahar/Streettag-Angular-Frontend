@@ -1,0 +1,101 @@
+@import "../../../styles/mixins";
+
+.menu-item {    
+    position: relative;
+    margin: 4px 0;
+    
+    .mat-button {
+        width: 100%;
+        padding: 0 16px;
+        height: 44px;
+        line-height: 44px;
+        text-align: left;
+        border-radius: 4px;
+        margin: 0 8px;
+        width: calc(100% - 16px);
+        
+        &:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        &.expanded {
+            .menu-expand-icon {
+                transform: rotate(180deg);
+            }
+        }
+
+        .menu-item-content {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            position: relative;
+        }
+    }
+
+    .menu-icon {
+        margin-right: 16px;
+        font-size: 17px;
+        width: 20px;
+        height: 16px;
+        line-height: 20px;
+        opacity: 0.7;
+    }
+
+    .menu-title {
+        flex: 1;
+        font-size: 15px;
+        letter-spacing: 0.2px;
+    }
+
+    .menu-expand-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 15px;
+        line-height: 18px;
+        transition: transform 0.3s ease;
+    }
+}
+
+.sub-menu {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.3s ease-out;
+    background: rgba(0,0,0,0.1);
+    margin: 4px 0;
+    border-radius: 4px;
+    
+    &.show {
+        max-height: 1000px;
+        transition: max-height 0.3s ease-in;
+    }    
+
+    .menu-item {
+        .mat-button {
+            padding-left: 56px;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+    }
+}
+
+.active-link {
+    background: rgba(255,255,255,0.15) !important;
+    
+    .menu-icon, .menu-title {
+        opacity: 1;
+    }
+}
+
+.menu-item:not(:last-child) {
+    &:after {
+        content: '';
+        display: block;
+        height: 1px;
+        background: rgba(255,255,255,0.05);
+        margin: 4px 16px;
+    }
+}
+
+.transition {
+    transition: all 0.3s ease-out;
+}
