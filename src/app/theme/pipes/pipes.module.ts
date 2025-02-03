@@ -7,7 +7,7 @@ import { ChatPersonSearchPipe } from './search/chat-person-search.pipe';
 import { UserSearchPipe } from './search/user-search.pipe';
 import { TruncatePipe } from './truncate/truncate.pipe';
 import { MailSearchPipe } from './search/mail-search.pipe';
-import { DecodePipe } from './decode/decode.pipe';
+import { DecodePipe } from './decode.pipe';
 import { ImagePipe } from './image/image.pipe';
 import { IncreasePipe } from './increase/increase.pipe';
 import { ValidurlPipe } from './validurl/validurl.pipe';

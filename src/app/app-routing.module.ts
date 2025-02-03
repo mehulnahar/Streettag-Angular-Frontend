@@ -36,6 +36,11 @@ const routes: Routes = [
         data: { breadcrumb: 'StreetTag Management' }
       },
       {
+        path: 'leaderboard',
+        loadChildren: () => import('./pages/leaderboard/leaderboard.module').then(m => m.LeaderboardModule),
+        data: { breadcrumb: 'Leaderboard' }
+      },
+      {
         path: 'opportunities',
         loadChildren: () => import('./pages/opportunities/opportunities.module').then(m => m.OpportunitiesModule),
         data: { breadcrumb: 'Opportunities Management' }
