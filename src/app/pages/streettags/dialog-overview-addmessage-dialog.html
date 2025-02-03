@@ -1,192 +1,161 @@
-<div style="width:100%; height:600px;" perfectScrollbar>
-    <div style="width:100%;height:600px;">
+<div class="streettag-dialog-container">
+    <div class="dialog-header">
+        <h2 class="title">Add Streettag</h2>
+    </div>
+    
+    <div class="dialog-content">
+        <div class="form-container" [formGroup]="angForm" novalidate>
+            <!-- Basic Information Section -->
+            <div class="form-section">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Title</mat-label>
+                    <input matInput formControlName="street_name">
+                    <mat-error *ngIf="angForm.controls['street_name'].errors?.['required']">
+                        Street Name is required
+                    </mat-error>
+                </mat-form-field>
 
-        <h3>Add Streettag </h3>
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Score</mat-label>
+                    <input matInput formControlName="score" type="number">
+                    <mat-error *ngIf="angForm.controls['score'].errors?.['required'] || angForm.controls['score'].errors?.['pattern']">
+                        Score must be a valid number
+                    </mat-error>
+                </mat-form-field>
 
-        <div style="width:99.4%;float: left;margin-bottom:10px;">
-
-
-            <mat-form-field [formGroup]="angForm" novalidate class="w-100" style="margin-top:15px;">
-                <input matInput placeholder="Title" [(ngModel)]="street_name" name="street_name"
-                    formControlName="street_name">
-
-            </mat-form-field>
-
-            <div *ngIf="angForm.controls['street_name'].invalid && (angForm.controls['street_name'].dirty || angForm.controls['street_name'].touched)"
-                class="alert alert-danger">
-                <div *ngIf="angForm.controls['street_name'].errors.required">
-                    Street Name is required.
-                </div>
-            </div>
-
-
-            <mat-form-field [formGroup]="angForm" novalidate class="w-100" style="margin-top:15px;">
-                <input matInput placeholder="Score" [(ngModel)]="score" name="score" formControlName="score">
-
-            </mat-form-field>
-
-            <div *ngIf="angForm.controls['score'].invalid && (angForm.controls['score'].dirty || angForm.controls['score'].touched)"
-                class="alert alert-danger">
-                <div *ngIf="angForm.controls['score'].errors.required || angForm.controls['score'].errors.pattern">
-                    Score Name is required and must be number
-                </div>
-            </div>
-
-            <div style="width:99.4%;margin-bottom:10px;">
-
-                <mat-form-field class="w-100">
-                    <textarea matInput placeholder="Event Location" [(ngModel)]="location" name="location"></textarea>
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Event Location</mat-label>
+                    <textarea matInput formControlName="location" rows="3"></textarea>
                 </mat-form-field>
             </div>
 
-            <div style="align-items: center">
-                <button mat-raised-button color="accent" style="border-radius: 30px;/*margin-left: 300px*/"
-                    (click)="setlocation()">Set Location</button>
-            </div>
+            <!-- Location Section -->
+            <div class="form-section">
+                <div class="location-header">
+                    <h3>Location Details</h3>
+                    <button mat-raised-button color="accent" class="location-btn" (click)="setlocation()">
+                        <mat-icon>location_on</mat-icon>
+                        Set Location
+                    </button>
+                </div>
 
-            <!-- <div style="width:100%; height:50%">
+                <div class="map-wrapper">
+                    <div class="map-container" leaflet [leafletOptions]="mapOptions" 
+                         (leafletMapReady)="onMapReady($event)"
+                         (leafletClick)="onMapClick($event)">
+                        <div *ngIf="marker" [leafletLayer]="marker"></div>
+                    </div>
+                </div>
 
-                <agm-map [latitude]="lat" [longitude]="lng" [scrollwheel]="false" [zoom]="10" [mapTypeControl]="true" (mapClick)="markerDragEnd($event)">
-                    <agm-marker [latitude]="lat" [longitude]="lng" [markerDraggable]="true"
-                        (dragEnd)="markerDragEnd($event)"></agm-marker>
-                </agm-map>
+                <div class="coordinates-container">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Latitude</mat-label>
+                        <input matInput formControlName="lat">
+                        <mat-error *ngIf="angForm.controls['lat'].errors?.['required']">
+                            Latitude is required
+                        </mat-error>
+                    </mat-form-field>
 
-            </div> -->
-          <div style="width:100%; height:30%">
-
-              <agm-map [latitude]="lat" [longitude]="lng" [scrollwheel]="false" [zoom]="10" [mapTypeControl]="true" (mapClick)="markerDragEnd($event)">
-                    <agm-marker [latitude]="lat" [longitude]="lng" [markerDraggable]="true"
-                        (dragEnd)="markerDragEnd($event)"></agm-marker>
-                </agm-map>
-            </div>
-
-            <mat-form-field [formGroup]="angForm" novalidate class="w-100" style="margin-top:15px;">
-                <input matInput placeholder="Latitude" [(ngModel)]="lat" name="lat" formControlName="lat">
-
-            </mat-form-field>
-
-            <div *ngIf="angForm.controls['lat'].invalid && (angForm.controls['lat'].dirty || angForm.controls['lat'].touched)"
-                class="alert alert-danger">
-                <div *ngIf="angForm.controls['lat'].errors.required">
-                    Latitude field is required
+                    <mat-form-field appearance="outline">
+                        <mat-label>Longitude</mat-label>
+                        <input matInput formControlName="lng">
+                        <mat-error *ngIf="angForm.controls['lng'].errors?.['required']">
+                            Longitude is required
+                        </mat-error>
+                    </mat-form-field>
                 </div>
             </div>
 
+            <!-- Date Range Section -->
+            <div class="form-section">
+                <div class="date-container">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Start Date</mat-label>
+                        <input matInput [matDatepicker]="picker1" formControlName="start_date">
+                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                        <mat-datepicker #picker1></mat-datepicker>
+                        <mat-error *ngIf="angForm.controls['start_date'].errors?.['required']">
+                            Start date is required
+                        </mat-error>
+                    </mat-form-field>
 
-            <mat-form-field [formGroup]="angForm" novalidate class="w-100" style="margin-top:15px;">
-                <input matInput placeholder="Longitude" [(ngModel)]="lng" name="lng" formControlName="lng">
-
-            </mat-form-field>
-
-            <div *ngIf="angForm.controls['lng'].invalid && (angForm.controls['lng'].dirty || angForm.controls['lng'].touched)"
-                class="alert alert-danger">
-                <div *ngIf="angForm.controls['lng'].errors.required">
-                    Longitude field is required
+                    <mat-form-field appearance="outline">
+                        <mat-label>End Date</mat-label>
+                        <input matInput [matDatepicker]="picker2" formControlName="end_date">
+                        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                        <mat-datepicker #picker2></mat-datepicker>
+                        <mat-error *ngIf="angForm.controls['end_date'].errors?.['required']">
+                            End date is required
+                        </mat-error>
+                    </mat-form-field>
                 </div>
             </div>
 
+            <!-- Scan Settings Section -->
+            <div class="form-section">
+                <h3>Scan Settings</h3>
+                <div class="scan-settings-container">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Scan Type</mat-label>
+                        <mat-select (selectionChange)="checkScanType($event.value)" formControlName="scan_type">
+                            <mat-option [value]="2">Virtual</mat-option>
+                            <mat-option [value]="1">Physical</mat-option>
+                        </mat-select>
+                    </mat-form-field>
 
-            <mat-form-field [formGroup]="angForm" novalidate class="w-100" style="margin-top:15px;">
-                <input matInput [matDatepicker]="picker1" placeholder="Start Date" [(ngModel)]="start_date"
-                    name="start_date" formControlName="start_date">
-                <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-                <mat-datepicker #picker1></mat-datepicker>
-            </mat-form-field>
+                    <mat-form-field appearance="outline" *ngIf="select_scan_id">
+                        <mat-label>Max Scan</mat-label>
+                        <mat-select formControlName="max_scan">
+                            <mat-option [value]="1">1</mat-option>
+                            <mat-option [value]="2">2</mat-option>
+                            <mat-option [value]="3">3</mat-option>
+                            <mat-option [value]="0">Infinite</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
 
-            <div *ngIf="angForm.controls['start_date'].invalid && (angForm.controls['start_date'].dirty || angForm.controls['start_date'].touched)"
-                class="alert alert-danger">
-                <div *ngIf="angForm.controls['start_date'].errors.required">
-                    Please select start date is required.
+                <div class="building-settings" *ngIf="select_scan_id">
+                    <mat-checkbox formControlName="is_building_qr" 
+                                (change)="checkBuildingQrValue($event)" 
+                                class="building-checkbox">
+                        Is Building QR Tag
+                    </mat-checkbox>
+
+                    <div class="building-selects" *ngIf="check_is_building_qr">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Select Building</mat-label>
+                            <mat-select (selectionChange)="get_buiding_id($event.value)" 
+                                      formControlName="building_id">
+                                <mat-option *ngFor="let building of dataSourceBuilding" 
+                                          [value]="building.id">
+                                    {{building.building_name}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Select Floor</mat-label>
+                            <mat-select formControlName="floor_id">
+                                <mat-option *ngFor="let floor of dataSourceFloors" 
+                                          [value]="floor.id">
+                                    {{floor.floor_name}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
                 </div>
             </div>
-
-
-
-
-            <mat-form-field [formGroup]="angForm" novalidate class="w-100" style="margin-top:15px;">
-                <input matInput [matDatepicker]="picker2" placeholder="End Date" [(ngModel)]="end_date" name="end_date"
-                    formControlName="end_date">
-                <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-                <mat-datepicker #picker2></mat-datepicker>
-            </mat-form-field>
-
-            <div *ngIf="angForm.controls['end_date'].invalid && (angForm.controls['end_date'].dirty || angForm.controls['end_date'].touched)"
-                class="alert alert-danger">
-                <div *ngIf="angForm.controls['end_date'].errors.required">
-                    Please select end date is required.
-                </div>
-            </div>
-
-            <mat-form-field class="mx-2">
-                <mat-select (ngModelChange)="checkScanType($event)" placeholder="Scan Type" [(ngModel)]="scan_type"
-                    name="scan_type">
-
-                    <mat-option [value]="2">
-                        Virtual
-                    </mat-option>
-                    <mat-option [value]="1">
-                        Physical
-                    </mat-option>
-
-
-                </mat-select>
-            </mat-form-field>
-
-            <mat-form-field class="mx-2" *ngIf="select_scan_id">
-                <mat-select placeholder="Max Scan" [(ngModel)]="max_scan" name="max_scan">
-
-
-                    <mat-option [value]="1">
-                        1
-                    </mat-option>
-                    <mat-option [value]="2">
-                        2
-                    </mat-option>
-                    <mat-option [value]="3">
-                        3
-                    </mat-option>
-                    <mat-option [value]="0">
-                        Infinite
-                    </mat-option>
-
-
-                </mat-select>
-            </mat-form-field>
-
-            <form>
-                <mat-checkbox *ngIf="select_scan_id" [(ngModel)]="is_building_qr"
-                    (change)="checkBuildingQrValue($event)" name="is_building_qr" [value]="is_building_qr">Is Building
-                    QR Tag </mat-checkbox>
-
-            </form>
-
-
-
-            <mat-form-field class="mx-2" *ngIf="check_is_building_qr && select_scan_id">
-                <mat-select (ngModelChange)="get_buiding_id($event)" placeholder="Select Building"
-                    [(ngModel)]="building_name" name="food">
-                    <mat-option *ngFor="let food of dataSourceBuilding" [value]="food.id">
-                        {{food.building_name}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-
-            <mat-form-field class="mx-2" *ngIf="check_is_building_qr && select_scan_id">
-                <mat-select placeholder="Select Floor" [(ngModel)]="floor_name" name="food">
-                    <mat-option *ngFor="let food of dataSourceFloors" [value]="food.id">
-                        {{food.floor_name}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-
-
-
-
-            <div style="position: absolute;margin:auto;"><button style="align-content: center;border-radius: 40px; position: absolute;margin:auto;
-    display:block;" mat-raised-button color="primary" (click)="addevent()" [disabled]="!angForm.valid">Add Tag</button>
-            </div>
-
-
-
-
         </div>
+    </div>
+
+    <div class="dialog-actions">
+        <button mat-raised-button 
+                color="primary" 
+                (click)="addevent()" 
+                [disabled]="!angForm.valid"
+                class="submit-btn">
+            <mat-icon>add_location</mat-icon>
+            Add Tag
+        </button>
+    </div>
+</div>

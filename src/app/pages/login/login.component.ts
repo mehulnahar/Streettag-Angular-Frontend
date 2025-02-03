@@ -48,25 +48,32 @@ export class LoginComponent implements OnInit {
       this.ajaxService.post(data, url).subscribe({
         next: (data: any) => {
           this.res = data;
-          if(this.res.status === "true") {
-            localStorage.setItem('username', this.form.value.username);
-            localStorage.setItem('password', this.form.value.password);
+          if(this.res.status === "true" && this.res.token) {
             localStorage.setItem('JWTtoken', this.res.token);
+            localStorage.setItem('username', this.form.value.username);
+            
+            this.snackBar.open('Login successful!', '', {
+              duration: 2000,
+              verticalPosition: 'top',
+              panelClass: ['green-snackbar']
+            });
+            
             this.router.navigate(['/admin/dashboard']);
           } else {
             this.form.get('password')?.reset();
-            this.snackBar.open('Invalid User Name or Password!', '', {
+            this.snackBar.open('Invalid credentials!', '', {
               duration: 2000,
               verticalPosition: 'top',
-              panelClass: ['red-snackbar'] 
+              panelClass: ['red-snackbar']
             });
           }
         },
         error: (error: any) => {
-          this.snackBar.open('Failed to load!', '', {
-            duration: 2000, 
+          this.form.get('password')?.reset();
+          this.snackBar.open(error.error?.message || 'Login failed! Please try again.', '', {
+            duration: 2000,
             verticalPosition: 'top',
-            panelClass: ['red-snackbar']  
+            panelClass: ['red-snackbar']
           });
         }
       });
@@ -74,6 +81,6 @@ export class LoginComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.settings.loadingSpinner = false; 
+    this.settings.loadingSpinner = false;
   }
 }

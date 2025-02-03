@@ -5,6 +5,7 @@ import {
   ViewChild,
   HostListener,
   Inject,
+  AfterViewInit
 } from "@angular/core";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { MatPaginator } from "@angular/material/paginator";
@@ -23,10 +24,34 @@ import { MatSort } from "@angular/material/sort";
 import { environment } from "src/environments/environment";
 import { ConfirmDialogComponent } from "src/app/shared/confirm-dialog/confirm-dialog.component";
 import { ConfirmDialogModel } from "src/app/shared/confirm-dialog/confirmDialog.model";
+import * as L from 'leaflet';
 
 // import {DeletedialogLocation} from '../../DeletedialogLocation/DeletedialogLocation.component';
 
 //declare var $:any;
+
+interface StreetTag {
+  id: number;
+  street_name: string;
+  score: number;
+  start_date: string;
+  end_date: string;
+  qr_img: string;
+  scan_type: string;
+}
+
+interface ApiResponse<T> {
+  response: T;
+  status: boolean;
+  message: string;
+}
+
+interface Location {
+  id: number;
+  location_name: string;
+  created_at: string;
+}
+
 @Component({
   selector: "app-event",
   templateUrl: "./streettags.component.html",
@@ -34,10 +59,10 @@ import { ConfirmDialogModel } from "src/app/shared/confirm-dialog/confirmDialog.
   encapsulation: ViewEncapsulation.None,
   providers: [],
 })
-export class StreettagsComponent implements OnInit {
+export class StreettagsComponent implements OnInit, AfterViewInit {
   @ViewChild("sidenav", { static: false }) sidenav: any;
-  @ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
-  @ViewChild(MatSort, { static: false }) sort!  : MatSort;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
   public settings: Settings;
   public sidenavOpen: boolean = true;
   private readonly baseUrl = environment.baseUrl;
@@ -67,7 +92,7 @@ export class StreettagsComponent implements OnInit {
     "edit",
     "delete",
   ];
-  public dataSource: any;
+  public dataSource: MatTableDataSource<StreetTag>;
   public dataSourceLocation: any;
   public selectedValue!: string;
   public foods = [
@@ -75,6 +100,43 @@ export class StreettagsComponent implements OnInit {
     { value: "pizza-1", viewValue: "Pizza" },
     { value: "tacos-2", viewValue: "Tacos" },
   ];
+
+  streettag_id: string = '';
+
+  private map!: L.Map;
+  public marker?: L.Marker;
+
+  public mapOptions = {
+    layers: [
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: '© OpenStreetMap contributors'
+      }),
+    ],
+    zoom: 7,
+    center: L.latLng(51.5339834, 0.0753218)
+  };
+
+  private baseMaps = {
+    'Map': L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution: '© OpenStreetMap contributors'
+    }),
+    'Satellite': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 18,
+      attribution: '© Esri'
+    })
+  };
+
+  private defaultIcon = L.icon({
+    iconUrl: 'assets/leaflet/marker-icon.png',
+    shadowUrl: 'assets/leaflet/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+  });
+
   constructor(
     public appSettings: AppSettings,
     public formBuilder: FormBuilder,
@@ -84,12 +146,20 @@ export class StreettagsComponent implements OnInit {
     private ajaxService: AjaxService
   ) {
     this.settings = this.appSettings.settings;
-
+    this.dataSource = new MatTableDataSource<StreetTag>([]);
   }
 
+  ngAfterViewInit() {
+    if (this.dataSource) {
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+    }
+  }
 
   applyFilter(filterValue: string) {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    if (this.dataSource) {
+      this.dataSource.filter = filterValue.trim().toLowerCase();
+    }
   }
 
   ngOnInit() {
@@ -149,15 +219,16 @@ export class StreettagsComponent implements OnInit {
 
   getallLocations() {
     const url = `${this.baseUrl}getLocations`;
-    this.ajaxService.get(url).subscribe((data) => {
-      this.dataSourceLocation = data["response"];
+    this.ajaxService.get<ApiResponse<Location[]>>(url).subscribe((response) => {
+      this.dataSourceLocation = response.response;
     });
   }
+
   ///////////////get all event//////////////////
   getallCircuits() {
     const url = `${this.baseUrl}getStreetTags`;
-    this.ajaxService.get(url).subscribe((data) => {
-      this.dataSource = new MatTableDataSource<Element>(data["response"]);
+    this.ajaxService.get<ApiResponse<StreetTag[]>>(url).subscribe((response) => {
+      this.dataSource = new MatTableDataSource<StreetTag>(response.response);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
     });
@@ -178,33 +249,71 @@ export class StreettagsComponent implements OnInit {
     });
   }
 
-  deleteCircuit(circuit_id :number) {
+  deleteCircuit(circuit_id: number) {
     var url = `${this.baseUrl}deleteStreetTag`;
     var data = { streettag_id: circuit_id };
 
-    this.ajaxService.post(data, url).subscribe((data) => {
-      this.resData = data;
+    this.ajaxService.post<ApiResponse<any>>(data, url).subscribe((response) => {
+      this.resData = response;
       this.getallCircuits();
 
-      this.snackBar.open("StreetTag deleted Successfully!", undefined, {
+      this.snackBar.open("StreetTag deleted Successfully!", " ", {
         duration: 3000,
         verticalPosition: "top",
         panelClass: ["blue-snackbar"],
       });
     });
   }
+
+  onMapReady(map: L.Map) {
+    this.map = map;
+    this.addMarker();
+    
+    // Add layer control
+    L.control.layers(this.baseMaps).addTo(this.map);
+    
+    // Set default layer
+    this.baseMaps['Map'].addTo(this.map);
+  }
+
+  addMarker() {
+    if (this.marker) {
+      this.map.removeLayer(this.marker);
+    }
+    this.marker = L.marker([this.lat, this.lng], {
+      draggable: true,
+      icon: this.defaultIcon
+    });
+    this.marker.on('dragend', (event) => {
+      const marker = event.target;
+      const position = marker.getLatLng();
+      this.lat = position.lat;
+      this.lng = position.lng;
+    });
+    this.marker.addTo(this.map);
+  }
 }
 
 @Component({
   selector: "dialog-overview-addmessage-dialog",
   templateUrl: "dialog-overview-addmessage-dialog.html",
+  styleUrls: ["dialog-overview-addmessage-dialog.scss"]
 })
-export class DialogOverviewAddMessageDialogStreettags {
+export class DialogOverviewAddMessageDialogStreettags implements OnInit {
+  private defaultIcon = L.icon({
+    iconUrl: 'assets/leaflet/marker-icon.png',
+    shadowUrl: 'assets/leaflet/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+  });
+
   public lat: number = 51.5339834;
   public lng: number = 0.0753218;
   public zoom: number = 7;
   public settings!: Settings;
-  form: FormGroup;
+  angForm!: FormGroup;
   groupList = [] as any;
   delresult: any;
   resData: any;
@@ -234,133 +343,167 @@ export class DialogOverviewAddMessageDialogStreettags {
   is_building_qr_value: any;
   val: any;
   private readonly baseUrl = environment.baseUrl;
-  angForm!: FormGroup;
+  private map!: L.Map;
+  public marker?: L.Marker;
+  public mapOptions = {
+    layers: [
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: '© OpenStreetMap contributors'
+      }),
+    ],
+    zoom: 7,
+    center: L.latLng(51.5339834, 0.0753218)
+  };
+
+  private baseMaps = {
+    'Map': L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution: '© OpenStreetMap contributors'
+    }),
+    'Satellite': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 18,
+      attribution: '© Esri'
+    })
+  };
 
   constructor(
     public dialogRef: MatDialogRef<DialogOverviewAddMessageDialogStreettags>,
     private fb: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public data: any,
+    @Inject(MAT_DIALOG_DATA) public data: { groups: any[] },
     private ajaxService: AjaxService,
     public snackBar: MatSnackBar,
     public formBuilder: FormBuilder
   ) {
     this.createForm();
-
-    this.form = this.formBuilder.group({
-      message: ["", Validators.required],
-      group: ["", Validators.required],
-    });
-    this.getallLocations();
-
-    this.getallBuilding();
   }
-  groups = this.data;
+
+  ngOnInit() {
+    this.getallLocations();
+  }
+
+  onMapReady(map: L.Map) {
+    this.map = map;
+    this.addMarker();
+    
+    // Add layer control
+    L.control.layers(this.baseMaps).addTo(this.map);
+    
+    // Set default layer
+    this.baseMaps['Map'].addTo(this.map);
+  }
+
+  onMapClick(e: L.LeafletMouseEvent) {
+    this.lat = e.latlng.lat;
+    this.lng = e.latlng.lng;
+    this.angForm.patchValue({
+      lat: this.lat,
+      lng: this.lng
+    });
+    this.addMarker();
+  }
+
+  addMarker() {
+    if (this.marker) {
+      this.map.removeLayer(this.marker);
+    }
+    this.marker = L.marker([this.lat, this.lng], {
+      draggable: true,
+      icon: this.defaultIcon
+    });
+    this.marker.on('dragend', (event) => {
+      const marker = event.target;
+      const position = marker.getLatLng();
+      this.lat = position.lat;
+      this.lng = position.lng;
+    });
+    this.marker.addTo(this.map);
+  }
+
   onNoClick(): void {
     this.dialogRef.close();
   }
 
   getallBuilding() {
-    ////console.log("here inside conact details");
-
-    var url = `${this.baseUrl}getBuilding`;
-
-    this.ajaxService.get(url).subscribe((data) => {
-      this.dataSourceBuilding = data["response"];
-      //console.log(545454545454);
-      //console.log(this.dataSourceBuilding);
+    var url = `${this.baseUrl}getBuildings`;
+    this.ajaxService.get<ApiResponse<any>>(url).subscribe((data) => {
+      this.dataSourceBuilding = data.response;
     });
   }
 
   getallCircuits() {
-    ////console.log("here inside conact details");
-
-    var url = `${this.baseUrl}getCircuits`;
-
-    this.ajaxService.get(url).subscribe((data) => {
-      //dataSource = data['response'];
-      this.dataSource = new MatTableDataSource<Element>(data["response"]);
-      //console.log("all Locations:");
-      //console.log(this.dataSource)
+    var url = `${this.baseUrl}getStreetTags`;
+    this.ajaxService.get<ApiResponse<any>>(url).subscribe((data) => {
+      this.dataSource = new MatTableDataSource<Element>(data.response);
     });
   }
 
   getallLocations() {
-    ////console.log("here inside conact details");
-
     var url = `${this.baseUrl}getLocations`;
-
-    this.ajaxService.get(url).subscribe((data) => {
-      this.dataSourceLocation = data["response"];
-      //console.log(545454545454);
-      //console.log(this.dataSourceLocation);
+    this.ajaxService.get<ApiResponse<any>>(url).subscribe((data) => {
+      this.dataSourceLocation = data.response;
     });
-  }
-
-  markerDragEnd($event: any) {
-    //console.log($event);
-    this.lat = $event.coords.lat;
-    this.lng = $event.coords.lng;
   }
 
   setlocation() {
-    //this.location=this.location;
-    //console.log("getting location" + this.location)
-
-    ////console.log("calling get lat lng function")
-
-    var url =
-      "https://maps.googleapis.com/maps/api/geocode/json?address=" +
-      this.location +
-      "&key=AIzaSyB9stNP2UYOkJCJkR2CfnabPiNP6g08UH8";
-
-    ////console.log("usseerrrsssss")
-
-    return this.ajaxService.getLocation(url).subscribe((data: any) => {
-      if (
-        typeof data != "undefined" &&
-        data != "" &&
-        typeof data.results != "undefined" &&
-        data.results != ""
-      ) {
-        ////console.log(data);
-        var lattitude = data.results[0].geometry.location.lat;
-        var longitude = data.results[0].geometry.location.lng;
-
-        this.lat = lattitude;
-        this.lng = longitude;
-
-        //console.log("getting lat of" + this.lat)
-        //console.log("getting long of" + this.lng)
-
-        return data;
-      }
-    });
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        this.lat = position.coords.latitude;
+        this.lng = position.coords.longitude;
+        this.angForm.patchValue({
+          lat: this.lat,
+          lng: this.lng
+        });
+        if (this.map) {
+          this.map.setView([this.lat, this.lng], 15);
+          this.addMarker();
+        }
+      });
+    }
   }
 
-  checkBuildingQrValue(res:any) {
-    if (res.source.value) {
-      this.check_is_building_qr = false;
-      this.check_building_validation = 0;
-      //console.log(this.check_building_validation)
-    } else {
+  checkBuildingQrValue(res: any) {
+    this.is_building_qr_value = res.checked;
+    this.angForm.patchValue({
+      is_building_qr: res.checked
+    });
+    if (this.is_building_qr_value == true) {
       this.check_is_building_qr = true;
-      this.check_building_validation = 1;
-      //console.log(this.check_building_validation)
+      this.getallBuilding();
+    } else {
+      this.check_is_building_qr = false;
     }
   }
 
   createForm() {
-    this.angForm = this.fb.group({
-      street_name: ["", [Validators.required]],
-      score: ["", [Validators.required, Validators.pattern("[0-9]*")]],
-      start_date: ["", [Validators.required]],
-      end_date: ["", [Validators.required]],
-      lat: ["", [Validators.required]],
-      lng: ["", [Validators.required]],
+    this.angForm = this.formBuilder.group({
+      street_name: ["", Validators.required],
+      score: ["", [Validators.required, Validators.pattern("^[0-9]*$")]],
+      lat: ["", Validators.required],
+      lng: ["", Validators.required],
+      start_date: ["", Validators.required],
+      end_date: ["", Validators.required],
+      location: [""],
+      scan_type: [2],
+      max_scan: [1],
+      is_building_qr: [false],
+      building_id: [""],
+      floor_id: [""]
     });
+
+    // Subscribe to form value changes to update the class properties
+    this.angForm.get('street_name')?.valueChanges.subscribe(val => this.street_name = val);
+    this.angForm.get('score')?.valueChanges.subscribe(val => this.score = val);
+    this.angForm.get('lat')?.valueChanges.subscribe(val => this.lat = val);
+    this.angForm.get('lng')?.valueChanges.subscribe(val => this.lng = val);
+    this.angForm.get('start_date')?.valueChanges.subscribe(val => this.start_date = val);
+    this.angForm.get('end_date')?.valueChanges.subscribe(val => this.end_date = val);
   }
 
-  checkScanType(res:any) {
+  checkScanType(res: any) {
+    this.angForm.patchValue({
+      scan_type: res
+    });
     if (res == 1) {
       this.select_scan_id = true;
     } else {
@@ -368,98 +511,61 @@ export class DialogOverviewAddMessageDialogStreettags {
     }
   }
 
-  get_buiding_id(res:any) {
-    this.getFloors(res);
-  }
-
-  getFloors(res:any) {
-    //console.log(res);
-    var url = `${this.baseUrl}getFloorByBuildingId`;
-    var data1 = {
-      building_id: res,
-    };
-
-    //console.log(data1);
-    this.ajaxService.post(data1, url).subscribe((data) => {
-      this.dataSourceFloors = data["response"];
-      //console.log(this.dataSourceFloors);
+  get_buiding_id(res: any) {
+    this.building_id = res;
+    this.angForm.patchValue({
+      building_id: res
     });
   }
 
-  addevent() {
-    //console.log(this.angForm.status);
+  getFloors(res: any) {
+    var url = `${this.baseUrl}getFloors`;
+    var data = { building_id: res };
+    this.ajaxService.post<ApiResponse<any>>(data, url).subscribe((data) => {
+      this.dataSourceFloors = data.response;
+    });
+  }
 
-    if (
-      this.check_building_validation == 1 &&
-      (this.building_name == "" || this.building_name != "") &&
-      this.floor_name == ""
-    ) {
-      this.snackBar.open("Select Building! and Floor!", null, {
-        duration: 3000,
-        verticalPosition: "top",
-      });
-      return false;
-    }
-
-    if (this.angForm.status == "VALID") {
+  addevent(): void {
+    if (this.angForm.valid) {
       var url = `${this.baseUrl}addStreetTag`;
-      if (this.is_building_qr) {
-        this.is_building_qr_value = 1;
-      } else {
-        this.is_building_qr_value = 0;
-      }
-      if (this.scan_type == 2) {
-        this.building_name = "";
-        this.floor_name = "";
-        this.max_scan = 0;
-        this.is_building_qr_value = 0;
-      }
-      var data1 = {
-        street_name: this.street_name,
-        score: this.score,
-        lat: this.lat,
-        lng: this.lng,
-        scan_type: this.scan_type,
-        start_date: this.start_date,
-        end_date: this.end_date,
-        max_scan: this.max_scan,
-        is_building_qr: this.is_building_qr_value,
-        building_id: this.building_name,
-        floor_id: this.floor_name,
+      var formValue = this.angForm.value;
+      var data = {
+        street_name: formValue.street_name,
+        score: formValue.score,
+        lat: formValue.lat,
+        lng: formValue.lng,
+        start_date: formValue.start_date,
+        end_date: formValue.end_date,
+        scan_type: formValue.scan_type,
+        max_scan: formValue.max_scan,
+        is_building_qr: formValue.is_building_qr,
+        building_id: formValue.building_id,
+        floor_id: formValue.floor_id,
       };
-      //console.log("request parameter is:")
-      //console.log(data1)
 
-      //console.log('step1');
-
-      this.ajaxService.post(data1, url).subscribe((data1) => {
-        this.resData = data1;
-        //console.log(this.resData)
-        this.getallCircuits();
-        let dynamicSnackColor = "blue-snackbar";
-        if (this.resData.status == "false") {
-          dynamicSnackColor = "red-snackbar";
+      this.ajaxService.post<ApiResponse<any>>(data, url).subscribe((response) => {
+        this.resData = response;
+        if (response.status) {
+          this.snackBar.open("StreetTag Added Successfully!", "", {
+            duration: 3000,
+            verticalPosition: "top",
+            panelClass: ["blue-snackbar"],
+          });
+          this.dialogRef.close();
         }
-        this.snackBar.open(this.resData.msg, undefined, {
-          duration: 3000,
-          verticalPosition: "top",
-          panelClass: dynamicSnackColor,
-        });
-
-        this.dialogRef.close();
       });
     }
   }
 }
 
 @Component({
-  selector: "dialog-overview--dialog",
+  selector: "dialog-overview-message-dialog",
   templateUrl: "dialog-overview-message-dialog.html",
 })
 export class DialogOverviewMessageDialogStreettags {
   allLocations = [] as any;
-  form: FormGroup;
-
+  angForm: FormGroup;
   public lat: number = 45.42153;
   public lng: number = -75.697193;
   location_name = "";
@@ -467,42 +573,27 @@ export class DialogOverviewMessageDialogStreettags {
   streettag_id = "";
   location_id = "";
   no_of_QR = "";
-  start_date = "";
-  end_date = "";
-  resData: any;
-  public dataSourceLocation: any;
-
-  selectedValue! : string;
-
   public zoom: number = 7;
   public settings!: Settings;
-  angForm!: FormGroup;
   private readonly baseUrl = environment.baseUrl;
+
   constructor(
     public dialogRef: MatDialogRef<DialogOverviewMessageDialogStreettags>,
     private fb: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) public data: any,
+    @Inject(MAT_DIALOG_DATA) public data: { event: StreetTag },
     private ajaxService: AjaxService,
     public snackBar: MatSnackBar,
     public formBuilder: FormBuilder
   ) {
-    this.createForm();
-
-    this.location_name = this.data.event.location_name;
-    this.street_name = this.data.event.street_name;
-    this.streettag_id = this.data.event.id;
-
-    this.start_date = this.data.event.start_date;
-    this.end_date = this.data.event.end_date;
-
-    this.getallLocations();
-    //console.log("saeeeeeee");
-    //console.log(this.data.event);
-
-    this.form = this.formBuilder.group({
-      message: ["", Validators.required],
-      group: ["", Validators.required],
+    // Initialize form with existing data
+    this.angForm = this.formBuilder.group({
+      street_name: [data.event.street_name, Validators.required],
+      start_date: [new Date(data.event.start_date), Validators.required],
+      end_date: [new Date(data.event.end_date), Validators.required]
     });
+    
+    this.streettag_id = data.event.id.toString();
+    this.getallLocations();
   }
 
   ngOnInit() {}
@@ -512,55 +603,47 @@ export class DialogOverviewMessageDialogStreettags {
   }
 
   getallLocations() {
-    ////console.log("here inside conact details");
-
-    var url = `${this.baseUrl}getLocations`;
-
-    this.ajaxService.get(url).subscribe((data) => {
-      this.dataSourceLocation = data["response"];
-      //console.log(545454545454);
-      //console.log(this.dataSourceLocation);
-    });
-  }
-
-  createForm() {
-    this.angForm = this.fb.group({
-      street_name: ["", [Validators.required]],
-      start_date: ["", [Validators.required]],
-      end_date: ["", [Validators.required]],
+    const url = `${this.baseUrl}getLocations`;
+    this.ajaxService.get<ApiResponse<Location[]>>(url).subscribe((response) => {
+      this.allLocations = response.response;
     });
   }
 
   updateevent() {
-    //console.log(this.angForm.status);
-
-    if (this.angForm.status == "VALID") {
-      var url = `${this.baseUrl}editStreetTag`;
-      var data1 = {
-        streettag_id: this.streettag_id,
-        street_name: this.street_name,
-
-        start_date: this.start_date,
-        end_date: this.end_date,
+    if (this.angForm.valid) {
+      const formData = this.angForm.value;
+      const url = `${this.baseUrl}updateStreetTag`;
+      
+      const payload = {
+        street_name: formData.street_name,
+        start_date: formData.start_date.toISOString().split('T')[0],
+        end_date: formData.end_date.toISOString().split('T')[0],
+        streettag_id: this.streettag_id
       };
-      //console.log("request parameter is:")
-      //console.log(data1)
 
-      this.ajaxService.post(data1, url).subscribe((data1) => {
-        this.resData = data1;
-        //console.log(this.resData)
-
-        this.snackBar.open(this.resData.msg, undefined, {
-          duration: 3000,
-          verticalPosition: "top",
-        });
-
-        this.dialogRef.close();
+      this.ajaxService.post<ApiResponse<any>>(url, JSON.stringify(payload)).subscribe(
+        (response) => {
+          if (response.status) {
+            this.snackBar.open('Street Tag Updated Successfully!', 'Close', {
+              duration: 2000,
+            });
+            this.dialogRef.close();
+          } else {
+            this.snackBar.open('Error Updating Street Tag', 'Close', {
+              duration: 2000,
+            });
+          }
+        },
+        (error) => {
+          this.snackBar.open('Error Updating Street Tag', 'Close', {
+            duration: 2000,
+          });
+        }
+      );
+    } else {
+      this.snackBar.open('Please fill all required fields', 'Close', {
+        duration: 2000,
       });
     }
-  }
-
-  closeDialog(group:any) {
-    this.dialogRef.close(group);
   }
 }

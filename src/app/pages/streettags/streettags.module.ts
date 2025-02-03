@@ -1,14 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
-import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
+import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { PipesModule } from 'src/app/theme/pipes/pipes.module';
+import { SimplebarAngularModule } from 'simplebar-angular';
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import {DialogOverviewAddMessageDialogStreettags, DialogOverviewMessageDialogStreettags, StreettagsComponent } from './streettags.component';
-import { AgmCoreModule } from '@agm/core/core.module';
 
-export const routes = [
+export const routes: Routes = [
   { path: '', component: StreettagsComponent, pathMatch: 'full' }
 ];
 
@@ -17,23 +18,17 @@ export const routes = [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    PerfectScrollbarModule,     
+    SimplebarAngularModule,
     SharedModule,
     PipesModule,
+    LeafletModule,
     RouterModule.forChild(routes),
-    AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyBNcjxo_35qnEG17dQvvftWa68eZWepYE0'
-    }),
   ],
-  declarations: 
-  [
+  declarations: [
     StreettagsComponent,
     DialogOverviewAddMessageDialogStreettags,
     DialogOverviewMessageDialogStreettags,
   ],
-  entryComponents:[
-    DialogOverviewAddMessageDialogStreettags,
-    DialogOverviewMessageDialogStreettags,
-  ]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class StreettagsModule { }

@@ -164,7 +164,12 @@ export class LocationComponent implements OnInit {
 
     this.ajaxService.get<LocationResponse>(url).subscribe(
       (data) => {
-        this.dataSource = new MatTableDataSource<Location>(data.response);
+        // Transform the dates to a format Angular can understand
+        const transformedData = data.response.map(location => ({
+          ...location,
+          created_at: this.transformDate(location.created_at)
+        }));
+        this.dataSource = new MatTableDataSource<Location>(transformedData);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
       },
@@ -180,6 +185,14 @@ export class LocationComponent implements OnInit {
       }
     );
   }
+
+  private transformDate(dateStr: string): string {
+    if (!dateStr) return '';
+    // Convert from DD-MM-YYYY to YYYY-MM-DD
+    const [day, month, year] = dateStr.split('-');
+    return `${year}-${month}-${day}`;
+  }
+
   ////////////////////delete Dialoge///////////////////
   OpenDelete(id:any): void {
     //console.log("************:" + id)
@@ -233,8 +246,8 @@ export class DialogOverviewAddMessageDialogLocation {
   public lat: number = 45.42153;
   public lng: number = -75.697193;
   public zoom: number = 7;
-    public settings!: Settings;
-  form!: FormGroup;
+  public settings!: Settings;
+  form: FormGroup;
   groupList = [] as any;
   delresult: any;
   resData: any;
@@ -243,8 +256,6 @@ export class DialogOverviewAddMessageDialogLocation {
 
   public displayedColumns = ["serialno", "location_name", "date", "action"];
   public dataSource: any;
-
-  angForm!: FormGroup;
   private readonly baseUrl = environment.baseUrl;
 
   constructor(
@@ -254,16 +265,15 @@ export class DialogOverviewAddMessageDialogLocation {
     private ajaxService: AjaxService,
     public snackBar: MatSnackBar,
     public formBuilder: FormBuilder,
-          private router: Router
+    private router: Router
   ) {
-    this.createForm();
-
     this.form = this.formBuilder.group({
-      message: ["", Validators.required],
-      group: ["", Validators.required],
+      location_name: ['', Validators.required]
     });
   }
+  
   groups = this.data;
+  
   onNoClick(): void {
     this.dialogRef.close();
   }
@@ -273,7 +283,11 @@ export class DialogOverviewAddMessageDialogLocation {
 
     this.ajaxService.get<LocationResponse>(url).subscribe(
       (data) => {
-        this.dataSource = new MatTableDataSource<Location>(data.response);
+        const transformedData = data.response.map(location => ({
+          ...location,
+          created_at: this.transformDate(location.created_at)
+        }));
+        this.dataSource = new MatTableDataSource<Location>(transformedData);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
       },
@@ -290,28 +304,21 @@ export class DialogOverviewAddMessageDialogLocation {
     );
   }
 
-  createForm() {
-    this.angForm = this.fb.group({
-      location_name: ["", Validators.required],
-    });
+  private transformDate(dateStr: string): string {
+    if (!dateStr) return '';
+    const [day, month, year] = dateStr.split('-');
+    return `${year}-${month}-${day}`;
   }
 
   addevent() {
-    //console.log(this.angForm.status);
-
-    if (this.angForm.status == "VALID") {
-      //console.log(data);
-
+    if (this.form.valid) {
       var url = `${this.baseUrl}addLocation`;
       var data1 = {
-        location_name: this.location_name,
+        location_name: this.form.get('location_name')?.value,
       };
-      //console.log("request parameter is:")
-      //console.log(data1)
 
       this.ajaxService.post(data1, url).subscribe((data1) => {
         this.resData = data1;
-        //console.log(this.resData)
         this.getallLocations();
         let dynamicSnackColor = "blue-snackbar";
         if (this.resData.status == "false") {
@@ -342,19 +349,13 @@ export class DialogOverviewAddMessageDialogLocation {
 export class DialogOverviewMessageDialogLocation {
   allLocations = [] as any;
   form: FormGroup;
-
   public lat: number = 45.42153;
   public lng: number = -75.697193;
-  location_name = "";
-  location_name_old = "";
   location_id = "";
-
   public zoom: number = 7;
   public settings!: Settings;
   resData = [] as any;
   private readonly baseUrl = environment.baseUrl;
-
-  angForm!: FormGroup;
 
   constructor(
     public dialogRef: MatDialogRef<DialogOverviewMessageDialogLocation>,
@@ -364,63 +365,34 @@ export class DialogOverviewMessageDialogLocation {
     public snackBar: MatSnackBar,
     public formBuilder: FormBuilder
   ) {
-    this.createForm();
-
-    this.location_name = this.data.event.location_name;
-    this.location_name_old = this.data.event.location_name;
-    this.location_id = this.data.event.id;
-
     this.form = this.formBuilder.group({
-      message: ["", Validators.required],
-      group: ["", Validators.required],
+      location_name: [this.data.event.location_name, Validators.required]
     });
+    this.location_id = this.data.event.id;
   }
-
-  ngOnInit() {}
 
   onNoClick(): void {
     this.dialogRef.close();
   }
 
-  createForm() {
-    this.angForm = this.fb.group({
-      location_name: ["", Validators.required],
-    });
-  }
-
   updateevent() {
-    //console.log(this.angForm.status);
-
-    //console.log("lastelementData yy uu ", this.location_name_old);
-
-    //console.log(this.angForm.status);
-
-    if (this.angForm.status == "VALID") {
+    if (this.form.valid) {
       var url = `${this.baseUrl}editLocation`;
       var data1 = {
         location_id: this.location_id,
-        location_name: this.location_name,
-        location_name_old: this.location_name_old,
+        location_name: this.form.get('location_name')?.value,
+        location_name_old: this.data.event.location_name,
       };
-      //console.log("request parameter is:")
-      //console.log(data1)
 
       this.ajaxService.post(data1, url).subscribe((data1) => {
         this.resData = data1;
-        //console.log(this.resData)
-
         this.snackBar.open(this.resData.msg, undefined, {
           duration: 3000,
           verticalPosition: "top",
         });
-
         this.dialogRef.close();
       });
     }
-  }
-
-  closeDialog(group:any) {
-    this.dialogRef.close(group);
   }
 
   onSubmit() {

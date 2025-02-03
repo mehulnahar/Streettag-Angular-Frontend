@@ -1,3 +1,5 @@
+@import "~leaflet/dist/leaflet.css";
+
 .mat-cell:nth-child(7),
 .mat-header-cell:nth-child(7) {
   flex: 0 0 4rem;
@@ -21,4 +23,10 @@ mat-footer-row mat-footer-cell {
 
 .mat-column-qr_img {
   min-width: 10rem;
+}
+
+.map-container {
+  height: 300px;
+  width: 100%;
+  margin: 15px 0;
 }
