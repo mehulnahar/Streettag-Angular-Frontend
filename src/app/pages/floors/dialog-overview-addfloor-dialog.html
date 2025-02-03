@@ -1,0 +1,34 @@
+<div class="dialog-content" style="min-width: 400px;">
+  <h2 mat-dialog-title>Create Floor</h2>
+
+  <mat-dialog-content>
+    <form [formGroup]="angForm" fxLayout="column" fxLayoutGap="20px">
+      <mat-form-field appearance="fill" class="w-100">
+        <mat-label>Floor Name</mat-label>
+        <input matInput placeholder="Enter floor name" [(ngModel)]="floor_name" formControlName="floor_name">
+        <mat-error *ngIf="angForm.get('floor_name')?.errors?.['required']">
+          Floor Name is required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="w-100">
+        <mat-label>Select Building</mat-label>
+        <mat-select [(ngModel)]="building_id" formControlName="building_id">
+          <mat-option *ngFor="let building of dataSourceBuilding | async" [value]="building.id">
+            {{building.building_name}}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="angForm.get('building_id')?.errors?.['required']">
+          Building is required
+        </mat-error>
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onNoClick()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="addevent()" [disabled]="!angForm.valid">
+      Add Floor
+    </button>
+  </mat-dialog-actions>
+</div>

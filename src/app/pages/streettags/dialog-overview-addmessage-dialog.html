@@ -1,161 +1,139 @@
-<div class="streettag-dialog-container">
-    <div class="dialog-header">
-        <h2 class="title">Add Streettag</h2>
-    </div>
-    
-    <div class="dialog-content">
-        <div class="form-container" [formGroup]="angForm" novalidate>
-            <!-- Basic Information Section -->
-            <div class="form-section">
-                <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>Title</mat-label>
-                    <input matInput formControlName="street_name">
-                    <mat-error *ngIf="angForm.controls['street_name'].errors?.['required']">
-                        Street Name is required
-                    </mat-error>
+<h2 mat-dialog-title>Add StreetTag</h2>
+
+<mat-dialog-content>
+    <form [formGroup]="angForm" novalidate>
+        <!-- Basic Information Section -->
+        <h3>Basic Information</h3>
+        <mat-form-field appearance="fill">
+            <mat-label>Title</mat-label>
+            <input matInput formControlName="street_name">
+            <mat-error *ngIf="angForm.controls['street_name'].errors?.['required']">
+                Street Name is required
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Score</mat-label>
+            <input matInput formControlName="score" type="number">
+            <mat-error *ngIf="angForm.controls['score'].errors?.['required'] || angForm.controls['score'].errors?.['pattern']">
+                Score must be a valid number
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Event Location</mat-label>
+            <textarea matInput formControlName="location" rows="3"></textarea>
+        </mat-form-field>
+
+        <!-- Location Section -->
+        <h3>Location Details</h3>
+        <button mat-raised-button color="accent" (click)="setlocation()">
+            <mat-icon>location_on</mat-icon>
+            Set Location
+        </button>
+
+        <div class="map-container" leaflet [leafletOptions]="mapOptions" 
+             (leafletMapReady)="onMapReady($event)"
+             (leafletClick)="onMapClick($event)">
+        </div>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Latitude</mat-label>
+            <input matInput formControlName="lat">
+            <mat-error *ngIf="angForm.controls['lat'].errors?.['required']">
+                Latitude is required
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Longitude</mat-label>
+            <input matInput formControlName="lng">
+            <mat-error *ngIf="angForm.controls['lng'].errors?.['required']">
+                Longitude is required
+            </mat-error>
+        </mat-form-field>
+
+        <!-- Date Range Section -->
+        <h3>Date Range</h3>
+        <mat-form-field appearance="fill">
+            <mat-label>Start Date</mat-label>
+            <input matInput [matDatepicker]="picker1" formControlName="start_date">
+            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+            <mat-datepicker #picker1></mat-datepicker>
+            <mat-error *ngIf="angForm.controls['start_date'].errors?.['required']">
+                Start date is required
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>End Date</mat-label>
+            <input matInput [matDatepicker]="picker2" formControlName="end_date">
+            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+            <mat-datepicker #picker2></mat-datepicker>
+            <mat-error *ngIf="angForm.controls['end_date'].errors?.['required']">
+                End date is required
+            </mat-error>
+        </mat-form-field>
+
+        <!-- Scan Settings Section -->
+        <h3>Scan Settings</h3>
+        <mat-form-field appearance="fill">
+            <mat-label>Scan Type</mat-label>
+            <mat-select (selectionChange)="checkScanType($event.value)" formControlName="scan_type">
+                <mat-option [value]="2">Virtual</mat-option>
+                <mat-option [value]="1">Physical</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" *ngIf="select_scan_id">
+            <mat-label>Max Scan</mat-label>
+            <mat-select formControlName="max_scan">
+                <mat-option [value]="1">1</mat-option>
+                <mat-option [value]="2">2</mat-option>
+                <mat-option [value]="3">3</mat-option>
+                <mat-option [value]="0">Infinite</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <div *ngIf="select_scan_id">
+            <mat-checkbox formControlName="is_building_qr" 
+                        (change)="checkBuildingQrValue($event)">
+                Is Building QR Tag
+            </mat-checkbox>
+
+            <div *ngIf="check_is_building_qr">
+                <mat-form-field appearance="fill">
+                    <mat-label>Select Building</mat-label>
+                    <mat-select (selectionChange)="get_buiding_id($event.value)" 
+                              formControlName="building_id">
+                        <mat-option *ngFor="let building of dataSourceBuilding" 
+                                  [value]="building.id">
+                            {{building.building_name}}
+                        </mat-option>
+                    </mat-select>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>Score</mat-label>
-                    <input matInput formControlName="score" type="number">
-                    <mat-error *ngIf="angForm.controls['score'].errors?.['required'] || angForm.controls['score'].errors?.['pattern']">
-                        Score must be a valid number
-                    </mat-error>
+                <mat-form-field appearance="fill">
+                    <mat-label>Select Floor</mat-label>
+                    <mat-select formControlName="floor_id">
+                        <mat-option *ngFor="let floor of dataSourceFloors" 
+                                  [value]="floor.id">
+                            {{floor.floor_name}}
+                        </mat-option>
+                    </mat-select>
                 </mat-form-field>
-
-                <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>Event Location</mat-label>
-                    <textarea matInput formControlName="location" rows="3"></textarea>
-                </mat-form-field>
-            </div>
-
-            <!-- Location Section -->
-            <div class="form-section">
-                <div class="location-header">
-                    <h3>Location Details</h3>
-                    <button mat-raised-button color="accent" class="location-btn" (click)="setlocation()">
-                        <mat-icon>location_on</mat-icon>
-                        Set Location
-                    </button>
-                </div>
-
-                <div class="map-wrapper">
-                    <div class="map-container" leaflet [leafletOptions]="mapOptions" 
-                         (leafletMapReady)="onMapReady($event)"
-                         (leafletClick)="onMapClick($event)">
-                        <div *ngIf="marker" [leafletLayer]="marker"></div>
-                    </div>
-                </div>
-
-                <div class="coordinates-container">
-                    <mat-form-field appearance="outline">
-                        <mat-label>Latitude</mat-label>
-                        <input matInput formControlName="lat">
-                        <mat-error *ngIf="angForm.controls['lat'].errors?.['required']">
-                            Latitude is required
-                        </mat-error>
-                    </mat-form-field>
-
-                    <mat-form-field appearance="outline">
-                        <mat-label>Longitude</mat-label>
-                        <input matInput formControlName="lng">
-                        <mat-error *ngIf="angForm.controls['lng'].errors?.['required']">
-                            Longitude is required
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-            </div>
-
-            <!-- Date Range Section -->
-            <div class="form-section">
-                <div class="date-container">
-                    <mat-form-field appearance="outline">
-                        <mat-label>Start Date</mat-label>
-                        <input matInput [matDatepicker]="picker1" formControlName="start_date">
-                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-                        <mat-datepicker #picker1></mat-datepicker>
-                        <mat-error *ngIf="angForm.controls['start_date'].errors?.['required']">
-                            Start date is required
-                        </mat-error>
-                    </mat-form-field>
-
-                    <mat-form-field appearance="outline">
-                        <mat-label>End Date</mat-label>
-                        <input matInput [matDatepicker]="picker2" formControlName="end_date">
-                        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-                        <mat-datepicker #picker2></mat-datepicker>
-                        <mat-error *ngIf="angForm.controls['end_date'].errors?.['required']">
-                            End date is required
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-            </div>
-
-            <!-- Scan Settings Section -->
-            <div class="form-section">
-                <h3>Scan Settings</h3>
-                <div class="scan-settings-container">
-                    <mat-form-field appearance="outline">
-                        <mat-label>Scan Type</mat-label>
-                        <mat-select (selectionChange)="checkScanType($event.value)" formControlName="scan_type">
-                            <mat-option [value]="2">Virtual</mat-option>
-                            <mat-option [value]="1">Physical</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-
-                    <mat-form-field appearance="outline" *ngIf="select_scan_id">
-                        <mat-label>Max Scan</mat-label>
-                        <mat-select formControlName="max_scan">
-                            <mat-option [value]="1">1</mat-option>
-                            <mat-option [value]="2">2</mat-option>
-                            <mat-option [value]="3">3</mat-option>
-                            <mat-option [value]="0">Infinite</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
-
-                <div class="building-settings" *ngIf="select_scan_id">
-                    <mat-checkbox formControlName="is_building_qr" 
-                                (change)="checkBuildingQrValue($event)" 
-                                class="building-checkbox">
-                        Is Building QR Tag
-                    </mat-checkbox>
-
-                    <div class="building-selects" *ngIf="check_is_building_qr">
-                        <mat-form-field appearance="outline">
-                            <mat-label>Select Building</mat-label>
-                            <mat-select (selectionChange)="get_buiding_id($event.value)" 
-                                      formControlName="building_id">
-                                <mat-option *ngFor="let building of dataSourceBuilding" 
-                                          [value]="building.id">
-                                    {{building.building_name}}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
-
-                        <mat-form-field appearance="outline">
-                            <mat-label>Select Floor</mat-label>
-                            <mat-select formControlName="floor_id">
-                                <mat-option *ngFor="let floor of dataSourceFloors" 
-                                          [value]="floor.id">
-                                    {{floor.floor_name}}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </div>
-                </div>
             </div>
         </div>
-    </div>
+    </form>
+</mat-dialog-content>
 
-    <div class="dialog-actions">
-        <button mat-raised-button 
-                color="primary" 
-                (click)="addevent()" 
-                [disabled]="!angForm.valid"
-                class="submit-btn">
-            <mat-icon>add_location</mat-icon>
-            Add Tag
-        </button>
-    </div>
-</div>
+<mat-dialog-actions align="end">
+    <button mat-button (click)="onNoClick()">Cancel</button>
+    <button mat-raised-button 
+            color="primary" 
+            (click)="addevent()" 
+            [disabled]="!angForm.valid">
+        <mat-icon>add</mat-icon>
+        Add Tag
+    </button>
+</mat-dialog-actions>

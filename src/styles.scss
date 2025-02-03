@@ -42,3 +42,48 @@ body {
     height: 100%;
   }
 }
+
+// Modern Dialog Styles
+.modern-dialog {
+  .mat-mdc-dialog-container {
+    padding: 0 !important;
+    border-radius: 24px !important;
+    overflow: hidden !important;
+
+    .mdc-dialog__surface {
+      border-radius: 24px !important;
+      overflow: hidden !important;
+      background: white !important;
+    }
+
+    .mat-mdc-dialog-content {
+      padding: 0 !important;
+      margin: 0 !important;
+      max-height: 85vh !important;
+    }
+  }
+}
+
+// Material Form Field Styles
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+.mat-mdc-form-field-appearance-outline {
+  .mat-mdc-form-field-flex {
+    background-color: #f8f9fa !important;
+  }
+
+  &.mat-focused {
+    .mat-mdc-form-field-flex {
+      background-color: white !important;
+    }
+  }
+}
+
+
+
+// Material Icons
+.mat-icon {
+  vertical-align: middle;
+}

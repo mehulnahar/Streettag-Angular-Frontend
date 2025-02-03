@@ -25,6 +25,7 @@ import { environment } from "src/environments/environment";
 import { ConfirmDialogComponent } from "src/app/shared/confirm-dialog/confirm-dialog.component";
 import { ConfirmDialogModel } from "src/app/shared/confirm-dialog/confirmDialog.model";
 import * as L from 'leaflet';
+import { HttpClient } from '@angular/common/http';
 
 // import {DeletedialogLocation} from '../../DeletedialogLocation/DeletedialogLocation.component';
 
@@ -50,6 +51,13 @@ interface Location {
   id: number;
   location_name: string;
   created_at: string;
+}
+
+interface UpdateStreetTagPayload {
+  street_name: string;
+  start_date: string;
+  end_date: string;
+  streettag_id: string;
 }
 
 @Component({
@@ -143,7 +151,8 @@ export class StreettagsComponent implements OnInit, AfterViewInit {
     public snackBar: MatSnackBar,
     public router: Router,
     public dialog: MatDialog,
-    private ajaxService: AjaxService
+    private ajaxService: AjaxService,
+    private http: HttpClient
   ) {
     this.settings = this.appSettings.settings;
     this.dataSource = new MatTableDataSource<StreetTag>([]);
@@ -191,9 +200,10 @@ export class StreettagsComponent implements OnInit, AfterViewInit {
 
   ////////////////////open edit dialoge/////////////////////////
   openEditDialog(event:any): void {
-    //event.location = this.dataSourceLocation;
-    //console.log("edit called");
     let dialogRef = this.dialog.open(DialogOverviewMessageDialogStreettags, {
+      width: '600px',
+      maxWidth: '90vw',
+      panelClass: 'modern-dialog',
       data: { event },
     });
 
@@ -296,8 +306,7 @@ export class StreettagsComponent implements OnInit, AfterViewInit {
 
 @Component({
   selector: "dialog-overview-addmessage-dialog",
-  templateUrl: "dialog-overview-addmessage-dialog.html",
-  styleUrls: ["dialog-overview-addmessage-dialog.scss"]
+  templateUrl: "dialog-overview-addmessage-dialog.html"
 })
 export class DialogOverviewAddMessageDialogStreettags implements OnInit {
   private defaultIcon = L.icon({
@@ -373,7 +382,8 @@ export class DialogOverviewAddMessageDialogStreettags implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: { groups: any[] },
     private ajaxService: AjaxService,
     public snackBar: MatSnackBar,
-    public formBuilder: FormBuilder
+    public formBuilder: FormBuilder,
+    private http: HttpClient
   ) {
     this.createForm();
   }
@@ -445,19 +455,53 @@ export class DialogOverviewAddMessageDialogStreettags implements OnInit {
     });
   }
 
-  setlocation() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        this.lat = position.coords.latitude;
-        this.lng = position.coords.longitude;
+  async setlocation() {
+    const location = this.angForm.get('location')?.value;
+    if (!location) {
+      this.snackBar.open('Please enter a location first', 'Close', {
+        duration: 3000,
+      });
+      return;
+    }
+
+    try {
+      // Use Nominatim geocoding service
+      const response = await this.http.get(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`).toPromise();
+      const results = response as any[];
+
+      if (results && results.length > 0) {
+        const { lat, lon } = results[0];
+        
+        // Update form values
         this.angForm.patchValue({
-          lat: this.lat,
-          lng: this.lng
+          lat: parseFloat(lat),
+          lng: parseFloat(lon)
         });
+
+        // Update map position and marker
         if (this.map) {
-          this.map.setView([this.lat, this.lng], 15);
-          this.addMarker();
+          const newLatLng = L.latLng(parseFloat(lat), parseFloat(lon));
+          this.map.setView(newLatLng, 15);
+          
+          if (this.marker) {
+            this.marker.setLatLng(newLatLng);
+          } else {
+            this.marker = L.marker(newLatLng, { icon: this.defaultIcon }).addTo(this.map);
+          }
         }
+
+        this.snackBar.open('Location set successfully', 'Close', {
+          duration: 3000,
+        });
+      } else {
+        this.snackBar.open('Location not found. Please try a different search.', 'Close', {
+          duration: 3000,
+        });
+      }
+    } catch (error) {
+      console.error('Error geocoding location:', error);
+      this.snackBar.open('Error setting location. Please try again.', 'Close', {
+        duration: 3000,
       });
     }
   }
@@ -476,19 +520,19 @@ export class DialogOverviewAddMessageDialogStreettags implements OnInit {
   }
 
   createForm() {
-    this.angForm = this.formBuilder.group({
-      street_name: ["", Validators.required],
-      score: ["", [Validators.required, Validators.pattern("^[0-9]*$")]],
-      lat: ["", Validators.required],
-      lng: ["", Validators.required],
-      start_date: ["", Validators.required],
-      end_date: ["", Validators.required],
-      location: [""],
+    this.angForm = this.fb.group({
+      street_name: ['', Validators.required],
+      score: ['', [Validators.required, Validators.pattern(/^\d+$/)]],
+      location: [''],
+      lat: ['', Validators.required],
+      lng: ['', Validators.required],
+      start_date: ['', Validators.required],
+      end_date: ['', Validators.required],
       scan_type: [2],
       max_scan: [1],
       is_building_qr: [false],
-      building_id: [""],
-      floor_id: [""]
+      building_id: [''],
+      floor_id: ['']
     });
 
     // Subscribe to form value changes to update the class properties
@@ -561,7 +605,7 @@ export class DialogOverviewAddMessageDialogStreettags implements OnInit {
 
 @Component({
   selector: "dialog-overview-message-dialog",
-  templateUrl: "dialog-overview-message-dialog.html",
+  templateUrl: "dialog-overview-message-dialog.html"
 })
 export class DialogOverviewMessageDialogStreettags {
   allLocations = [] as any;
@@ -612,17 +656,36 @@ export class DialogOverviewMessageDialogStreettags {
   updateevent() {
     if (this.angForm.valid) {
       const formData = this.angForm.value;
-      const url = `${this.baseUrl}updateStreetTag`;
+      const url = 'http://52.56.93.181:3000/api/admin/editStreetTag';
+      
+      const formatStartDate = (date: Date | string) => {
+        if (date instanceof Date) {
+          return date.toISOString();
+        }
+        return date;
+      };
+
+      const formatEndDate = (date: Date | string) => {
+        if (date instanceof Date) {
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const day = String(date.getDate()).padStart(2, '0');
+          return `${year}-${month}-${day}`;
+        }
+        return date;
+      };
       
       const payload = {
         street_name: formData.street_name,
-        start_date: formData.start_date.toISOString().split('T')[0],
-        end_date: formData.end_date.toISOString().split('T')[0],
+        start_date: formatStartDate(formData.start_date),
+        end_date: formatEndDate(formData.end_date),
         streettag_id: this.streettag_id
       };
 
-      this.ajaxService.post<ApiResponse<any>>(url, JSON.stringify(payload)).subscribe(
-        (response) => {
+      console.log('Sending payload:', payload); // For debugging
+
+      this.ajaxService.post(payload, url).subscribe(
+        (response: any) => {
           if (response.status) {
             this.snackBar.open('Street Tag Updated Successfully!', 'Close', {
               duration: 2000,
@@ -635,6 +698,7 @@ export class DialogOverviewMessageDialogStreettags {
           }
         },
         (error) => {
+          console.error('Update error:', error);
           this.snackBar.open('Error Updating Street Tag', 'Close', {
             duration: 2000,
           });

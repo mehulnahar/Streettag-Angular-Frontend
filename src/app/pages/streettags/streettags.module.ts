@@ -7,7 +7,15 @@ import { PipesModule } from 'src/app/theme/pipes/pipes.module';
 import { SimplebarAngularModule } from 'simplebar-angular';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import {DialogOverviewAddMessageDialogStreettags, DialogOverviewMessageDialogStreettags, StreettagsComponent } from './streettags.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { DialogOverviewAddMessageDialogStreettags, DialogOverviewMessageDialogStreettags, StreettagsComponent } from './streettags.component';
 
 export const routes: Routes = [
   { path: '', component: StreettagsComponent, pathMatch: 'full' }
@@ -23,6 +31,14 @@ export const routes: Routes = [
     PipesModule,
     LeafletModule,
     RouterModule.forChild(routes),
+    MatButtonModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatDialogModule,
+    MatSnackBarModule
   ],
   declarations: [
     StreettagsComponent,

@@ -34,6 +34,26 @@ const routes: Routes = [
         path: 'streettags',
         loadChildren: () => import('./pages/streettags/streettags.module').then(m => m.StreettagsModule),
         data: { breadcrumb: 'StreetTag Management' }
+      },
+      {
+        path: 'opportunities',
+        loadChildren: () => import('./pages/opportunities/opportunities.module').then(m => m.OpportunitiesModule),
+        data: { breadcrumb: 'Opportunities Management' }
+      },
+      {
+        path: 'building',
+        loadChildren: () => import('./pages/building/building.module').then(m => m.BuildingModule),
+        data: { breadcrumb: 'Building Management' }
+      },
+      {
+        path: 'floors',
+        loadChildren: () => import('./pages/floors/floors.module').then(m => m.FloorsModule),
+        data: { breadcrumb: 'Floors Management' }
+      },
+      {
+        path: 'consents',
+        loadChildren: () => import('./pages/consents/consents.module').then(m => m.ConsentsModule),
+        data: { breadcrumb: 'Consents Management' }
       }
     ]
   },

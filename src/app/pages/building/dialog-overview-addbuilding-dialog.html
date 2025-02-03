@@ -1,0 +1,36 @@
+<h2 mat-dialog-title>Add Building</h2>
+
+<form [formGroup]="angForm" (ngSubmit)="onSubmit()">
+    <mat-dialog-content class="mat-typography">
+        <div fxLayout="column" fxLayoutAlign="start stretch" class="p-3">
+            <mat-form-field appearance="outline" class="w-100 mb-3">
+                <mat-label>Building Name</mat-label>
+                <input matInput placeholder="Building Name" formControlName="building_name">
+                <mat-error *ngIf="angForm.controls['building_name'].hasError('required')">
+                    Building name is required
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-100 mb-3">
+                <mat-label>Latitude</mat-label>
+                <input type="number" matInput placeholder="Latitude" formControlName="lat">
+                <mat-error *ngIf="angForm.controls['lat'].hasError('required')">
+                    Latitude is required
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-100 mb-3">
+                <mat-label>Longitude</mat-label>
+                <input type="number" matInput placeholder="Longitude" formControlName="lng">
+                <mat-error *ngIf="angForm.controls['lng'].hasError('required')">
+                    Longitude is required
+                </mat-error>
+            </mat-form-field>
+        </div>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end" class="p-3">
+        <button mat-button mat-dialog-close>Cancel</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="!angForm.valid">Save</button>
+    </mat-dialog-actions>
+</form>

@@ -1,0 +1,51 @@
+<div class="mat-typography">
+  <h2 mat-dialog-title>Add Opportunity</h2>
+
+  <mat-dialog-content>
+    <form [formGroup]="angForm">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Opportunity Text</mat-label>
+        <input matInput formControlName="opportunity_data">
+        <mat-error *ngIf="angForm.get('opportunity_data')?.errors?.['required'] && angForm.get('opportunity_data')?.touched">
+          Opportunity text required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Opportunity Link</mat-label>
+        <input matInput formControlName="opportunity_link">
+      </mat-form-field>
+
+      <div>
+        <button mat-stroked-button type="button" (click)="fileInput.click()">
+          <mat-icon>attach_file</mat-icon>
+          Choose File
+        </button>
+        <input hidden (change)="handleInputChange($event)" #fileInput type="file" accept="image/*">
+      </div>
+
+      <div *ngIf="imageSrc" class="my-3">
+        <img [src]="imageSrc" style="max-height: 120px; max-width: 120px; border-radius: 4px;">
+      </div>
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Select Circuits</mat-label>
+        <mat-select formControlName="circuit_name" multiple>
+          <mat-option *ngFor="let circuit of dataSourceCircuit" [value]="circuit.circuit_name">
+            {{circuit.circuit_name}}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="angForm.get('circuit_name')?.errors?.['required'] && angForm.get('circuit_name')?.touched">
+          Please select at least one circuit
+        </mat-error>
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close color="basic">Cancel</button>
+    <button mat-raised-button [ngStyle]="{'background-color': angForm.valid ? '#3f51b5' : '#E0E0E0', 'color': 'white'}" (click)="addevent()" [disabled]="!angForm.valid">
+      Add Opportunity
+    </button>
+  </mat-dialog-actions>
+</div>

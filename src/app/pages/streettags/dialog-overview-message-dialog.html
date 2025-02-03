@@ -1,47 +1,50 @@
 <div class="dialog-container">
-    <div class="dialog-header">
-        <h2 class="dialog-title">Update StreetTag</h2>
-        <p class="dialog-subtitle">Update the details of your street tag</p>
-    </div>
-    
-    <form [formGroup]="angForm" novalidate class="form-container">
-        <mat-form-field appearance="outline" class="form-field">
-            <mat-label>Street Name</mat-label>
-            <input matInput placeholder="Enter street name" formControlName="street_name">
-            <mat-icon matSuffix>place</mat-icon>
-            <mat-error *ngIf="angForm.controls['street_name'].errors?.['required']">
-                Street Name is required
-            </mat-error>
-        </mat-form-field>
+    <h2 mat-dialog-title>Update StreetTag</h2>
+    <p mat-dialog-subtitle>Update the details of your street tag</p>
 
-        <mat-form-field appearance="outline" class="form-field">
-            <mat-label>Start Date</mat-label>
-            <input matInput [matDatepicker]="picker1" formControlName="start_date">
-            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-            <mat-datepicker #picker1></mat-datepicker>
-            <mat-error *ngIf="angForm.controls['start_date'].errors?.['required']">
-                Start date is required
-            </mat-error>
-        </mat-form-field>
+    <mat-dialog-content>
+        <form [formGroup]="angForm" novalidate>
+            <mat-form-field appearance="fill">
+                <mat-label>Street Name</mat-label>
+                <input matInput placeholder="Enter street name" formControlName="street_name">
+                <mat-icon matSuffix>place</mat-icon>
+                <mat-error *ngIf="angForm.controls['street_name'].errors?.['required']">
+                    Street Name is required
+                </mat-error>
+            </mat-form-field>
 
-        <mat-form-field appearance="outline" class="form-field">
-            <mat-label>End Date</mat-label>
-            <input matInput [matDatepicker]="picker2" formControlName="end_date">
-            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-            <mat-datepicker #picker2></mat-datepicker>
-            <mat-error *ngIf="angForm.controls['end_date'].errors?.['required']">
-                End date is required
-            </mat-error>
-        </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>Start Date</mat-label>
+                <input matInput [matDatepicker]="picker1" formControlName="start_date" placeholder="Choose start date">
+                <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                <mat-datepicker #picker1></mat-datepicker>
+                <mat-error *ngIf="angForm.controls['start_date'].errors?.['required']">
+                    Start date is required
+                </mat-error>
+            </mat-form-field>
 
-        <div class="button-container">
-       
-            <button mat-raised-button color="primary" class="update-button" (click)="updateevent()">
-                <mat-icon>update</mat-icon>
-                Update StreetTag
-            </button>
-        </div>
-    </form>
+            <mat-form-field appearance="fill">
+                <mat-label>End Date</mat-label>
+                <input matInput [matDatepicker]="picker2" formControlName="end_date" placeholder="Choose end date">
+                <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                <mat-datepicker #picker2></mat-datepicker>
+                <mat-error *ngIf="angForm.controls['end_date'].errors?.['required']">
+                    End date is required
+                </mat-error>
+            </mat-form-field>
+        </form>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end">
+        <button mat-button (click)="onNoClick()">Cancel</button>
+        <button mat-raised-button 
+                color="primary" 
+                (click)="updateevent()" 
+                [disabled]="!angForm.valid">
+            <mat-icon>update</mat-icon>
+            Update StreetTag
+        </button>
+    </mat-dialog-actions>
 </div>
         
         

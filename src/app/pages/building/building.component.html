@@ -1,0 +1,58 @@
+<app-content-header 
+    [title]="'Building'"
+    [hideBreadcrumb]="true"
+    [hasBgImage]="true"
+    [class]="'pb-4'">
+</app-content-header>
+
+<div fxLayout="row wrap" style="margin-bottom: 20px;">
+    <div fxFlex="100">
+        <mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="space-between center">
+            <div>Building List</div>
+            <button mat-raised-button color="accent" (click)="openAddDialog()">
+                <mat-icon>add</mat-icon> Add Building
+            </button>
+        </mat-toolbar>
+
+        <div class="mat-elevation-z8">
+            <mat-form-field class="px-3 py-1">
+                <input matInput (keyup)="applyFilter($event)" placeholder="Type to filter all columns">
+            </mat-form-field>
+
+            <mat-table #table [dataSource]="dataSource" matSort class="mat-elevation-z8" >
+                <ng-container matColumnDef="serial_number">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>S No.</mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index">{{i + 1}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="building_name">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Building Name</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element.building_name}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="edit">
+                    <mat-header-cell *matHeaderCellDef>Edit</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <button mat-icon-button matTooltip="Click to Edit" (click)="openEditDialog(element)">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="delete">
+                    <mat-header-cell *matHeaderCellDef>Delete</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <button mat-icon-button matTooltip="Click to Delete" (click)="confirmDialog(element)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
+
+            <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+        </div>
+    </div>
+</div>

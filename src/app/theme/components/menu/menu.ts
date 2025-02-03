@@ -6,7 +6,7 @@ export const verticalMenuItems = [
     new Menu (4, 'Circuit Management', '/admin/circuit', null, 'outlet', null, false, 0), 
     new Menu (5, 'StreetTag Management', '/admin/streettags', null, 'location_on', null, false, 0), 
     new Menu (6, 'Opportunities Management', '/admin/opportunities', null, 'event', null, false, 0),  
-    new Menu (7, 'Building', '/admin/builiding', null, 'apartment', null, false, 0),  
+    new Menu (7, 'Building', '/admin/building', null, 'apartment', null, false, 0),  
     new Menu (8, 'Floors', '/admin/floors', null, 'event', null, false, 0), 
     new Menu (9, 'Consents', '/admin/consents', null, 'event', null, false, 0),  
     new Menu (10, 'Sponsor', '/admin/sponsor', null, 'euro', null, false, 0),  
