@@ -1,0 +1,53 @@
+<app-content-header [title]="'Questionnaires'" [icon]="'assignment'" [hideBreadcrumb]="true" [hasBgImage]="true"
+	[class]="'pt-3'"></app-content-header>
+
+<div class="questionnaire-container">
+	<div class="player-search">
+		<div class="input-group">
+			<label>Player ID</label>
+			<mat-form-field appearance="outline">
+				<input matInput [(ngModel)]="playerId" [matAutocomplete]="auto" placeholder="Enter Player ID">
+				<mat-autocomplete #auto="matAutocomplete">
+					<mat-option *ngFor="let player of playersList" [value]="player.player_idd">
+						{{player.player_idd}}
+					</mat-option>
+				</mat-autocomplete>
+			</mat-form-field>
+		</div>
+		<button mat-raised-button style="margin-bottom:25px;" color="primary" class="go-btn" (click)="searchPlayer()" [disabled]="!playerId">
+			<span>Go</span>
+		</button>
+	</div>
+
+	<div class="questionnaire-sections">
+		<div class="section">
+			<h2 class="section-title">Before Questionnaire</h2>
+			<div class="questions" *ngIf="beforeQuestions && beforeQuestions.length > 0; else noBeforeData">
+				<div class="question-item" *ngFor="let question of beforeQuestions; let i = index">
+					<div class="question">Ques.{{i + 1}} {{question.question}}</div>
+					<div class="answer">ANS: {{question.answer}}</div>
+				</div>
+			</div>
+			<ng-template #noBeforeData>
+				<div class="no-data">
+					No before questionnaire data available
+				</div>
+			</ng-template>
+		</div>
+
+		<div class="section">
+			<h2 class="section-title">After Questionnaire</h2>
+			<div class="questions" *ngIf="afterQuestions && afterQuestions.length > 0; else noAfterData">
+				<div class="question-item" *ngFor="let question of afterQuestions; let i = index">
+					<div class="question">Ques.{{i + 1}} {{question.question}}</div>
+					<div class="answer">ANS: {{question.answer}}</div>
+				</div>
+			</div>
+			<ng-template #noAfterData>
+				<div class="no-data">
+					No after questionnaire data available
+				</div>
+			</ng-template>
+		</div>
+	</div>
+</div>

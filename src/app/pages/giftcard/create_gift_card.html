@@ -1,0 +1,34 @@
+<div style="width:800px; height:350px;" perfectScrollbar>
+    <div style="width:800px;height:250px;">
+
+        <h3 style="background:#283593; text-align: center; color: #fff; padding: 10px; margin-bottom: 60px;">Create Gift Card</h3>
+
+        <div style="width:99.4%;float: left;margin-bottom:10px;">
+            <form [formGroup]="angForm">
+                <mat-form-field class="w-100" style="margin-top:5px;">
+                    <input matInput placeholder="Amount" formControlName="amount" type="number">
+                </mat-form-field>
+                
+                <div *ngIf="angForm.get('amount')?.invalid && (angForm.get('amount')?.dirty || angForm.get('amount')?.touched)"
+                    class="alert alert-danger">
+                    <div *ngIf="angForm.get('amount')?.errors?.['required']">
+                        Amount is required.
+                    </div>
+                    <div *ngIf="angForm.get('amount')?.errors?.['pattern']">
+                        Only numbers are allowed
+                    </div>
+                </div>
+
+                <div style="position: unset;margin:auto;">
+                    <button style="align-content: center;border-radius: 40px; position: unset;margin:auto;
+                        display:block; text-align: center;" 
+                        mat-raised-button 
+                        color="primary" 
+                        (click)="addevent($event)" 
+                        [disabled]="!angForm.valid">
+                        Create Gift Card
+                    </button>
+                </div>
+            </form>
+        </div>
+        <br><br><br>

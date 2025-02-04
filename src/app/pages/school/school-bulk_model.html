@@ -1,0 +1,155 @@
+<div class="dialog-container" style="width: 800px;">
+  <h3 mat-dialog-title>Bulk Add School</h3>
+
+  <div mat-dialog-content>
+    <div class="file-upload-section">
+      <input 
+        type="file" 
+        (change)="handleInputChange($event)" 
+        accept=".csv" 
+        #fileInput
+        class="file-input"
+        required
+      >
+    </div>
+
+    <div class="sample-download mt-4">
+      <a 
+        mat-raised-button 
+        color="primary" 
+        href="https://wearestreettag.co.uk/SampleCSV/sample.csv"
+        target="_blank"
+      >
+        Download Sample CSV
+      </a>
+    </div>
+
+    <div class="preview-section mt-4">
+      <mat-progress-spinner 
+        *ngIf="spinner" 
+        mode="indeterminate" 
+        diameter="40"
+      ></mat-progress-spinner>
+
+      <div *ngIf="show_table" class="error-table">
+        <p class="text-danger">This could not be uploaded either due to invalid format or already existing user/team</p>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>School Name</th>
+              <th>Full Name</th>
+              <th>User Name</th>
+              <th>Email</th>
+              <th>Password</th>
+              <th>Confirm Password</th>
+              <th>Postal Code</th>
+              <th>Gender</th>
+              <th>Date of Birth</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of csv_url2">
+              <td>{{item.school_name}}</td>
+              <td>{{item.full_name}}</td>
+              <td>{{item.user_name}}</td>
+              <td>{{item.email}}</td>
+              <td>{{item.password}}</td>
+              <td>{{item.confirm_password}}</td>
+              <td>{{item.postal_code}}</td>
+              <td>{{item.gender}}</td>
+              <td>{{item.date_of_birth}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div *ngIf="show_table2" class="success-message">
+        <p class="text-success">Schools uploaded successfully!</p>
+      </div>
+    </div>
+  </div>
+
+  <div mat-dialog-actions align="end">
+    <button mat-button (click)="onNoClick()">Cancel</button>
+    <button 
+      mat-raised-button 
+      color="primary" 
+      (click)="uploadCSV()" 
+      [disabled]="!csv_file"
+    >
+      Upload Schools
+    </button>
+  </div>
+</div>
+
+<style>
+.dialog-container {
+  padding: 20px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.file-upload-section {
+  margin: 20px 0;
+}
+
+.file-input {
+  width: 100%;
+}
+
+.preview-section {
+  margin-top: 20px;
+}
+
+.error-table {
+  margin-top: 20px;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 8px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.table thead th {
+  background-color: #f5f5f5;
+  font-weight: 500;
+}
+
+.success-message {
+  margin-top: 20px;
+  text-align: center;
+  padding: 15px;
+  background-color: #d4edda;
+  border-radius: 4px;
+}
+
+.text-danger {
+  color: #dc3545;
+  margin-bottom: 10px;
+}
+
+.text-success {
+  color: #28a745;
+}
+
+.mt-4 {
+  margin-top: 1.5rem;
+}
+
+mat-dialog-actions {
+  margin-top: 20px;
+  padding: 8px 0;
+}
+
+button + button {
+  margin-left: 8px;
+}
+</style> 

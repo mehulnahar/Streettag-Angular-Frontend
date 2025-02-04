@@ -46,6 +46,11 @@ const routes: Routes = [
         data: { breadcrumb: 'Opportunities Management' }
       },
       {
+        path: 'give-bonus-points',
+        loadChildren: () => import('./pages/give-bonus-points/give-bonus-points.module').then(m => m.GiveBonusPointsModule),
+        data: { breadcrumb: 'Give Bonus Points' }
+      },
+      {
         path: 'building',
         loadChildren: () => import('./pages/building/building.module').then(m => m.BuildingModule),
         data: { breadcrumb: 'Building Management' }
@@ -59,6 +64,36 @@ const routes: Routes = [
         path: 'consents',
         loadChildren: () => import('./pages/consents/consents.module').then(m => m.ConsentsModule),
         data: { breadcrumb: 'Consents Management' }
+      },
+      {
+        path: 'giftcard',
+        loadChildren: () => import('./pages/giftcard/giftcard.module').then(m => m.GiftcardModule),
+        data: { breadcrumb: 'Gift Card' }
+      },
+      {
+        path: 'cancelgift',
+        loadChildren: () => import('./pages/cancelgift/cancelgift.module').then(m => m.CancelgiftModule),
+        data: { breadcrumb: 'Cancel Gift Card' }
+      },
+      {
+        path: 'sendgift',
+        loadChildren: () => import('./pages/sendgift/sendgift.module').then(m => m.SendgiftModule),
+        data: { breadcrumb: 'Send Gift Card' }
+      },
+      {
+        path: 'school',
+        loadChildren: () => import('./pages/school/school.module').then(m => m.SchoolModule),
+        data: { breadcrumb: 'School Management' }
+      },
+      {
+        path: 'questionnaires',
+        loadChildren: () => import('./pages/questionnaires/questionnaires.module').then(m => m.QuestionnairesModule),
+        data: { breadcrumb: 'Questionnaires' }
+      },
+      {
+        path: 'sponsor',
+        loadChildren: () => import('./pages/sponsor/sponsor.module').then(m => m.SponsorModule),
+        data: { breadcrumb: 'Sponsor Management' }
       }
     ]
   },

@@ -1,0 +1,228 @@
+mat-cell:nth-child(5),
+mat-header-cell:nth-child(5) {
+    flex: 0 0 12rem;
+}
+
+mat-cell:nth-child(6),
+mat-header-cell:nth-child(6) {
+    flex: 0 0 12rem;
+}
+
+.container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.form-card {
+  border-radius: 8px;
+  background-color: white;
+}
+
+.table-header {
+  background-color: white;
+}
+
+mat-table {
+  width: 100%;
+}
+
+mat-row:hover {
+  background-color: #f5f5f5;
+  cursor: pointer;
+}
+
+.mat-column-serial_number {
+  flex: 0 0 80px;
+}
+
+.mat-column-amount {
+  flex: 0 0 100px;
+}
+
+.mat-column-date {
+  flex: 0 0 150px;
+}
+
+.success-snackbar {
+  background-color: #4caf50;
+  color: white;
+}
+
+.error-snackbar {
+  background-color: #f44336;
+  color: white;
+}
+
+// Dialog styles
+.dialog-content {
+  min-width: 500px;
+  max-width: 600px;
+  background: white;
+  border-radius: 4px;
+  overflow: hidden;
+
+  .dialog-header {
+    background: #3f51b5;
+    color: white;
+    padding: 15px;
+    font-size: 18px;
+    text-align: center;
+    font-weight: 500;
+  }
+
+  .team-name-label, .player-id-label {
+    color: #666;
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+
+  .not-mandatory {
+    color: #666;
+    font-size: 12px;
+    margin-top: 4px;
+  }
+
+  .player-info {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 4px;
+    margin: 15px 0;
+
+    .info-row {
+      display: flex;
+      margin-bottom: 8px;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      .info-label {
+        width: 80px;
+        color: #666;
+        font-size: 14px;
+      }
+
+      .info-value {
+        color: #333;
+        font-weight: 500;
+      }
+    }
+  }
+
+  mat-form-field {
+    width: 100%;
+  }
+
+  .send-bonus-btn {
+    background: #007bff;
+    padding: 0 30px;
+    height: 36px;
+    font-size: 14px;
+    font-weight: normal;
+  }
+
+  ::ng-deep {
+    .mat-mdc-form-field-outline {
+      background: white;
+    }
+
+    .mat-mdc-text-field-wrapper {
+      background: white;
+    }
+
+    .mat-mdc-form-field-flex {
+      background: white;
+    }
+  }
+}
+
+.form-section {
+  margin: 16px 0;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.player-details {
+  background-color: #f5f5f5;
+  padding: 16px;
+  border-radius: 4px;
+  margin: 16px 0;
+
+  h3 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+  }
+
+  p {
+    margin: 4px 0;
+  }
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.page-header {
+  background: #3f51b5;
+  color: white;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  .header-icon {
+    mat-icon {
+      font-size: 32px;
+      width: 32px;
+      height: 32px;
+    }
+  }
+
+  .header-title {
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 500;
+    }
+  }
+}
+
+.action-button {
+  padding: 20px;
+  background: white;
+  border-bottom: 1px solid #e0e0e0;
+
+  .send-gift-btn {
+    background: #ff4081;
+    color: white;
+    padding: 0 24px;
+    height: 36px;
+    font-size: 14px;
+    font-weight: normal;
+    border-radius: 4px;
+
+    &:hover {
+      background: #f50057;
+    }
+  }
+}
+
+
+
+.mat-cell {
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+.mat-header-cell {
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.87);
+  padding: 8px 16px;
+}

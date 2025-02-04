@@ -1,0 +1,108 @@
+<!-- Sponsor Add Form -->
+<div class="dialog-wrapper">
+    <h2 mat-dialog-title>Add New Sponsor</h2>
+    
+    <mat-dialog-content class="dialog-content">
+        <div class="sponsor-form">
+            <!-- Image Upload Section -->
+            <div class="image-upload-section">
+                <div class="upload-field">
+                    <label>Before Scan</label>
+                    <input name="profile_pic" type="file" (change)="handleInputChange($event)" accept="image/*">
+                    <img [src]="tag_image" *ngIf="tag_image" class="preview-image">
+                </div>
+                
+                <div class="upload-field">
+                    <label>After Scan</label>
+                    <input name="profile_pic2" type="file" (change)="handleInputChange2($event)" accept="image/*">
+                    <img [src]="tag_image2" *ngIf="tag_image2" class="preview-image">
+                </div>
+            </div>
+
+            <!-- Sponsor Details Form -->
+            <form [formGroup]="angForm" novalidate>
+                <mat-form-field class="w-100">
+                    <mat-label>Sponsor Name</mat-label>
+                    <input matInput formControlName="sponsor_name" placeholder="Enter sponsor name">
+                    <mat-error *ngIf="angForm.get('sponsor_name')?.hasError('required')">
+                        Sponsor name is required
+                    </mat-error>
+                </mat-form-field>
+
+                <!-- Sponsor Location Input -->
+                <mat-form-field class="w-100">
+                    <mat-label>Sponsor Location</mat-label>
+                    <input matInput #location placeholder="Enter location">
+                </mat-form-field>
+
+                <div class="location-button">
+                    <button mat-raised-button color="accent" (click)="setlocation(location.value)">
+                        Set Location
+                    </button>
+                </div>
+
+                <!-- Map Section -->
+                <div class="map-container">
+                    <google-map [center]="center" [zoom]="zoom" (mapClick)="onMapClick($event)" height="400px" width="100%">
+                        <!-- Current Location Marker -->
+                        <map-marker
+                            [position]="markerPosition"
+                            [options]="markerOptions"
+                            (mapDragend)="onMarkerDragEnd($event)">
+                        </map-marker>
+                        
+                        <!-- Radius Circle -->
+                        <map-circle
+                            [center]="center"
+                            [radius]="Number(tagDiameter)"
+                            [options]="circleOptions">
+                        </map-circle>
+
+                        <!-- Existing Sponsors -->
+                        <ng-container *ngFor="let val of allLocations">
+                            <map-circle
+                                *ngIf="val.id !== sponsorId"
+                                [center]="{lat: val.lat, lng: val.lng}"
+                                [radius]="val.diameter"
+                                [options]="existingCircleOptions">
+                            </map-circle>
+                            <map-marker
+                                *ngIf="val.id !== sponsorId"
+                                [position]="{lat: val.lat, lng: val.lng}"
+                                [options]="{ icon: val.tag_image }">
+                            </map-marker>
+                        </ng-container>
+                    </google-map>
+                </div>
+
+                <!-- Diameter Input -->
+                <mat-form-field class="w-100">
+                    <mat-label>Diameter (in meters)</mat-label>
+                    <input matInput type="number" formControlName="diameter" [(ngModel)]="tagDiameter" placeholder="Enter diameter">
+                    <mat-error *ngIf="angForm.get('diameter')?.hasError('required')">
+                        Diameter is required
+                    </mat-error>
+                </mat-form-field>
+
+                <!-- Coordinates Display -->
+                <div class="coordinates-display">
+                    <mat-form-field class="w-100">
+                        <mat-label>Latitude</mat-label>
+                        <input matInput formControlName="lat" [(ngModel)]="lat" readonly>
+                    </mat-form-field>
+
+                    <mat-form-field class="w-100">
+                        <mat-label>Longitude</mat-label>
+                        <input matInput formControlName="lng" [(ngModel)]="lng" readonly>
+                    </mat-form-field>
+                </div>
+            </form>
+        </div>
+    </mat-dialog-content>
+
+    <!-- Action Buttons -->
+    <mat-dialog-actions align="end">
+        <button mat-button (click)="onNoClick()">Cancel</button>
+        <button mat-raised-button color="primary" (click)="addevent()" [disabled]="!angForm.valid">Add Sponsor</button>
+    </mat-dialog-actions>
+</div>

@@ -1,0 +1,192 @@
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.header-bg {
+  background-color: #3F51B5;
+  padding: 2rem 0;
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+.header-content {
+  text-align: center;
+  color: white;
+
+  i {
+    font-size: 36px;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    font-weight: 400;
+    margin: 0;
+  }
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.form-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: fadeIn 0.8s ease-out 0.4s both;
+
+  .form-section {
+    margin-bottom: 2rem;
+  }
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+
+  .form-label {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .hint-text {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+    display: block;
+  }
+}
+
+.player-info-card {
+  background: #2E3B91;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  .info-row {
+    display: flex;
+    justify-content: space-around;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .info-col {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .info-item {
+    text-align: center;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .info-label {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+    }
+
+    .info-value {
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 500;
+      display: block;
+    }
+  }
+}
+
+.action-section {
+  text-align: center;
+  margin-top: 2rem;
+
+  .submit-btn {
+    min-width: 160px;
+    height: 48px;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background:#2E3B91;
+    border: none;
+    border-radius: 24px;
+    color: white;
+    padding: 0 2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+    }
+
+    mat-icon {
+      margin-right: 0.5rem;
+    }
+  }
+}
+
+:host ::ng-deep {
+  .mat-form-field-appearance-outline {
+    .mat-form-field-outline {
+      color: rgba(255, 255, 255, 0.2);
+    }
+
+    .mat-form-field-outline-thick {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .mat-form-field-label {
+      color: rgba(255, 255, 255, 0.7);
+    }
+  }
+
+  .mat-form-field.mat-focused {
+    .mat-form-field-outline-thick {
+      color: #4CAF50;
+    }
+
+    .mat-form-field-label {
+      color: #4CAF50;
+    }
+  }
+
+  .mat-input-element {
+    color: white;
+  }
+
+  .mat-select-value {
+    color: white;
+  }
+
+  .mat-select-arrow {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .mat-form-field-suffix {
+    color: rgba(255, 255, 255, 0.7);
+  }
+}
