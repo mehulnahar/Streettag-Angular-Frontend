@@ -1,0 +1,39 @@
+.erorr_color {
+    color: red;
+}
+
+.link-custom {
+    text-decoration: none;
+    color: white;
+}
+
+ 
+mat-footer-row mat-footer-cell{
+    justify-content: center;
+    font-style: italic;
+}
+
+// table {
+//    width: 100%;
+//  }
+
+ .mat-column-serial_number{
+   max-width: 5rem;
+ }
+
+//  .mat-column-leaderboard{
+//     min-width: 130px;
+//   }
+
+//  .mat-column-email{
+//     min-width: 180px;
+//   }
+
+  .hide{
+    display: none;
+}
+
+.mat-cell:nth-child(8),
+.mat-header-cell:nth-child(8) {
+  flex: 0 0 8rem;
+}

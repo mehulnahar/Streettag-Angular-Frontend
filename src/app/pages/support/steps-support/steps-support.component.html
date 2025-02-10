@@ -1,0 +1,118 @@
+<app-content-header [title]="'Steps Support'" [icon]="'support_agent'" [hideBreadcrumb]="true" [hasBgImage]="true" [class]="'pt-2 pb-2'">
+</app-content-header>
+
+<!-- <div fxLayout="column" class="pt-2 pr-2 pl-2">
+        
+      <mat-form-field  color="primary" appearance="outline" (click)="picker.open()" class="datePicker">
+        <mat-label>Choose a date</mat-label>
+        <input class="datePicker" matInput [matDatepicker]="picker" [max]="maxDate" [min]="minDate" autocomplete="off" [(ngModel)]="select" (dateChange)="datechange()">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker color="primary"></mat-datepicker>
+      
+      </mat-form-field>
+
+</div> -->
+
+
+<div class="example-container mat-elevation-z8">
+    <mat-table
+      [dataSource]="dataSource"
+      matSort
+    >
+    <!-- serial number row -->
+      <ng-container matColumnDef="serial_number">
+        <mat-header-cell *matHeaderCellDef mat-sort-header
+          >S No.
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element; index as i">
+          {{i | serialNumber: paginator.pageSize : paginator.pageIndex }}
+        </mat-cell>
+      </ng-container>
+
+    <!-- Player_id row -->
+      <ng-container matColumnDef="player_id">
+        <mat-header-cell *matHeaderCellDef mat-sort-header 
+          >Player Id
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.player_id | decode}}
+        </mat-cell>
+      </ng-container>
+      
+    <!-- steps row -->
+      <ng-container matColumnDef="steps">
+        <mat-header-cell *matHeaderCellDef mat-sort-header
+          >Steps
+        </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{element.steps}}
+        </mat-cell>
+      </ng-container>
+    
+      <!-- Image row -->
+      <ng-container matColumnDef="img">
+        <mat-header-cell *matHeaderCellDef>Image</mat-header-cell>
+        <mat-cell *matCellDef="let element"><img class="zoom" (click)="OpenImageViewerBox(element)" loading="lazy" src={{element.steps_image}}
+            style="border-radius: 6px; height:100px; width:100px; padding: 3px 0"></mat-cell>
+      </ng-container>
+       
+       <!-- Dynamic status Column 0=pending ,1=approved ,2=rejected -->
+      <ng-container matColumnDef="status">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
+        <ng-container *matCellDef="let element">
+            <mat-cell [ngStyle]="{'color': element.steps_status === 0 ? '#FCBD27' : (element.steps_status === 1 ? 'green' : 'red') }"><strong>{{element.steps_status === 0 ? 'Pending' : (element.steps_status === 1 ? 'Approved' : 'Rejected')}}</strong></mat-cell>
+        </ng-container>
+     </ng-container>
+      
+         <!-- Created At row -->
+         <ng-container matColumnDef="created_at">
+          <mat-header-cell *matHeaderCellDef  mat-sort-header
+            >Date
+          </mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            {{element.created_at | date}}
+          </mat-cell>
+        </ng-container>
+         
+        <!-- Action At row -->
+         <ng-container matColumnDef="action">
+          <mat-header-cell *matHeaderCellDef  mat-sort-header
+            >Action
+          </mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            <ng-container *ngIf="element.steps_status === 0">
+            <mat-button-toggle-group  aria-label="Font Style">
+              <mat-button-toggle (click)="toggle(element,1)" style="background-color: green;" value="1">Activate</mat-button-toggle>
+              <mat-button-toggle value="2" (click)="toggle(element,2)" style="background-color: rgb(187, 39, 39);">Deactivate</mat-button-toggle>
+            </mat-button-toggle-group>
+          </ng-container>
+          </mat-cell>
+        </ng-container>
+     
+        <!-- Loading block -->
+        <ng-container matColumnDef="loading">
+          <mat-footer-cell *matFooterCellDef colspan="6">
+              Loading...
+          </mat-footer-cell>
+      </ng-container>
+      
+    <!-- data not found block -->
+      <ng-container matColumnDef="not-found">
+        <mat-footer-cell *matFooterCellDef colspan="6">
+            Data not Found.
+        </mat-footer-cell>
+     </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+      <mat-footer-row *matFooterRowDef="['loading']" [ngClass]="{'hide': dataSource!=null}"></mat-footer-row>
+      <mat-footer-row *matFooterRowDef="['not-found']" [ngClass]="{'hide': !(dataSource!=null && dataSource.data.length==0)}"></mat-footer-row>
+      
+    </mat-table>
+    <mat-paginator
+      #paginator
+      [pageSize]="5"
+      [pageSizeOptions]="[5, 10, 20]"
+    ></mat-paginator>
+ 
+</div>

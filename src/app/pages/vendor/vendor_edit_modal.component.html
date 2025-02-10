@@ -1,0 +1,98 @@
+<div class="vendor-edit-dialog">
+    <div class="dialog-header">
+        <h2 mat-dialog-title>
+            <mat-icon>storefront</mat-icon>
+            Edit Vendor Details
+        </h2>
+    </div>
+
+    <mat-dialog-content>
+        <form [formGroup]="angForm" novalidate class="edit-form">
+            <!-- Vendor Name -->
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Vendor Name</mat-label>
+                <input matInput formControlName="vendor_name" placeholder="Enter vendor's business name">
+                <mat-icon matPrefix>business</mat-icon>
+                <mat-error *ngIf="angForm.get('vendor_name')?.hasError('required')">
+                    Please enter vendor name
+                </mat-error>
+            </mat-form-field>
+
+            <!-- Image Upload Section -->
+            <div class="image-upload-container">
+                <label class="upload-label">
+                    <mat-icon>image</mat-icon>
+                    Vendor Image
+                </label>
+                <div class="upload-area" (click)="fileInput.click()" 
+                     [class.has-image]="tag_image">
+                    <input #fileInput type="file" hidden (change)="handleInputChange($event)"
+                        accept="image/gif,image/jpeg,image/png,image/jpg">
+                    
+                    <div class="upload-placeholder" *ngIf="!tag_image">
+                        <mat-icon>cloud_upload</mat-icon>
+                        <span>Drop your image here or click to browse</span>
+                        <small>Supported formats: JPG, PNG, GIF (Max size: 5MB)</small>
+                    </div>
+                    
+                    <img *ngIf="tag_image" [src]="tag_image" class="preview-image" 
+                         alt="Vendor Image Preview">
+                </div>
+            </div>
+
+            <!-- Points and Discount Section -->
+            <div class="form-row">
+                <mat-form-field appearance="outline">
+                    <mat-label>Bonus Points</mat-label>
+                    <input type="number" matInput formControlName="bonus_points" 
+                           placeholder="Enter points value" min="0">
+                    <mat-icon matPrefix>stars</mat-icon>
+                    <mat-hint>Reward points for customers</mat-hint>
+                    <mat-error *ngIf="angForm.get('bonus_points')?.hasError('required')">
+                        Points value is required
+                    </mat-error>
+                    <mat-error *ngIf="angForm.get('bonus_points')?.hasError('min')">
+                        Must be greater than 0
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Discount Percentage</mat-label>
+                    <input type="number" matInput formControlName="discount" 
+                           placeholder="Enter discount %" min="0" max="100">
+                    <mat-icon matPrefix>local_offer</mat-icon>
+                    <mat-hint>Customer discount percentage</mat-hint>
+                    <mat-error *ngIf="angForm.get('discount')?.hasError('required')">
+                        Discount value is required
+                    </mat-error>
+                    <mat-error *ngIf="angForm.get('discount')?.hasError('min') || angForm.get('discount')?.hasError('max')">
+                        Must be between 0-100%
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <!-- Address Section -->
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Vendor Address</mat-label>
+                <textarea matInput formControlName="vendor_address" 
+                          rows="3" placeholder="Enter complete business address"></textarea>
+                <mat-icon matPrefix>location_on</mat-icon>
+                <mat-hint>Physical location of the business</mat-hint>
+                <mat-error *ngIf="angForm.get('vendor_address')?.hasError('required')">
+                    Business address is required
+                </mat-error>
+            </mat-form-field>
+        </form>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end">
+       
+        <button mat-raised-button color="primary" 
+                (click)="updateevent()" 
+                [disabled]="!angForm.valid || !tag_image"
+                class="update-btn">
+            <mat-icon>check_circle</mat-icon>
+            Save Changes
+        </button>
+    </mat-dialog-actions>
+</div>

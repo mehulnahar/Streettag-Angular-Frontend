@@ -1,0 +1,95 @@
+<div style="width:100%; height:600px;" perfectScrollbar>
+    <div style="width:100%;height:600px;">
+        <div mat-dialog-title>Add New PolyTag</div>
+
+        <form [formGroup]="form" (ngSubmit)="addevent()">
+            <div mat-dialog-content>
+                <div fxLayout="column" class="p-2">
+                    <mat-form-field>
+                        <mat-select formControlName="category_id" placeholder="Select Category" (selectionChange)="get_category_id($event.value)">
+                            <mat-option *ngFor="let category of dataSourceCategory | async" [value]="category.id">
+                                {{category.category}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="form.get('category_id')?.hasError('required')">Category is required</mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-select formControlName="asset_id" placeholder="Select Asset">
+                            <mat-option *ngFor="let asset of dataSourceCategoryAssets | async" [value]="asset.id">
+                                {{asset.asset_name}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="form.get('asset_id')?.hasError('required')">Asset is required</mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <input matInput placeholder="Title" formControlName="title">
+                        <mat-error *ngIf="form.get('title')?.hasError('required')">Title is required</mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <input matInput type="number" placeholder="Score" formControlName="score">
+                        <mat-error *ngIf="form.get('score')?.hasError('required')">Score is required</mat-error>
+                        <mat-error *ngIf="form.get('score')?.hasError('pattern')">Score must be a number</mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <textarea matInput placeholder="Event Location" formControlName="location" (change)="changeEvent($event)"></textarea>
+                        <mat-error *ngIf="form.get('location')?.hasError('required')">Location is required</mat-error>
+                    </mat-form-field>
+
+                    <div class="text-center mb-3">
+                        <button mat-raised-button color="accent" (click)="setLocation()">
+                            Set Location
+                        </button>
+                    </div>
+
+                    <div class="map-container" style="height: 400px; margin: 16px 0;">
+                        <google-map [center]="center" [zoom]="zoom" height="100%" width="100%">
+                            <map-marker
+                                [position]="markerPosition"
+                                [options]="markerOptions"
+                                (mapDragend)="markerDragEnd($event)">
+                            </map-marker>
+                            <map-circle
+                                [center]="markerPosition"
+                                [radius]="82"
+                                [options]="{ fillColor: '#4CAF50', strokeColor: '#4CAF50', fillOpacity: 0.3 }">
+                            </map-circle>
+
+                            <map-marker
+                                *ngFor="let polytag of nearByLatLng"
+                                [position]="{ lat: +polytag.lat, lng: +polytag.lng }"
+                                [options]="getExistingMarkerOptions(polytag)"
+                                (mapClick)="showPolytagInfo(polytag)">
+                            </map-marker>
+                        </google-map>
+
+                        <div *ngIf="selectedPolytagName" class="custom-info-window">
+                            {{ selectedPolytagName }}
+                            <button mat-icon-button class="close-btn" (click)="selectedPolytagName = ''">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div fxLayout="row" fxLayoutGap="16px">
+                        <mat-form-field fxFlex>
+                            <input matInput placeholder="Latitude" formControlName="lat" readonly>
+                        </mat-form-field>
+
+                        <mat-form-field fxFlex>
+                            <input matInput placeholder="Longitude" formControlName="lng" readonly>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+
+            <div mat-dialog-actions align="end">
+                <button mat-button type="button" (click)="onNoClick()">Cancel</button>
+                <button mat-raised-button color="primary" type="submit" [disabled]="!form.valid">Add PolyTag</button>
+            </div>
+        </form>
+    </div>
+</div>

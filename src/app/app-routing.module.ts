@@ -94,6 +94,66 @@ const routes: Routes = [
         path: 'sponsor',
         loadChildren: () => import('./pages/sponsor/sponsor.module').then(m => m.SponsorModule),
         data: { breadcrumb: 'Sponsor Management' }
+      },
+      {
+        path: 'vendor',
+        loadChildren: () => import('./pages/vendor/vendor.module').then(m => m.VendorModule),
+        data: { breadcrumb: 'Vendor Management' }
+      },
+      {
+        path: 'schoolQr',
+        loadChildren: () => import('./pages/cardqr/cardqr.module').then(m => m.CardqrModule),
+        data: { breadcrumb: 'Generate School QR' }
+      },
+      {
+        path: 'withdraw-approval',
+        loadChildren: () => import('./pages/withdraw-approval/withdraw-approval.module').then(m => m.WithdrawApprovalModule),
+        data: { breadcrumb: 'Withdrawal Request' }
+      },
+      {
+        path: 'polytags',
+        loadChildren: () => import('./pages/polytags/polytags.module').then(m => m.PolytagsModule),
+        data: { breadcrumb: 'PolyTag Management' }
+      },
+      {
+        path: 'trainer',
+        loadChildren: () => import('./pages/trainer/trainer.module').then(m => m.TrainerModule),
+        data: { breadcrumb: 'Trainer Management' }
+      },
+      {
+        path: 'pecode',
+        loadChildren: () => import('./pages/pecode/pecode.module').then(m => m.PecodeModule),
+        data: { breadcrumb: 'Pecode Management' }
+      },
+      {
+        path: 'charity',
+        loadChildren: () => import('./pages/charity/charity.module').then(m => m.CharityModule),
+        data: { breadcrumb: 'Charity Management' }
+      },
+      {
+        path: 'steps-support',
+        loadChildren: () => import('./pages/support/steps-support/steps-support.module').then(m => m.StepsSupportModule),
+        data: { breadcrumb: 'Steps Support' }
+      },
+      {
+        path: 'dob-change',
+        loadChildren: () => import('./pages/dob-change/dob-change.module').then(m => m.DobChangeModule),
+        data: { breadcrumb: 'DOB Change' }
+      },
+      {
+        path: 'demo',
+        loadChildren: () => import('./pages/demo/demo.module').then(m => m.DemoModule),
+        data: { breadcrumb: 'Fruit Card Demo' }
+      },
+      {
+        path: 'user-delete',
+        loadChildren: () => import('./pages/user-delete/user-delete.module').then(m => m.UserDeleteModule),
+        data: { breadcrumb: 'User Remove' }
+      },
+      {
+        path: 'user-report',
+        loadChildren: () => import('./pages/user-report/user-report.module').then(m => m.UserReportModule),
+        data: { breadcrumb: 'User Report' }
       }
     ]
   },

@@ -3,77 +3,101 @@
 <mat-dialog-content>
     <form [formGroup]="angForm" novalidate>
         <!-- Basic Information Section -->
-        <h3>Basic Information</h3>
-        <mat-form-field appearance="fill">
-            <mat-label>Title</mat-label>
-            <input matInput formControlName="street_name">
-            <mat-error *ngIf="angForm.controls['street_name'].errors?.['required']">
-                Street Name is required
-            </mat-error>
-        </mat-form-field>
+        <div class="section">
+            <h3>Basic Information</h3>
+            <mat-form-field appearance="fill">
+                <mat-label>Title</mat-label>
+                <input matInput formControlName="street_name">
+                <mat-error *ngIf="angForm.controls['street_name'].errors?.['required']">
+                    Street Name is required
+                </mat-error>
+            </mat-form-field>
 
-        <mat-form-field appearance="fill">
-            <mat-label>Score</mat-label>
-            <input matInput formControlName="score" type="number">
-            <mat-error *ngIf="angForm.controls['score'].errors?.['required'] || angForm.controls['score'].errors?.['pattern']">
-                Score must be a valid number
-            </mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="fill">
-            <mat-label>Event Location</mat-label>
-            <textarea matInput formControlName="location" rows="3"></textarea>
-        </mat-form-field>
-
-        <!-- Location Section -->
-        <h3>Location Details</h3>
-        <button mat-raised-button color="accent" (click)="setlocation()">
-            <mat-icon>location_on</mat-icon>
-            Set Location
-        </button>
-
-        <div class="map-container" leaflet [leafletOptions]="mapOptions" 
-             (leafletMapReady)="onMapReady($event)"
-             (leafletClick)="onMapClick($event)">
+            <mat-form-field appearance="fill">
+                <mat-label>Score</mat-label>
+                <input matInput formControlName="score" type="number">
+                <mat-error *ngIf="angForm.controls['score'].errors?.['required'] || angForm.controls['score'].errors?.['pattern']">
+                    Score must be a valid number
+                </mat-error>
+            </mat-form-field>
         </div>
 
-        <mat-form-field appearance="fill">
-            <mat-label>Latitude</mat-label>
-            <input matInput formControlName="lat">
-            <mat-error *ngIf="angForm.controls['lat'].errors?.['required']">
-                Latitude is required
-            </mat-error>
-        </mat-form-field>
+        <!-- Location Section -->
+        <div class="section">
+            <h3>Location Details</h3>
+            
+            <!-- Location Input and Button -->
+            <div class="location-input">
+                <mat-form-field appearance="fill">
+                    <mat-label>Event Location</mat-label>
+                    <textarea matInput formControlName="location" rows="3"></textarea>
+                </mat-form-field>
 
-        <mat-form-field appearance="fill">
-            <mat-label>Longitude</mat-label>
-            <input matInput formControlName="lng">
-            <mat-error *ngIf="angForm.controls['lng'].errors?.['required']">
-                Longitude is required
-            </mat-error>
-        </mat-form-field>
+                <button mat-raised-button color="accent" (click)="setlocation()">
+                    <mat-icon>location_on</mat-icon>
+                    Set Location
+                </button>
+            </div>
+
+            <!-- Map Container -->
+            <div class="map-wrapper">
+                <google-map
+                    [center]="center"
+                    [zoom]="zoom"
+                    [options]="mapOptions"
+                    (mapClick)="onMapClick($event)">
+                    <map-marker
+                        #marker="mapMarker"
+                        [position]="markerPosition"
+                        [options]="markerOptions"
+                        (dragend)="onMarkerPositionChanged(marker.getPosition())">
+                    </map-marker>
+                </google-map>
+            </div>
+        </div>
+
+        <!-- Coordinates Section -->
+        <div class="section coordinates-section">
+            <mat-form-field appearance="outline">
+                <mat-label>Latitude</mat-label>
+                <input matInput formControlName="lat">
+                <mat-error *ngIf="angForm.controls['lat'].errors?.['required']">
+                    Latitude is required
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Longitude</mat-label>
+                <input matInput formControlName="lng">
+                <mat-error *ngIf="angForm.controls['lng'].errors?.['required']">
+                    Longitude is required
+                </mat-error>
+            </mat-form-field>
+        </div>
 
         <!-- Date Range Section -->
-        <h3>Date Range</h3>
-        <mat-form-field appearance="fill">
-            <mat-label>Start Date</mat-label>
-            <input matInput [matDatepicker]="picker1" formControlName="start_date">
-            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-            <mat-datepicker #picker1></mat-datepicker>
-            <mat-error *ngIf="angForm.controls['start_date'].errors?.['required']">
-                Start date is required
-            </mat-error>
-        </mat-form-field>
+        <div class="section">
+            <h3>Date Range</h3>
+            <mat-form-field appearance="fill">
+                <mat-label>Start Date</mat-label>
+                <input matInput [matDatepicker]="picker1" formControlName="start_date">
+                <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                <mat-datepicker #picker1></mat-datepicker>
+                <mat-error *ngIf="angForm.controls['start_date'].errors?.['required']">
+                    Start date is required
+                </mat-error>
+            </mat-form-field>
 
-        <mat-form-field appearance="fill">
-            <mat-label>End Date</mat-label>
-            <input matInput [matDatepicker]="picker2" formControlName="end_date">
-            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-            <mat-datepicker #picker2></mat-datepicker>
-            <mat-error *ngIf="angForm.controls['end_date'].errors?.['required']">
-                End date is required
-            </mat-error>
-        </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>End Date</mat-label>
+                <input matInput [matDatepicker]="picker2" formControlName="end_date">
+                <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                <mat-datepicker #picker2></mat-datepicker>
+                <mat-error *ngIf="angForm.controls['end_date'].errors?.['required']">
+                    End date is required
+                </mat-error>
+            </mat-form-field>
+        </div>
 
         <!-- Scan Settings Section -->
         <h3>Scan Settings</h3>

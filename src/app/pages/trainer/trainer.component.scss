@@ -1,0 +1,40 @@
+
+.mat-column-trainer_name,
+.mat-column-phone{
+  max-width: 22rem;
+}
+
+.mat-column-serial_number {
+  max-width: 10rem;
+}
+
+::ng-deep snack-bar-container.blue-snackbar {
+    background:rgb(9, 133, 9) !important;
+  }
+  
+  ::ng-deep .blue-snackbarr .mat-simple-snackbar {
+    color: White;
+  }
+
+ 
+::ng-deep snack-bar-container.red-snackbar {
+    background: red !important;
+  }
+  
+  ::ng-deep .red-snackbar .mat-simple-snackbar {
+    color: White;
+  }
+
+ ::ng-deep .mat-simple-snackbar {
+    justify-content: center !important;
+  }
+
+  .mat-cell:nth-child(5),
+.mat-header-cell:nth-child(5) {
+  flex: 0 0 6rem;
+}
+
+.mat-cell:nth-child(6),
+.mat-header-cell:nth-child(6) {
+  flex: 0 0 6rem;
+}

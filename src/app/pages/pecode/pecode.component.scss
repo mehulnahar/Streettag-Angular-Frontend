@@ -1,0 +1,28 @@
+.mat-column-serial_number {
+    max-width: 150px;
+  }
+  
+  
+
+  
+  
+  ::ng-deep snack-bar-container.blue-snackbar {
+    background:rgb(9, 133, 9) !important;
+  }
+  
+  ::ng-deep .blue-snackbarr .mat-simple-snackbar {
+    color: White;
+  }
+  
+  
+  ::ng-deep snack-bar-container.red-snackbar {
+    background: red !important;
+  }
+  
+  ::ng-deep .red-snackbar .mat-simple-snackbar {
+    color: White;
+  }
+  
+  ::ng-deep .mat-simple-snackbar {
+    justify-content: center !important;
+  }

@@ -19,7 +19,7 @@ export const verticalMenuItems = [
     new Menu (17, 'Questionnaires', '/admin/questionnaires', null, 'question_answer', null, false, 0),
     new Menu (18, 'Vendors', '/admin/vendor', null, 'store', null, false, 0),
     //new Menu (19, 'Assets', '/asset', null, 'event', null, false, 0),
-    new Menu (19, 'Generate School QR', '/admin/schoolQr', null, 'school', null, false, 0),
+    new Menu (19, 'Generate School QR', '/admin/schoolQr', null, 'qr_code', null, false, 0),
     new Menu (20, 'PolyTag Management', '/admin/polytags', null, 'room', null, false, 0),
     new Menu (21, 'Withdrawal Request', '/admin/withdraw-approval', null, 'account_balance_wallet', null, false, 0), 
     new Menu (22, 'Trainer', '/admin/trainer', null, 'event', null, false, 0), 
@@ -54,7 +54,7 @@ export const verticalMenuItems = [
     new Menu (41, 'DOB Change', '/admin/dob-change', null, 'event', null, false, 0),
 
     //Fruit Card
-    new Menu (41, 'Fruit Card', '/admin/cardqr', null, 'qr_code', null, false, 0),
+    new Menu (41, 'Fruit Card', '/admin/demo', null, 'qr_code', null, false, 0),
 
     // User Delete
     new Menu (41, 'User Remove', '/admin/user-delete', null, 'perm_identity', null, false, 0),    
@@ -63,8 +63,7 @@ export const verticalMenuItems = [
     new Menu (44, 'User Report', '/admin/user-report', null, 'library_books', null, false, 0),     
 
     //Fruit Card
-    // new Menu (41, 'Fruit Details', '/admin/demo', null, 'qr_code', null, false, 0),    
-
+    // new Menu (45, 'Fruit Details', '/admin/demo', null, 'shopping_cart', null, false, 0),    
 
     //RF ID
     new Menu (41, 'RF Management', null, null, 'format_list_bulleted', null, true, 0), 

@@ -1,50 +1,54 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { PipesModule } from 'src/app/theme/pipes/pipes.module';
-import { SimplebarAngularModule } from 'simplebar-angular';
-import { GoogleMapsModule } from '@angular/google-maps';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { DemoComponent, DialogOverviewAddMessageDialogCircuit, AddFruitCardDialog } from './demo.component';
+
+// Material Modules
+import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { DialogOverviewAddMessageDialogStreettags, DialogOverviewMessageDialogStreettags, StreettagsComponent } from './streettags.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { MatSelectModule } from '@angular/material/select';
 
 export const routes: Routes = [
-  { path: '', component: StreettagsComponent, pathMatch: 'full' }
+  { path: '', component: DemoComponent }
 ];
 
 @NgModule({
+  declarations: [
+    DemoComponent,
+    DialogOverviewAddMessageDialogCircuit,
+    AddFruitCardDialog
+  ],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    SimplebarAngularModule,
     SharedModule,
     PipesModule,
-    GoogleMapsModule,
     RouterModule.forChild(routes),
+    // Material Modules
+    MatCardModule,
     MatButtonModule,
     MatIconModule,
     MatFormFieldModule,
     MatInputModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
+    MatSnackBarModule,
     MatDialogModule,
-    MatSnackBarModule
-  ],
-  declarations: [
-    StreettagsComponent,
-    DialogOverviewAddMessageDialogStreettags,
-    DialogOverviewMessageDialogStreettags,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatSelectModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class StreettagsModule { }
+export class DemoModule { }

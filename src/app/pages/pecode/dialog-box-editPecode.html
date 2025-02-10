@@ -1,0 +1,42 @@
+<div class="dialog-content p-3" style="min-width: 400px;">
+    <h3 class="mb-3">Edit Pecode</h3>
+
+    <form [formGroup]="angForm" novalidate>
+        <div class="form-content">
+            <mat-form-field appearance="outline" class="w-100 mb-2">
+                <mat-label>Name</mat-label>
+                <input matInput placeholder="Enter name" name="name"
+                    formControlName="name">
+                <mat-error *ngIf="angForm.controls['name'].errors?.['required']">
+                    Pecode Name is required
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-100 mb-2">
+                <mat-label>Email</mat-label>
+                <input matInput placeholder="Enter email" name="email"
+                    formControlName="email">
+                <mat-error *ngIf="angForm.controls['email'].invalid">
+                    Invalid Email address
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-100 mb-3">
+                <mat-label>Phone</mat-label>
+                <input matInput placeholder="Enter phone" name="phone"
+                    formControlName="phone">
+                <mat-error *ngIf="angForm.controls['phone'].invalid">
+                    Invalid Phone number
+                </mat-error>
+            </mat-form-field>
+
+            <div class="text-center mt-2">
+                <button mat-raised-button color="primary" class="px-5"
+                    [disabled]="clicked || angForm.invalid" 
+                    (click)="UpdatePecode(); clicked=true">
+                    Update Pecode
+                </button>
+            </div>
+        </div>
+    </form>
+</div> 

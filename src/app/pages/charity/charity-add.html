@@ -1,0 +1,61 @@
+<div class="p-4" style="width:100%; height:310px;" perfectScrollbar>
+    <div style="width:100%;height:310px;">
+        <h3 class="mb-4">Add Charity</h3>
+        <div style="width:100%;">
+            <form [formGroup]="angForm" novalidate>
+                <mat-form-field class="w-100" style="margin-top:15px;">
+                    <input matInput placeholder="Title" formControlName="title">
+                </mat-form-field>
+
+                <div style="width: 100%;" *ngIf="angForm.get('title')?.invalid && (angForm.get('title')?.dirty || angForm.get('title')?.touched)"
+                    class="alert alert-danger">
+                    <div *ngIf="angForm.get('title')?.errors?.['required']">
+                        Please Enter Title
+                    </div>
+                </div>
+
+                <mat-form-field class="w-100" style="margin-top:15px;">
+                    <mat-label>Description</mat-label>
+                    <textarea matInput formControlName="description" rows="3"></textarea>
+                </mat-form-field>
+
+                <div style="width: 100%;" *ngIf="angForm.get('description')?.invalid && (angForm.get('description')?.dirty || angForm.get('description')?.touched)"
+                    class="alert alert-danger">
+                    <div *ngIf="angForm.get('description')?.invalid">
+                        Description is required.
+                    </div>
+                </div>
+
+                <div class="my-3">
+                    <label class="mb-2">Match Fund: </label>
+                    <mat-radio-group [(ngModel)]="Fund" [ngModelOptions]="{standalone: true}" class="ml-3">
+                        <mat-radio-button style="margin-right: 20px; margin-left: 10px;" value="1">Yes</mat-radio-button>
+                        <mat-radio-button value="0">No</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+
+                <div class="my-3">
+                    <label class="mb-2 d-block">Charity Image:</label>
+                    <input formControlName="requiredfile" type="file" (change)="handleInputChange($event)"
+                        accept="image/gif,image/jpeg,image/png,image/jpg" class="w-100">
+                </div>
+
+                <div style="width: 100%;" *ngIf="angForm.get('requiredfile')?.invalid && (angForm.get('requiredfile')?.dirty || angForm.get('requiredfile')?.touched)"
+                    class="alert alert-danger">
+                    <div *ngIf="angForm.get('requiredfile')?.errors?.['required']">
+                        Please Select Image
+                    </div>
+                </div>
+
+                <div class="text-center mt-4">
+                    <button mat-raised-button color="primary" 
+                        [disabled]="!angForm.valid || clicked"
+                        (click)="addCharityData()"
+                        style="min-width: 120px; border-radius: 20px;">
+                        Add Charity
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

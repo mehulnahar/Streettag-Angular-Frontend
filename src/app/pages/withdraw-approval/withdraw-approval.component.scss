@@ -1,0 +1,42 @@
+.mat-column-serial_number {
+  max-width: 5rem;
+}
+.mat-column-ac_name{
+    max-width: 10rem;
+}
+
+.mat-column-player_id {
+    max-width: 10rem;
+  } 
+
+  .mat-column-requested_date,
+  .mat-column-action,
+  .mat-column-ac_no{
+    max-width: 9rem
+  } 
+
+.mat-column-withdrawal_amount{
+    max-width: 80px;
+}  
+
+
+::ng-deep snack-bar-container.blue-snackbar {
+  background:rgb(9, 133, 9) !important;
+}
+
+::ng-deep .blue-snackbarr .mat-simple-snackbar {
+  color: White;
+}
+
+
+::ng-deep snack-bar-container.red-snackbar {
+  background: red !important;
+}
+
+::ng-deep .red-snackbar .mat-simple-snackbar {
+  color: White;
+}
+
+::ng-deep .mat-simple-snackbar {
+  justify-content: center !important;
+}

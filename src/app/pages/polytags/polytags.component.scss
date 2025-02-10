@@ -1,0 +1,50 @@
+.mat-cell:nth-child(6),
+.mat-header-cell:nth-child(6) {
+    flex: 0 0 5rem;
+}
+
+.mat-cell:nth-child(7),
+.mat-header-cell:nth-child(7) {
+  flex: 0 0 5rem;
+}
+
+.hide{
+    display: none;
+}
+
+mat-footer-row mat-footer-cell{
+    justify-content: center;
+    font-style: italic;
+}
+
+.map-container {
+    position: relative;
+}
+
+.custom-info-window {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .close-btn {
+        width: 24px;
+        height: 24px;
+        line-height: 24px;
+        
+        mat-icon {
+            font-size: 18px;
+            width: 18px;
+            height: 18px;
+            line-height: 18px;
+        }
+    }
+}

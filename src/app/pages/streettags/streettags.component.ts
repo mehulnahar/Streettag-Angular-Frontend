@@ -24,7 +24,7 @@ import { MatSort } from "@angular/material/sort";
 import { environment } from "src/environments/environment";
 import { ConfirmDialogComponent } from "src/app/shared/confirm-dialog/confirm-dialog.component";
 import { ConfirmDialogModel } from "src/app/shared/confirm-dialog/confirmDialog.model";
-import * as L from 'leaflet';
+import { GoogleMap, MapMarker } from '@angular/google-maps';
 import { HttpClient } from '@angular/common/http';
 
 // import {DeletedialogLocation} from '../../DeletedialogLocation/DeletedialogLocation.component';
@@ -110,40 +110,6 @@ export class StreettagsComponent implements OnInit, AfterViewInit {
   ];
 
   streettag_id: string = '';
-
-  private map!: L.Map;
-  public marker?: L.Marker;
-
-  public mapOptions = {
-    layers: [
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 18,
-        attribution: '© OpenStreetMap contributors'
-      }),
-    ],
-    zoom: 7,
-    center: L.latLng(51.5339834, 0.0753218)
-  };
-
-  private baseMaps = {
-    'Map': L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 18,
-      attribution: '© OpenStreetMap contributors'
-    }),
-    'Satellite': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-      maxZoom: 18,
-      attribution: '© Esri'
-    })
-  };
-
-  private defaultIcon = L.icon({
-    iconUrl: 'assets/leaflet/marker-icon.png',
-    shadowUrl: 'assets/leaflet/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-  });
 
   constructor(
     public appSettings: AppSettings,
@@ -274,34 +240,6 @@ export class StreettagsComponent implements OnInit, AfterViewInit {
       });
     });
   }
-
-  onMapReady(map: L.Map) {
-    this.map = map;
-    this.addMarker();
-    
-    // Add layer control
-    L.control.layers(this.baseMaps).addTo(this.map);
-    
-    // Set default layer
-    this.baseMaps['Map'].addTo(this.map);
-  }
-
-  addMarker() {
-    if (this.marker) {
-      this.map.removeLayer(this.marker);
-    }
-    this.marker = L.marker([this.lat, this.lng], {
-      draggable: true,
-      icon: this.defaultIcon
-    });
-    this.marker.on('dragend', (event) => {
-      const marker = event.target;
-      const position = marker.getLatLng();
-      this.lat = position.lat;
-      this.lng = position.lng;
-    });
-    this.marker.addTo(this.map);
-  }
 }
 
 @Component({
@@ -309,14 +247,8 @@ export class StreettagsComponent implements OnInit, AfterViewInit {
   templateUrl: "dialog-overview-addmessage-dialog.html"
 })
 export class DialogOverviewAddMessageDialogStreettags implements OnInit {
-  private defaultIcon = L.icon({
-    iconUrl: 'assets/leaflet/marker-icon.png',
-    shadowUrl: 'assets/leaflet/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-  });
+  @ViewChild(GoogleMap) map!: GoogleMap;
+  @ViewChild(MapMarker) marker!: MapMarker;
 
   public lat: number = 51.5339834;
   public lng: number = 0.0753218;
@@ -352,28 +284,18 @@ export class DialogOverviewAddMessageDialogStreettags implements OnInit {
   is_building_qr_value: any;
   val: any;
   private readonly baseUrl = environment.baseUrl;
-  private map!: L.Map;
-  public marker?: L.Marker;
-  public mapOptions = {
-    layers: [
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 18,
-        attribution: '© OpenStreetMap contributors'
-      }),
-    ],
-    zoom: 7,
-    center: L.latLng(51.5339834, 0.0753218)
-  };
 
-  private baseMaps = {
-    'Map': L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 18,
-      attribution: '© OpenStreetMap contributors'
-    }),
-    'Satellite': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-      maxZoom: 18,
-      attribution: '© Esri'
-    })
+  // Google Maps options
+  public center!: { lat: number; lng: number };
+  public markerPosition!: { lat: number; lng: number };
+  public mapOptions: google.maps.MapOptions = {
+    zoom: 7,
+    mapTypeControl: true,
+    streetViewControl: false,
+    mapTypeId: 'roadmap'
+  };
+  public markerOptions: google.maps.MarkerOptions = {
+    draggable: true
   };
 
   constructor(
@@ -385,6 +307,8 @@ export class DialogOverviewAddMessageDialogStreettags implements OnInit {
     public formBuilder: FormBuilder,
     private http: HttpClient
   ) {
+    this.center = { lat: this.lat, lng: this.lng };
+    this.markerPosition = { lat: this.lat, lng: this.lng };
     this.createForm();
   }
 
@@ -392,42 +316,30 @@ export class DialogOverviewAddMessageDialogStreettags implements OnInit {
     this.getallLocations();
   }
 
-  onMapReady(map: L.Map) {
-    this.map = map;
-    this.addMarker();
-    
-    // Add layer control
-    L.control.layers(this.baseMaps).addTo(this.map);
-    
-    // Set default layer
-    this.baseMaps['Map'].addTo(this.map);
-  }
-
-  onMapClick(e: L.LeafletMouseEvent) {
-    this.lat = e.latlng.lat;
-    this.lng = e.latlng.lng;
-    this.angForm.patchValue({
-      lat: this.lat,
-      lng: this.lng
-    });
-    this.addMarker();
-  }
-
-  addMarker() {
-    if (this.marker) {
-      this.map.removeLayer(this.marker);
+  onMapClick(event: google.maps.MapMouseEvent) {
+    if (event.latLng) {
+      this.lat = event.latLng.lat();
+      this.lng = event.latLng.lng();
+      this.markerPosition = { lat: this.lat, lng: this.lng };
+      this.center = this.markerPosition;
+      this.angForm.patchValue({
+        lat: this.lat,
+        lng: this.lng
+      });
     }
-    this.marker = L.marker([this.lat, this.lng], {
-      draggable: true,
-      icon: this.defaultIcon
-    });
-    this.marker.on('dragend', (event) => {
-      const marker = event.target;
-      const position = marker.getLatLng();
-      this.lat = position.lat;
-      this.lng = position.lng;
-    });
-    this.marker.addTo(this.map);
+  }
+
+  onMarkerPositionChanged(position: google.maps.LatLng | null) {
+    if (position) {
+      this.lat = position.lat();
+      this.lng = position.lng();
+      this.markerPosition = { lat: this.lat, lng: this.lng };
+      this.center = this.markerPosition;
+      this.angForm.patchValue({
+        lat: this.lat,
+        lng: this.lng
+      });
+    }
   }
 
   onNoClick(): void {
@@ -473,22 +385,17 @@ export class DialogOverviewAddMessageDialogStreettags implements OnInit {
         const { lat, lon } = results[0];
         
         // Update form values
+        this.lat = parseFloat(lat);
+        this.lng = parseFloat(lon);
+        this.center = { lat: this.lat, lng: this.lng };
+        this.markerPosition = { lat: this.lat, lng: this.lng };
         this.angForm.patchValue({
-          lat: parseFloat(lat),
-          lng: parseFloat(lon)
+          lat: this.lat,
+          lng: this.lng
         });
 
-        // Update map position and marker
-        if (this.map) {
-          const newLatLng = L.latLng(parseFloat(lat), parseFloat(lon));
-          this.map.setView(newLatLng, 15);
-          
-          if (this.marker) {
-            this.marker.setLatLng(newLatLng);
-          } else {
-            this.marker = L.marker(newLatLng, { icon: this.defaultIcon }).addTo(this.map);
-          }
-        }
+        // Update map zoom
+        this.zoom = 15;
 
         this.snackBar.open('Location set successfully', 'Close', {
           duration: 3000,
