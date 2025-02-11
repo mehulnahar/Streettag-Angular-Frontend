@@ -47,8 +47,7 @@ export class AjaxService {
     }
 
     post<T>(data: any, url: string): Observable<T> {
-        const body = JSON.stringify(data);
-        return this.http.post<T>(url, body, { 
+        return this.http.post<T>(url, data, { 
             headers: this.defaultHeaders 
         }).pipe(catchError(this.handleError));
     }
@@ -76,12 +75,9 @@ export class AjaxService {
     }
 
     postFile<T>(data: any, url: string, file: File): Observable<T> {
-        console.log("this is function calling hnowerwrewefsfsfs");
-        const endpoint = url;
         const formData: FormData = new FormData();
         formData.append("Image", file, file.name);
-        console.log(formData);
-        return this.http.post<T>(endpoint, formData, httpOptionsFormdata);
+        return this.http.post<T>(url, formData);
     }
 
     // public uploadImage(image: File) {

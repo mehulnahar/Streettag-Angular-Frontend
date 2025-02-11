@@ -11,6 +11,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ExcelService } from 'src/app/excel.service';
 
 export const routes: Routes = [
   { path: '', component: UserReportComponent, pathMatch: 'full' as const }
@@ -33,6 +34,9 @@ export const routes: Routes = [
   ],
   declarations: [
     UserReportComponent
+  ],
+  providers: [
+    ExcelService
   ]
 })
 export class UserReportModule { }

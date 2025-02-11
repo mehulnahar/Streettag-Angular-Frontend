@@ -1,0 +1,83 @@
+<mat-toolbar color="primary" class="dialog-header">
+  <span>Edit Monument Tour</span>
+  <button mat-icon-button class="close-button" [mat-dialog-close]="true">
+    <mat-icon>close</mat-icon>
+  </button>
+</mat-toolbar>
+
+<form [formGroup]="angForm" (ngSubmit)="onSubmit()" class="dialog-form">
+  <mat-dialog-content class="dialog-content">
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Tour Name</mat-label>
+        <input matInput formControlName="tourName" #inputTitle maxlength="50">
+        <mat-hint align="end">{{inputTitle.value.length || 0}}/50</mat-hint>
+        <mat-error *ngIf="angForm.get('tourName')?.errors?.['required'] && angForm.get('tourName')?.touched">
+          Tour name is required
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description" #input maxlength="150" cdkTextareaAutosize></textarea>
+        <mat-hint align="end">{{input.value.length || 0}}/150</mat-hint>
+        <mat-error *ngIf="angForm.get('description')?.errors?.['required'] && angForm.get('description')?.touched">
+          Description is required
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="map-container">
+      <google-map
+        [center]="center"
+        [zoom]="zoom"
+        [options]="options"
+        (mapClick)="addMarker($event)">
+        <map-marker
+          *ngFor="let marker of markers"
+          [position]="marker.position"
+          [options]="marker.options"
+          (mapDragend)="moveMarker($event)">
+        </map-marker>
+      </google-map>
+    </div>
+
+    <div class="form-row upload-section">
+      <div class="upload-button">
+        <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" multiple hidden>
+        <button mat-raised-button color="primary" type="button" (click)="fileInput.click()">
+          <mat-icon>cloud_upload</mat-icon>
+          Upload Images
+        </button>
+      </div>
+
+      <div class="preview-grid" *ngIf="selectedFiles.length > 0">
+        <div class="preview-item" *ngFor="let file of selectedFiles; let i = index">
+          <img [src]="file.preview" alt="Preview">
+          <button mat-mini-fab color="warn" class="remove-button" (click)="removeFile(i)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="preview-grid" *ngIf="existingImages.length > 0">
+        <div class="preview-item" *ngFor="let image of existingImages; let i = index">
+          <img [src]="image" alt="Existing image" (click)="OpenImageViewerBox(image)">
+          <button mat-mini-fab color="warn" class="remove-button" (click)="removeExistingImage(i)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close type="button">Cancel</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="!angForm.valid || isSubmitting">
+      <mat-icon>save</mat-icon>
+      Save Changes
+    </button>
+  </mat-dialog-actions>
+</form>

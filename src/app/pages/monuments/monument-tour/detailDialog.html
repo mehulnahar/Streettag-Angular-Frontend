@@ -1,0 +1,8 @@
+<div style="width:500px; height:100%; max-height: 500px;" perfectScrollbar>
+        <h3 style="text-align: center;">Destination Details</h3>
+        <mat-spinner style="margin:0 auto; height: 30px;" *ngIf="spinner"></mat-spinner>
+        <mat-list *ngFor="let monumentName of tourData; let i=index">
+            <mat-list-item>{{i+1}}.  {{monumentName.name}}</mat-list-item>
+            <mat-divider></mat-divider>
+        </mat-list>  
+</div>

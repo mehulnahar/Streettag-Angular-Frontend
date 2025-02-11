@@ -1,0 +1,89 @@
+<div class="dialog-container">
+  <div class="dialog-header">
+    <h2>Register NFC</h2>
+    <button mat-icon-button (click)="onClose()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <form [formGroup]="nfcRegistrationForm" class="register-form">
+    <div class="form-row">
+      <mat-form-field>
+        <mat-label>Player Id</mat-label>
+        <input matInput formControlName="player_id">
+        <mat-error *ngIf="nfcRegistrationForm.get('player_id')?.errors?.['required']">
+          Player ID is required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Fullname</mat-label>
+        <input matInput formControlName="name">
+        <mat-error *ngIf="nfcRegistrationForm.get('name')?.errors?.['required']">
+          Name is required
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field class="full-width">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" type="email">
+        <mat-error *ngIf="nfcRegistrationForm.get('email')?.errors?.['required']">
+          Email is required
+        </mat-error>
+        <mat-error *ngIf="nfcRegistrationForm.get('email')?.errors?.['email']">
+          Please enter a valid email
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field>
+        <mat-label>Date of Birth</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="dob">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <div class="gender-field">
+        <label>Gender</label>
+        <mat-radio-group formControlName="gender">
+          <mat-radio-button value="male">Male</mat-radio-button>
+          <mat-radio-button value="female">Female</mat-radio-button>
+          <mat-radio-button value="other">Other</mat-radio-button>
+        </mat-radio-group>
+        <div class="error-text" *ngIf="nfcRegistrationForm.get('gender')?.errors?.['required'] && nfcRegistrationForm.get('gender')?.touched">
+          Gender is required
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field>
+        <mat-label>Team Id</mat-label>
+        <input matInput formControlName="team_id">
+        <mat-error *ngIf="nfcRegistrationForm.get('team_id')?.errors?.['required']">
+          Team ID is required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Team Name</mat-label>
+        <input matInput formControlName="team_name" readonly>
+        <mat-hint>Readonly field</mat-hint>
+      </mat-form-field>
+    </div>
+
+    <div class="form-actions">
+      <button mat-stroked-button color="warn" (click)="clearForm()">
+        Clear
+      </button>
+      <button mat-flat-button color="primary" 
+              [disabled]="nfcRegistrationForm.invalid"
+              (click)="AddPlayer()">
+        Submit
+      </button>
+    </div>
+  </form>
+</div>

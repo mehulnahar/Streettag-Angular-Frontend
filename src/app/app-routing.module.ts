@@ -154,6 +154,26 @@ const routes: Routes = [
         path: 'user-report',
         loadChildren: () => import('./pages/user-report/user-report.module').then(m => m.UserReportModule),
         data: { breadcrumb: 'User Report' }
+      },
+      {
+        path: 'broadcast',
+        loadChildren: () => import('./pages/broadcast/broadcast.module').then(m => m.BroadcastModule),
+        data: { breadcrumb: 'Broadcast Management' }
+      },
+      {
+        path: 'nfc',
+        loadChildren: () => import('./pages/nfc-management/nfc.module').then(m => m.nfcModule),
+        data: { breadcrumb: 'NFC Management' }
+      },
+      {
+        path: 'monument',
+        loadChildren: () => import('./pages/monuments/monuments.module').then(m => m.MonumentsModule),
+        data: { breadcrumb: 'Monument Management' }
+      },
+      {
+        path: 'report',
+        loadChildren: () => import('./pages/report/report.module').then(m => m.ReportModule),
+        data: { breadcrumb: 'Reports' }
       }
     ]
   },

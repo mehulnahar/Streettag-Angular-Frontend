@@ -1,0 +1,26 @@
+input[type="file"] {
+    display: none;
+}
+
+.custom-file-upload {
+    border: 1px solid #ccc;
+    display: inline-block;
+    border-radius: 10px;
+    padding: 4px 12px;
+    cursor: pointer;
+}
+
+button:disabled:hover,
+button[disabled]:hover{
+    cursor:no-drop;
+}
+
+.mat-cell:nth-child(5),
+.mat-header-cell:nth-child(5) {
+  flex: 0 0 5rem;
+}
+
+.mat-cell:nth-child(6),
+.mat-header-cell:nth-child(6) {
+  flex: 0 0 4rem;
+}

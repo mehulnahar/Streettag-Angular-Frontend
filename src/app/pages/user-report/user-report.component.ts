@@ -379,9 +379,11 @@ import {
       }
 
       const url = `${this.baseUrl}getPlayerTagsDataAdmin`;
-      const data1 = { player_id: this.player_id };
+      const data1 = { 
+        player_id: this.player_id  // player_id is already base64 encoded
+      };
 
-      this.ajaxService.post<ApiResponse<PlayerDetails[]>>(url, JSON.stringify(data1)).subscribe({
+      this.ajaxService.post<ApiResponse<PlayerDetails[]>>(data1, url).subscribe({
         next: (data) => {
           this.dataSourcePlayersDetails = data.response;
           this.dwStepsReport(this.dataSourcePlayersDetails, 'tags', this.player_id);
@@ -407,9 +409,11 @@ import {
       }
 
       const url = `${this.baseUrl}getPlayerStepsDataAdmin`;
-      const data1 = { player_id: this.player_id };
+      const data1 = { 
+        player_id: this.player_id  // player_id is already base64 encoded
+      };
 
-      this.ajaxService.post<ApiResponse<PlayerDetails[]>>(url, JSON.stringify(data1)).subscribe({
+      this.ajaxService.post<ApiResponse<PlayerDetails[]>>(data1, url).subscribe({
         next: (data) => {
           this.dataSourcePlayersDetails = data.response;
           this.dwStepsReport(this.dataSourcePlayersDetails, 'steps', this.player_id);
@@ -435,9 +439,11 @@ import {
       }
 
       const url = `${this.baseUrl}getPlayerPecodeDataAdmin`;
-      const data1 = { player_id: this.player_id };
+      const data1 = { 
+        player_id: this.player_id  // player_id is already base64 encoded
+      };
 
-      this.ajaxService.post<ApiResponse<PlayerDetails[]>>(url, JSON.stringify(data1)).subscribe({
+      this.ajaxService.post<ApiResponse<PlayerDetails[]>>(data1, url).subscribe({
         next: (data) => {
           this.dataSourcePlayersDetails = data.response;
           console.log(data.response, '------------------x---------------');

@@ -1,0 +1,62 @@
+<app-content-header [title]="'Monitoring Report'" [icon]="'library_books'" [hideBreadcrumb]="true" [hasBgImage]="true"
+  [class]="'pb-3 pt-3'">
+ </app-content-header>
+<br>
+<div class="container">
+  <form (ngSubmit)="onSubmit()" [formGroup]="angForm" #searchForm="ngForm">
+    <div class="row">
+      <div class="col-md-4">
+          <select formControlName="location_id" (ngModelChange)="get_location_id($event)" class="form-control" name="location_id">
+            <option value="" disabled >Select Location</option>
+            <option *ngFor="let option of dataSourceLocation$ | async" [value]="option.id"> {{option.location_name}}</option>
+          </select>
+      </div>
+      
+      <div class="col-md-4">
+      <select formControlName="circuit_id" class="form-control" name="circuit_id">
+        <option value="" disabled >Select Circuit </option>
+        <option *ngFor="let option1 of dataSourceCircuit$ | async" [ngValue]="option1">{{option1.circuit_name}}</option>
+      </select>
+      </div>
+   
+   <div class="col-md-4">
+    <select formControlName="month" class="form-control" name="month">
+      <option value="" disabled >Select Month </option>
+      <option *ngFor="let option2 of dataSourceMonths" [ngValue]='option2'>{{option2.month_text}}</option>
+    </select>
+    </div>
+  </div>
+  <div class="form-group" fxLayout="row" fxLayoutAlign="center center">
+    <button style="padding: 5px 25px; margin-top:12px; margin-bottom:-10px; " type="submit" [disabled]="!angForm.valid" class="btn btn-primary btn-md">Generate</button>
+  </div>
+  </form>
+</div>
+
+<!-- Conditional Spinner -->
+<mat-spinner style="margin: 10px auto;" *ngIf="spiner"></mat-spinner> 
+
+<!-- Conditional Displaying Table and data -->
+<div *ngIf="showTable">
+  <div fxLayout="column" class="p-2">
+<div class="p-2"> 
+    <mat-table  [dataSource]="dataSource"  class="mat-elevation-z8">       
+     
+      <ng-container *ngFor="let column of columns" [matColumnDef]="column.columnDef">
+        <mat-header-cell *matHeaderCellDef>{{ column.header }}</mat-header-cell>
+        <mat-cell *matCellDef="let row">{{ column.cell(row)}}  </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+</div>
+</div>
+
+<div class="container" fxLayout="row" fxLayoutAlign="space-evenly center">
+  <button mat-raised-button color="accent" (click)="exportAsXLSX()" class="compose" fxShow="false" fxShow.gt-xs><span style="color:whitesmoke;" class="material-icons">
+    get_app</span>Export Excel</button>       
+  <button mat-raised-button color="accent" (click)="exportAsPDF()" class="compose" fxShow="false" fxShow.gt-xs><span style="color: whitesmoke;" class="material-icons">
+    get_app</span>Export Pdf</button>       
+
+</div>
+</div>

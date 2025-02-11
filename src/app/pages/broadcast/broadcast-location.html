@@ -1,0 +1,60 @@
+<div style="width:700px; height:530px;">
+    <h4>Add/Edit Geo-Location</h4>
+
+    <div class="location-input-container" style="display: flex; align-items: center; margin-bottom: 15px;">
+        <mat-form-field style="flex: 1; margin-right: 10px;">
+            <input matInput placeholder="Event Location" [(ngModel)]="location" name="location">
+        </mat-form-field>
+        <button mat-raised-button color="accent" (click)="setlocation()" style="height: 36px;">
+            Set Location
+        </button>
+    </div>
+
+    <div class="map-container" style="height: 400px; border: 1px solid #ccc; border-radius: 4px; overflow: hidden;">
+        <google-map [center]="center" 
+                   [zoom]="zoom" 
+                   height="100%" 
+                   width="100%"
+                   (mapClick)="onMapClick($event)">
+            <!-- Center Marker -->
+            <map-marker
+                [position]="markerPosition"
+                [options]="markerOptions"
+                (mapDragend)="markerDragEnd($event)">
+            </map-marker>
+
+            <!-- Circle -->
+            <map-circle
+                [center]="markerPosition"
+                [radius]="angForm.get('radius')?.value"
+                [options]="circleOptions"
+                (radiusChange)="onRadiusChange($event)"
+                (centerChange)="onCenterChange($event)">
+            </map-circle>
+        </google-map>
+    </div>
+
+    <div class="location-info" style="background: #f5f5f5; padding: 15px; margin-top: 15px; border-radius: 4px;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+            <div>
+                <strong>Latitude:</strong> {{angForm.get('lat')?.value || 0}}
+            </div>
+            <div>
+                <strong>Longitude:</strong> {{angForm.get('lng')?.value || 0}}
+            </div>
+            <div>
+                <strong>Radius in meters:</strong> {{angForm.get('radius')?.value || 0}}
+            </div>
+        </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 15px;">
+        <button mat-raised-button color="primary" 
+                [disabled]="!angForm.valid || clicked" 
+                (click)="addlocation()"
+                style="width: 200px;">
+            Set Geo-Location
+        </button>
+    </div>
+</div>
+        

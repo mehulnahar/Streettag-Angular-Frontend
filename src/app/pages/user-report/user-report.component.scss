@@ -1,0 +1,71 @@
+.container {
+  padding: 20px;
+}
+
+mat-card {
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  
+  &.player-info-card {
+    background-color: #f8f9fa;
+    transition: transform 0.2s;
+    
+    &:hover {
+      transform: translateY(-2px);
+    }
+  }
+}
+
+.player-details {
+  .mat-h2 {
+    color: #2c3e50;
+    font-weight: 500;
+  }
+}
+
+.player-value {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #2c3e50;
+  word-break: break-word;
+}
+
+.text-muted {
+  color: #6c757d !important;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  
+  .col-md-4 {
+    padding: 0;
+  }
+}
+
+button[mat-raised-button] {
+  height: 48px;
+  
+  .mat-icon {
+    margin-right: 8px;
+  }
+  
+  &:disabled {
+    opacity: 0.7;
+  }
+}
+
+mat-form-field {
+  .mat-icon {
+    color: #6c757d;
+  }
+}
+
+.mat-progress-spinner {
+  margin: 0 auto;
+}

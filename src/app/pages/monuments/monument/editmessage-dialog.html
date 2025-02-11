@@ -1,0 +1,184 @@
+<!-- <mat-toolbar color="primary" class="dialog-header">
+  <div class="header-content">
+    <mat-icon class="header-icon">edit_location</mat-icon>
+    <span class="header-title">Edit Monument</span>
+  </div>
+  <button mat-icon-button class="close-button" [mat-dialog-close]="true">
+    <mat-icon>close</mat-icon>
+  </button>
+</mat-toolbar> -->
+
+<form [formGroup]="angForm" class="dialog-form">
+  <mat-dialog-content class="dialog-content">
+    <div class="form-sections">
+      <!-- Basic Information Section -->
+      <div class="form-section">
+        <div class="section-header">
+          <mat-icon class="section-icon">edit_location</mat-icon>
+          <h2 class="section-title">Edit Monument</h2>
+        </div>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Monument Name</mat-label>
+            <input matInput #inputTitle formControlName="name" maxlength="50" placeholder="Enter monument name">
+            <mat-icon matPrefix>account_balance</mat-icon>
+            <mat-hint align="end">{{inputTitle.value.length || 0}}/50</mat-hint>
+            <mat-error *ngIf="angForm.get('name')?.errors?.['required'] && angForm.get('name')?.touched">
+              Name is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Description Fields -->
+        <div formArrayName="description" class="description-container">
+          <div *ngFor="let item of description.controls; let i = index" class="description-item">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Description {{i + 1}}</mat-label>
+              <textarea matInput #inputDesc [formControlName]="i" maxlength="400" 
+                        cdkTextareaAutosize cdkAutosizeMinRows="3" cdkAutosizeMaxRows="5"
+                        placeholder="Enter monument description"></textarea>
+              <mat-icon matPrefix>description</mat-icon>
+              <mat-hint align="end">{{inputDesc.value.length || 0}}/400</mat-hint>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="button-row">
+          <button mat-stroked-button color="primary" (click)="addMoreDecription()" class="action-button">
+            <mat-icon>add</mat-icon> Add Description
+          </button>
+          <button mat-stroked-button color="warn" (click)="RemoveDecription()" [disabled]="description.length <= 1" class="action-button">
+            <mat-icon>remove</mat-icon> Remove Description
+          </button>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Website Link</mat-label>
+            <input matInput formControlName="link" placeholder="https://example.com">
+            <mat-icon matPrefix>link</mat-icon>
+            <mat-error *ngIf="angForm.get('link')?.errors && angForm.get('link')?.touched">
+              <span *ngIf="angForm.get('link')?.errors?.['required']">Link is required</span>
+              <span *ngIf="angForm.get('link')?.errors?.['pattern']">Please enter a valid URL</span>
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row radio-group">
+          <label class="radio-label">Basket Option</label>
+          <mat-radio-group formControlName="basketFlag" class="radio-buttons">
+            <mat-radio-button [value]="0" color="primary">No Basket</mat-radio-button>
+            <mat-radio-button [value]="1" color="primary">With Basket</mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>
+
+      <!-- Media Files Section -->
+      <div class="form-section">
+        <div class="section-header">
+          <mat-icon class="section-icon">perm_media</mat-icon>
+          <h2 class="section-title">Media Files</h2>
+        </div>
+
+        <!-- Existing Media Preview -->
+        <div class="media-preview">
+          <!-- Images -->
+          <div class="media-group" *ngIf="imageUrl.length > 0">
+            <h3 class="media-title">Current Images</h3>
+            <div class="media-grid">
+              <div class="media-item" *ngFor="let image of imageUrl">
+                <div class="image-preview" (click)="OpenImageViewerBox(image)">
+                  <img [src]="image" alt="Monument image">
+                  <div class="image-overlay">
+                    <mat-icon>zoom_in</mat-icon>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Videos -->
+          <div class="media-group" *ngIf="videoUrl.length > 0">
+            <h3 class="media-title">Current Videos</h3>
+            <div class="media-grid">
+              <div class="media-item" *ngFor="let video of videoUrl">
+                <video controls>
+                  <source [src]="video" type="video/mp4">
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+          </div>
+
+          <!-- Audio -->
+          <div class="media-group" *ngIf="audioUrl.length > 0">
+            <h3 class="media-title">Current Audio</h3>
+            <div class="media-grid">
+              <div class="media-item" *ngFor="let audio of audioUrl">
+                <audio controls>
+                  <source [src]="audio" type="audio/mpeg">
+                  Your browser does not support the audio tag.
+                </audio>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upload New Media -->
+        <div class="upload-section">
+          <div class="upload-card">
+            <div class="upload-icon">
+              <mat-icon>image</mat-icon>
+            </div>
+            <input type="file" #imageInput (change)="onFileChangeImage($event)" multiple accept="image/*" hidden>
+            <button mat-stroked-button color="primary" (click)="imageInput.click()" class="upload-button">
+              <mat-icon>cloud_upload</mat-icon>
+              Update Images
+            </button>
+            <span class="file-count" *ngIf="SelectedImgCount > 0">{{SelectedImgCount}} new images selected</span>
+          </div>
+
+          <div class="upload-card">
+            <div class="upload-icon">
+              <mat-icon>videocam</mat-icon>
+            </div>
+            <input type="file" #videoInput (change)="onFileChange($event)" multiple accept="video/mp4" hidden>
+            <button mat-stroked-button color="primary" (click)="videoInput.click()" class="upload-button">
+              <mat-icon>cloud_upload</mat-icon>
+              Update Videos
+            </button>
+            <span class="file-count" *ngIf="SelectedVideoCount > 0">{{SelectedVideoCount}} new videos selected</span>
+          </div>
+
+          <div class="upload-card">
+            <div class="upload-icon">
+              <mat-icon>audiotrack</mat-icon>
+            </div>
+            <input type="file" #audioInput (change)="onFileChange1($event)" multiple accept="audio/mpeg" hidden>
+            <button mat-stroked-button color="primary" (click)="audioInput.click()" class="upload-button">
+              <mat-icon>cloud_upload</mat-icon>
+              Update Audio
+            </button>
+            <span class="file-count" *ngIf="SelectedAudioCount > 0">{{SelectedAudioCount}} new audio files selected</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <mat-progress-bar *ngIf="showBar" mode="determinate" [value]="progrees" class="progress-bar"></mat-progress-bar>
+  </mat-dialog-content>
+
+  <!-- Dialog Actions -->
+  <mat-dialog-actions align="end" class="dialog-actions">
+    <button mat-stroked-button mat-dialog-close class="cancel-button">
+      <mat-icon>close</mat-icon>
+      Cancel
+    </button>
+    <button mat-flat-button color="primary" [disabled]="!angForm.valid || clicked" (click)="editevent()" class="submit-button">
+      <mat-icon>save</mat-icon>
+      Update Monument
+    </button>
+  </mat-dialog-actions>
+</form> 

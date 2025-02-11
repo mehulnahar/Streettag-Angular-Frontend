@@ -1,0 +1,216 @@
+.monitoring-report {
+  .header {
+    background: #3f51b5;
+    color: white;
+    padding: 20px;
+    margin-bottom: 20px;
+
+    .title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      h1 {
+        margin: 0;
+        font-size: 24px;
+      }
+    }
+  }
+
+  .content {
+    padding: 20px;
+
+    .filters {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+
+      mat-form-field {
+        flex: 1;
+        min-width: 200px;
+      }
+
+      button {
+        height: 36px;
+        padding: 0 24px;
+        margin-top: 4px;
+      }
+    }
+
+    .table-container {
+      margin: 20px 0;
+      overflow-x: auto;
+      background: white;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+
+        th {
+          background-color: #f5f5f5;
+          color: rgba(0, 0, 0, 0.87);
+          font-weight: 500;
+          padding: 12px;
+          text-align: left;
+          border-bottom: 1px solid #e0e0e0;
+        }
+
+        td {
+          padding: 12px;
+          border-bottom: 1px solid #e0e0e0;
+          color: rgba(0, 0, 0, 0.87);
+        }
+
+        tr:hover {
+          background-color: rgba(0, 0, 0, 0.04);
+        }
+      }
+
+      .mat-mdc-header-cell {
+        background-color: #f5f5f5;
+        font-weight: 500;
+        color: rgba(0, 0, 0, 0.87);
+      }
+
+      .mat-mdc-cell {
+        color: rgba(0, 0, 0, 0.87);
+      }
+    }
+
+    .actions {
+      display: flex;
+      gap: 16px;
+      margin-top: 20px;
+
+      button {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 24px;
+        height: 36px;
+
+        mat-icon {
+          font-size: 20px;
+          width: 20px;
+          height: 20px;
+        }
+      }
+    }
+  }
+}
+
+// Print styles for PDF export
+@media print {
+  .table-container {
+    overflow: visible !important;
+    background: white !important;
+    box-shadow: none !important;
+
+    table {
+      width: 100% !important;
+      page-break-inside: avoid;
+    }
+
+    th, td {
+      background-color: white !important;
+      color: black !important;
+      border: 1px solid #ddd !important;
+    }
+  }
+}
+
+.page-container {
+  padding: 20px;
+}
+
+.filter-card {
+  margin-bottom: 20px;
+  
+  .filter-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: flex-start;
+
+    mat-form-field {
+      flex: 1;
+      min-width: 200px;
+      max-width: 300px;
+    }
+
+    .button-container {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin-top: 5px;
+    }
+  }
+}
+
+.table-card {
+  .table-container {
+    position: relative;
+    min-height: 200px;
+    max-height: 600px;
+    overflow: auto;
+  }
+
+  mat-table {
+    width: 100%;
+  }
+
+  mat-header-cell {
+    font-weight: bold;
+    color: rgba(0, 0, 0, 0.87);
+  }
+
+  mat-cell {
+    font-size: 14px;
+  }
+
+  .mat-column-id {
+    flex: 0 0 80px;
+  }
+
+  .mat-column-user_name {
+    flex: 0 0 150px;
+  }
+
+  .mat-column-activity {
+    flex: 1;
+  }
+
+  .mat-column-location {
+    flex: 0 0 200px;
+  }
+
+  .mat-column-timestamp {
+    flex: 0 0 180px;
+  }
+
+  .mat-column-status {
+    flex: 0 0 100px;
+  }
+}
+
+.status-active {
+  color: #4caf50;
+  font-weight: 500;
+}
+
+.status-inactive {
+  color: #f44336;
+  font-weight: 500;
+}
+
+mat-row:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+mat-paginator {
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+} 

@@ -1,0 +1,126 @@
+<div class="dialog-content-wrapper">
+  <mat-toolbar class="dialog-header" color="primary">
+    <h2>Add New Tour</h2>
+    <button mat-icon-button (click)="dialogRef.close()" matTooltip="Close">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-toolbar>
+
+  <div class="dialog-content">
+    <form [formGroup]="angForm" (ngSubmit)="onSubmit()" class="tour-form">
+      <!-- Tour Name -->
+      <div class="form-field-container">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Tour Name</mat-label>
+          <input matInput formControlName="tourName" placeholder="Enter tour name">
+          <mat-error *ngIf="angForm.get('tourName')?.hasError('required')">
+            Tour name is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Description -->
+      <div class="form-field-container">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Description</mat-label>
+          <textarea matInput formControlName="description" rows="4" 
+                    placeholder="Enter tour description" maxlength="150">
+          </textarea>
+          <mat-hint align="end">{{angForm.get('description')?.value?.length || 0}}/150</mat-hint>
+          <mat-error *ngIf="angForm.get('description')?.hasError('required')">
+            Description is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Monument Selection -->
+      <div class="form-field-container">
+        <div class="location-header">
+          <h3>Select Monuments</h3>
+          <div class="location-actions">
+            <button mat-mini-fab color="primary" type="button" (click)="addMoreLocation()" matTooltip="Add More">
+              <mat-icon>add</mat-icon>
+            </button>
+            <button mat-mini-fab color="warn" type="button" (click)="RemoveLocation()" matTooltip="Remove">
+              <mat-icon>remove</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <div formArrayName="location" class="location-list">
+          <div *ngFor="let loc of location.controls; let i = index" class="location-item">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Monument {{i + 1}}</mat-label>
+              <mat-select [formControlName]="i">
+                <mat-option *ngFor="let monument of Monumentdata" 
+                          [value]="monument.id"
+                          [disabled]="monument.disable">
+                  {{monument.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tour Image -->
+      <div class="form-field-container">
+        <div class="image-upload-container">
+          <h3>Tour Image</h3>
+          <div class="image-preview" *ngIf="angForm.get('tour_image')?.value">
+            <img [src]="angForm.get('tour_image')?.value" alt="Tour preview">
+          </div>
+          <div class="upload-button">
+            <input type="file" #takeInput (change)="handleInputChange($event)" accept="image/jpeg,image/jpg,image/png" style="display: none;">
+            <button mat-raised-button color="primary" type="button" (click)="takeInput.click()">
+              <mat-icon>cloud_upload</mat-icon>
+              Choose Image
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Map Location -->
+      <div class="form-field-container">
+        <h3>Tour Location</h3>
+        <div class="location-search">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Search Location</mat-label>
+            <input matInput [(ngModel)]="address" [ngModelOptions]="{standalone: true}" placeholder="Enter location">
+            <button mat-icon-button matSuffix (click)="setlocation()" type="button">
+              <mat-icon>search</mat-icon>
+            </button>
+          </mat-form-field>
+        </div>
+
+        <div class="map-container">
+          <google-map height="400px" width="100%" 
+                     [center]="center" 
+                     [zoom]="zoom"
+                     [options]="options"
+                     (mapClick)="addMarker($event)">
+            <map-marker *ngFor="let marker of markers"
+                       [position]="marker.position"
+                       [options]="marker.options"
+                       (mapDragend)="moveMarker($event)">
+            </map-marker>
+          </google-map>
+        </div>
+
+        <!-- Hidden form controls for lat/lng -->
+        <input type="hidden" formControlName="lat">
+        <input type="hidden" formControlName="lng">
+      </div>
+
+      <!-- Submit Button -->
+      <div class="form-actions">
+        <button mat-button type="button" (click)="dialogRef.close()">Cancel</button>
+        <button mat-raised-button color="primary" type="submit" 
+                [disabled]="!angForm.valid || isSubmitting">
+          <mat-icon>save</mat-icon>
+          Save Tour
+        </button>
+      </div>
+    </form>
+  </div>
+</div> 

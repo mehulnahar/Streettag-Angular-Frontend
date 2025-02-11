@@ -28,18 +28,18 @@ export const verticalMenuItems = [
 	//new Menu (25, 'Broadcast Management', '/admin/broadcast', null, 'event', null, false, 0),
   
     new Menu (25, 'Broadcast', null, null, 'format_list_bulleted', null, true, 0), 
-    new Menu (26, 'Broadcast Management', '/broadcast/list', null, 'wifi_tethering', null, false, 25), 
-    new Menu (27, 'Broadcast Category', '/broadcast/broadcast-category', null, 'category', null, false, 25), 
+    new Menu (26, 'Broadcast Management', '/admin/broadcast', null, 'wifi_tethering', null, false, 25), 
+    new Menu (27, 'Broadcast Category', '/admin/broadcast/broadcast-category', null, 'category', null, false, 25), 
    
     new Menu (28, 'Reports', null, null, 'format_list_bulleted', null, true, 0), 
-    new Menu (39, 'Monitoring Report', '/report/monitoring-report', null, 'library_books', null, false, 28), 
-    new Menu (30, 'Heat Map', '/report/heat-map', null, 'map', null, false, 28),
-    new Menu (31, 'Graphical Analytics', '/report/charts', null, 'multiline_chart', null, false, 28),
-    new Menu (32, 'Questionnaires Generator', '/report/ques-genrator', null, 'question_answer', null, false, 28), 
-    new Menu (38, 'Auto Stats for LA', '/report/auto-states', null, 'autorenew', null, false, 28), 
+    new Menu (39, 'Monitoring Report', '/admin/report/monitoring-report', null, 'library_books', null, false, 28), 
+    new Menu (30, 'Heat Map', '/admin/report/heat-map', null, 'map', null, false, 28),
+    new Menu (31, 'Graphical Analytics', '/admin/report/charts', null, 'multiline_chart', null, false, 28),
+    new Menu (32, 'Questionnaires Generator', '/admin/report/ques-genrator', null, 'question_answer', null, false, 28), 
+    new Menu (38, 'Auto Stats for LA', '/admin/report/auto-states', null, 'autorenew', null, false, 28), 
    
-    new Menu (33, 'Monument', null, null, 'format_list_bulleted', null, true, 0), 
-    new Menu (34, 'Monument Management', '/admin/monument/details', null, 'account_balance', null, false, 33), 
+    new Menu (33, 'Monument', null, null, 'account_balance', null, true, 0), 
+    new Menu (34, 'Monument Management', '/admin/monument/details', null, 'location_city', null, false, 33), 
     new Menu (35, 'Monument Tour', '/admin/monument/tour', null, 'tour', null, false, 33), 
    
     new Menu (36, 'NFC Management', null, null, 'format_list_bulleted', null, true, 0), 

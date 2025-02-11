@@ -1,0 +1,104 @@
+<div class="monitoring-report">
+  <div class="header">
+    <div class="title">
+      <mat-icon>library_books</mat-icon>
+      <h1>Monitoring Report</h1>
+    </div>
+  </div>
+
+  <div class="content">
+    <form [formGroup]="filterForm" class="filters">
+      <mat-form-field appearance="outline">
+        <mat-select formControlName="location_id" placeholder="Select Location">
+          <mat-option *ngFor="let option of leaderboardOptions" [value]="option.id">
+            {{option.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-select formControlName="circuit_id" placeholder="Select Circuit">
+          <mat-option *ngFor="let option of schoolOptions" [value]="option.id">
+            {{option.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-select formControlName="month" placeholder="Select Month">
+          <mat-option *ngFor="let month of months" [value]="month.value">
+            {{month.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" (click)="onGenerate()">
+        Generate
+      </button>
+    </form>
+
+    <div class="table-container" #pdfTable>
+      <div class="mat-elevation-z8">
+        <table mat-table [dataSource]="dataSource" matSort>
+          <!-- Month Column -->
+          <ng-container matColumnDef="month">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Month</th>
+            <td mat-cell *matCellDef="let row">{{row.month}}</td>
+          </ng-container>
+
+          <!-- New Individuals Column -->
+          <ng-container matColumnDef="newIndividualsRegistered">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>New Individuals Registered</th>
+            <td mat-cell *matCellDef="let row">{{row.newIndividualsRegistered}}</td>
+          </ng-container>
+
+          <!-- Teams Column -->
+          <ng-container matColumnDef="numberOfTeams">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Number of Teams</th>
+            <td mat-cell *matCellDef="let row">{{row.numberOfTeams}}</td>
+          </ng-container>
+
+          <!-- Tag Scanned Column -->
+          <ng-container matColumnDef="tagScanned">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Tag Scanned</th>
+            <td mat-cell *matCellDef="let row">{{row.tagScanned}}</td>
+          </ng-container>
+
+          <!-- Total Steps Column -->
+          <ng-container matColumnDef="totalSteps">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Total Steps</th>
+            <td mat-cell *matCellDef="let row">{{row.totalSteps}}</td>
+          </ng-container>
+
+          <!-- Points Awarded Column -->
+          <ng-container matColumnDef="totalPointsAwarded">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Total Points Awarded</th>
+            <td mat-cell *matCellDef="let row">{{row.totalPointsAwarded}}</td>
+          </ng-container>
+
+          <!-- Total Miles Column -->
+          <ng-container matColumnDef="totalMiles">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Total Miles</th>
+            <td mat-cell *matCellDef="let row">{{row.totalMiles}}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="['month', 'newIndividualsRegistered', 'numberOfTeams', 'tagScanned', 'totalSteps', 'totalPointsAwarded', 'totalMiles']"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['month', 'newIndividualsRegistered', 'numberOfTeams', 'tagScanned', 'totalSteps', 'totalPointsAwarded', 'totalMiles'];"></tr>
+        </table>
+
+        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of monitoring data"></mat-paginator>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button mat-raised-button color="primary" (click)="exportExcel()">
+        <mat-icon>file_download</mat-icon>
+        Export Excel
+      </button>
+      <button mat-raised-button color="accent" (click)="exportPdf()">
+        <mat-icon>picture_as_pdf</mat-icon>
+        Export Pdf
+      </button>
+    </div>
+  </div>
+</div> 

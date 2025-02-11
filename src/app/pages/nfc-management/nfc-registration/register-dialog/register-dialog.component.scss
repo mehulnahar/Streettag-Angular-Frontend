@@ -1,0 +1,173 @@
+.mat-radio-button ~ .mat-radio-button {
+  margin-left: 16px;
+}
+
+.matLabel {
+  margin-right: 40px;
+  margin-bottom: 20px;
+  color: gray;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: medium;
+  font-weight: 400;
+  line-height: 1.125;
+  padding: 0;
+  position: relative;
+  padding-bottom: 1.25em;
+}
+
+.controls-container {
+  widows: 100px;
+  padding: 5px;
+}
+
+.controls-container > * {
+  width: 100px;
+}
+
+.fill-remaining-space {
+  flex: 1 1 auto;
+}
+
+.btn-dialog-close {
+  width: 45px;
+  min-width: 0px !important;
+  height: 40px;
+  padding: 0px !important;
+  &:hover{
+    background-color:#F44336;
+    color: #fff;
+  }
+}
+
+.custom-btn {
+  width: 90px;
+  margin-right: 10px;
+}
+
+.adjust-div {
+  margin-bottom: 30px;
+}
+
+.dialog-container {
+  width: 500px;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #3f51b5;
+  padding: 16px;
+  color: white;
+  margin: -24px -24px 24px -24px;
+
+  h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 500;
+  }
+
+  button {
+    color: white;
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+.register-form {
+  padding: 0 16px;
+
+  .form-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    width: 100%;
+
+    mat-form-field {
+      flex: 1;
+      min-width: 0; // Prevents overflow
+    }
+
+    &:has(.full-width) {
+      mat-form-field {
+        width: 100%;
+      }
+    }
+  }
+
+  .gender-field {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding-top: 4px;
+
+    label {
+      color: rgba(0, 0, 0, 0.6);
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    mat-radio-group {
+      display: flex;
+      gap: 16px;
+    }
+
+    .error-text {
+      color: #f44336;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+  }
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 24px;
+  padding: 8px 0;
+
+  button {
+    min-width: 90px;
+  }
+}
+
+::ng-deep {
+  .mat-form-field-wrapper {
+    margin-bottom: -1.25em;
+  }
+  
+  .mat-radio-button.mat-accent.mat-radio-checked .mat-radio-outer-circle {
+    border-color: #3f51b5;
+  }
+
+  .mat-radio-button.mat-accent .mat-radio-inner-circle {
+    background-color: #3f51b5;
+  }
+
+  .mat-radio-button.mat-accent .mat-radio-ripple .mat-ripple-element {
+    background-color: rgba(63, 81, 181, 0.26);
+  }
+}
+
+mat-dialog-content {
+  min-width: 600px;
+}
+
+mat-dialog-actions {
+  padding: 16px 24px;
+  gap: 8px;
+}
+
+h2 {
+  margin: 0;
+  padding: 16px 24px;
+  background: #3f51b5;
+  color: white;
+  font-size: 20px;
+  font-weight: 500;
+}
