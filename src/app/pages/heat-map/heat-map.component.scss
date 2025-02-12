@@ -1,0 +1,67 @@
+agm-map {
+    height: 350px;
+  }
+
+  ::ng-deep snack-bar-container.warn-snackbar {
+    background: rgb(214, 141, 4) !important;
+  }
+
+::ng-deep .red-snackbar .mat-simple-snackbar {
+    color: rgb(255, 255, 255);
+  }
+
+button:disabled:hover,
+button[disabled]:hover{
+    cursor:no-drop;
+}
+
+.controls-container {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.map-container {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.map-controls {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  button {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+}
+
+.ml-3 {
+  margin-left: 1rem;
+}
+
+.mt-2 {
+  margin-top: 0.5rem;
+}
+
+.mt-3 {
+  margin-top: 1rem;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+::ng-deep {
+  .mat-form-field-wrapper {
+    margin-bottom: -1.25em;
+  }
+}

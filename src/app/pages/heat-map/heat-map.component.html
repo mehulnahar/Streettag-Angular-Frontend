@@ -1,0 +1,74 @@
+<app-content-header
+  [title]="'Heat-Map'"
+  [icon]="'map'"
+  [hideBreadcrumb]="true"
+  [hasBgImage]="true"
+  [class]="'pb-2 pt-2'"
+>
+</app-content-header>
+<div class="container pt-3">
+  <div fxLayout="row" fxLayoutAlign="start center" class="controls-container">
+    <div class="col-md-4" [formGroup]="angForm">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Select Duration</mat-label>
+        <mat-select formControlName="duration" (selectionChange)="disableDownloadButton()">
+          <mat-option value="" disabled>Select Duration</mat-option>
+          <mat-option value="today">Today</mat-option>
+          <mat-option value="week">Week</mat-option>
+          <mat-option value="month">Month</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="ml-3">
+      <button
+        mat-raised-button
+        color="primary"
+        [disabled]="!angForm.valid"
+        (click)="onSubmit()"
+      >
+        <!-- <mat-icon>refresh</mat-icon> -->
+        Generate
+      </button>
+    </div>
+    <div class="ml-3" *ngIf="spinner">
+      <mat-progress-spinner
+        diameter="24"
+        mode="indeterminate"
+      ></mat-progress-spinner>
+    </div>
+    <div class="ml-3">
+      <button
+        [disabled]="downloadButton"
+        mat-raised-button
+        color="accent"
+        (click)="download()"
+      >
+        <mat-icon>download</mat-icon>
+        Download
+      </button>
+    </div>
+  </div>
+  <div class="map-container mt-3" #map>
+    <google-map
+      height="450px"
+      width="100%"
+      [center]="center"
+      [zoom]="zoom"
+      [options]="options"
+      (bounds_changed)="updateMarkers()">
+      <map-marker
+        *ngFor="let marker of displayedMarkers"
+        [position]="marker"
+        [options]="markerOptions">
+      </map-marker>
+    </google-map>
+    <div class="map-controls">
+      <button mat-mini-fab color="primary" (click)="zoomIn()">
+        <mat-icon>add</mat-icon>
+      </button>
+      <button mat-mini-fab color="primary" (click)="zoomOut()" class="mt-2">
+        <mat-icon>remove</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>

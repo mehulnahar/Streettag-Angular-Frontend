@@ -1,0 +1,108 @@
+<app-content-header
+  [title]="'RF Registration'"
+  [icon]="'nfc'"
+  [hideBreadcrumb]="true"
+  [hasBgImage]="true"
+  [class]="'pt-2'"
+></app-content-header>
+
+<mat-toolbar
+  color="primary"
+  fxLayout="row"
+  fxLayoutAlign="space-between center"
+  class="px-2 mailbox-toolbar"
+>
+  <div fxLayout="row" fxLayoutAlign="center center">
+    <button
+      mat-button
+      mat-raised-button
+      color="accent"
+      (click)="registerNewDevice()"
+      class="compose"
+    >
+      Register RF Device
+    </button>
+  </div>
+</mat-toolbar>
+
+<div fxLayout="column" class="p-2">
+  <div class="p-2">
+    <div fxLayout="column" class="mat-elevation-z8">
+      <mat-form-field class="px-3 py-1">
+        <input
+          matInput
+          (keyup)="applyFilter($event)"
+          placeholder="Type to filter all columns"
+        />
+      </mat-form-field>
+    </div>
+    <mat-table
+      #table
+      [dataSource]="dataSource"
+      matSort
+      class="mat-elevation-z8"
+    >
+      <ng-container matColumnDef="id">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Device ID</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.id}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.name}}</mat-cell>
+      </ng-container>
+      
+      <ng-container matColumnDef="status">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <span [class.text-success]="element.status === 'Active'" 
+                [class.text-danger]="element.status === 'Inactive'">
+            {{element.status}}
+          </span>
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="lastSeen">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Last Seen</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.lastSeen}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="location">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Location</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.location}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <button
+            mat-icon-button
+            color="primary"
+            (click)="editDevice(element)"
+            matTooltip="Edit"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            color="warn"
+            (click)="deleteDevice(element)"
+            matTooltip="Delete"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    </mat-table>
+    <mat-paginator
+      #paginator
+      [pageSizeOptions]="[5, 10, 25, 100]"
+      showFirstLastButtons
+    ></mat-paginator>
+  </div>
+</div>
+
+

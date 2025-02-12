@@ -2,6 +2,8 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { environment } from '../environments/environment';
+import { pluck } from 'rxjs/operators';
 
 const httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -15,6 +17,7 @@ const httpOptionsFormdata = {
   providedIn: 'root'
 })
 export class AjaxService {
+    private baseUrl = environment.baseUrl;
     private defaultHeaders = new HttpHeaders({
         'Content-Type': 'application/json',
         'Accept': 'application/json'
@@ -87,4 +90,91 @@ export class AjaxService {
 
     //     return this.http.post('http://185.106.129.16:1347/fitnessApp/Upload', formData);
     // }
+
+    getLocations(): Observable<any> {
+        const url = `${this.baseUrl}getLocations`;
+        return this.get(url).pipe(pluck('response'));
+    }
+
+    getCircuits(locationId: string): Observable<any> {
+        const url = `${this.baseUrl}getCircuitByLocation`;
+        return this.post({ location_id: locationId }, url).pipe(pluck('response'));
+    }
+
+    getMonitoringReport(params: any): Observable<any> {
+        return this.post(params, `${this.baseUrl}getMonitoring`);
+    }
+
+    // Chart Data Methods
+    getStepsChartData(params: any): Observable<any> {
+        return this.post(params, `${this.baseUrl}getStepsChartData`);
+    }
+
+    getStepsLineData(params: any): Observable<any> {
+        return this.post(params, `${this.baseUrl}getStepsLineData`);
+    }
+
+    getStepsBarData(params: any): Observable<any> {
+        return this.post(params, `${this.baseUrl}getStepsBarData`);
+    }
+
+    getParticipants(params: any): Observable<any> {
+        return this.post(params, `${this.baseUrl}getParticipants`);
+    }
+
+    downloadChartData(params: any): Observable<Blob> {
+        return this.http.post(`${this.baseUrl}downloadChartData`, params, {
+            responseType: 'blob',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                'Accept': 'application/vnd.ms-excel'
+            })
+        });
+    }
+
+    getPieChartData(params: any): Observable<any> {
+        return this.http.post(`${this.baseUrl}/api/chart/pie`, params);
+    }
+
+    getLineChartData(params: any): Observable<any> {
+        return this.http.post(`${this.baseUrl}/api/chart/line`, params);
+    }
+
+    getBarChartData(params: any): Observable<any> {
+        return this.http.post(`${this.baseUrl}/api/chart/bar`, params);
+    }
+
+    getNewPlayersData(params: any): Observable<any> {
+        return this.http.post(`${this.baseUrl}/api/chart/new-players`, params);
+    }
+
+    getLocationById(locationId: number): Observable<any> {
+        const url = `${this.baseUrl}getLocation`;
+        return this.post({ id: locationId }, url).pipe(pluck('response'));
+    }
+
+    getCircuitById(circuitId: number): Observable<any> {
+        const url = `${this.baseUrl}getCircuit`;
+        return this.post({ id: circuitId }, url).pipe(pluck('response'));
+    }
+
+    getCircuitsByLocation(locationId: number): Observable<any> {
+        const url = `${this.baseUrl}getCircuitByLocation`;
+        return this.post({ location_id: locationId }, url).pipe(pluck('response'));
+    }
+
+    addAutoState(data: any): Observable<any> {
+        const url = `${this.baseUrl}createAutoStates`;
+        return this.post(data, url);
+    }
+
+    updateAutoState(data: any): Observable<any> {
+        const url = `${this.baseUrl}updateAutoState`;
+        return this.post(data, url);
+    }
+
+    createAutoStates(data: any): Observable<any> {
+        const url = `${this.baseUrl}createAutoStates`;
+        return this.post(data, url);
+    }
 }

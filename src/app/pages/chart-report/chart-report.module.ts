@@ -8,9 +8,6 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
 // Material Modules
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSortModule } from '@angular/material/sort';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -19,22 +16,12 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
+import { ChartReportComponent } from './chart-report.component';
+
 export const routes: Routes = [
   { 
-    path: 'monitoring-report', 
-    loadChildren: () => import('../monitoring/monitoring.module').then(m => m.MonitoringModule)
-  },
-  {
-    path: 'chart-report',
-    loadChildren: () => import('../chart-report/chart-report.module').then(m => m.ChartReportModule)
-  },
-  {
-    path: 'heat-map',
-    loadChildren: () => import('../heat-map/heat-map.module').then(m => m.HeatMapingModule)
-  },
-  {
-    path: 'ques-report',
-    loadChildren: () => import('../ques-report/ques-report.module').then(m => m.QuesReportModule)
+    path: '', 
+    component: ChartReportComponent 
   }
 ];
 
@@ -49,9 +36,6 @@ export const routes: Routes = [
     // Material Modules
     MatButtonModule,
     MatCardModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatSortModule,
     MatInputModule,
     MatIconModule,
     MatFormFieldModule,
@@ -60,7 +44,7 @@ export const routes: Routes = [
     MatNativeDateModule,
     MatProgressSpinnerModule
   ],
-  declarations: [],
+  declarations: [ChartReportComponent],
   exports: [RouterModule]
 })
-export class ReportModule { }
+export class ChartReportModule { }

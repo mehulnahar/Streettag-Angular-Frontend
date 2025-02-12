@@ -1,0 +1,61 @@
+<mat-toolbar>
+    <span style="text-align: center;">Register Emails</span>
+    <span class="fill-remaining-space"></span>
+    <!-- <button
+      class="btn-dialog-close"
+      mat-stroked-button
+      (click)="close()"
+      tabindex="-1"
+    >
+      <mat-icon>clear</mat-icon>
+    </button> -->
+  </mat-toolbar>
+<br/>
+  <form [formGroup]="angForm" (ngSubmit)="onSubmit()">
+    <h2 mat-dialog-title>Add Auto State</h2>
+    <mat-dialog-content>
+        <div fxLayout="column" fxLayoutGap="20px">
+            <mat-form-field>
+                <mat-label>Location</mat-label>
+                <mat-select formControlName="location_id" (selectionChange)="get_location_id($event.value)">
+                    <mat-option *ngFor="let location of dataSourceLocation$ | async" [value]="location.id">
+                        {{location.location_name}}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="angForm.get('location_id')?.hasError('required')">Location is required</mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Circuit</mat-label>
+                <mat-select formControlName="circuit_id">
+                    <mat-option *ngFor="let circuit of dataSourceCircuit$ | async" [value]="circuit.id">
+                        {{circuit.circuit_name}}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="angForm.get('circuit_id')?.hasError('required')">Circuit is required</mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Emails</mat-label>
+                <mat-chip-grid #chipGrid>
+                    <mat-chip-row *ngFor="let email of emailArray" 
+                        [removable]="removable" 
+                        (removed)="remove(email)">
+                        {{email}}
+                        <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                    </mat-chip-row>
+                    <input placeholder="New email..."
+                        [matChipInputFor]="chipGrid"
+                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                        [matChipInputAddOnBlur]="addOnBlur"
+                        (matChipInputTokenEnd)="add($event)">
+                </mat-chip-grid>
+            </mat-form-field>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-button type="button" (click)="close()">Cancel</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="!angForm.valid || emailArray.length === 0">Save</button>
+    </mat-dialog-actions>
+  </form>
+

@@ -18,3 +18,90 @@ button[disabled]:hover{
 select:hover{
     cursor: pointer;
   }
+
+.monitoring-report {
+  padding: 16px;
+}
+
+.monitoring-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.monitoring-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+
+  mat-form-field {
+    flex: 1;
+    min-width: 200px;
+  }
+}
+
+.form-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.monitoring-content {
+  position: relative;
+  min-height: 400px;
+}
+
+.spinner-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.filter-field {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.table-container {
+  overflow-x: auto;
+
+  table {
+    width: 100%;
+  }
+
+  th.mat-header-cell,
+  td.mat-cell {
+    padding: 8px 16px;
+    
+    &:first-child {
+      padding-left: 24px;
+    }
+    
+    &:last-child {
+      padding-right: 24px;
+    }
+  }
+
+  tr.mat-row:hover {
+    background: rgba(0, 0, 0, 0.04);
+  }
+}
+
+mat-paginator {
+  margin-top: 16px;
+}

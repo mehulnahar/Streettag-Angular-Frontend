@@ -21,6 +21,11 @@ const routes: Routes = [
         data: { breadcrumb: 'Dashboard' }
       },
       {
+        path: 'auto-states',
+        loadChildren: () => import('./pages/auto-states/auto-states.module').then(m => m.AutoStatesModule),
+        data: { breadcrumb: 'Auto States LA' }
+      },
+      {
         path: 'location',
         loadChildren: () => import('./pages/location/location.module').then(m => m.LocationModule),
         data: { breadcrumb: 'Location Management' }
@@ -174,6 +179,11 @@ const routes: Routes = [
         path: 'report',
         loadChildren: () => import('./pages/report/report.module').then(m => m.ReportModule),
         data: { breadcrumb: 'Reports' }
+      },
+      {
+        path: 'rf-registration',
+        loadChildren: () => import('./pages/rf-registration/rf-registration.module').then(m => m.RfRegistrationModule),
+        data: { breadcrumb: 'RF Registration' }
       }
     ]
   },

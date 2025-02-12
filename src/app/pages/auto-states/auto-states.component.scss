@@ -1,0 +1,40 @@
+.hide{
+    display: none;
+}
+
+mat-footer-row mat-footer-cell{
+    justify-content: center;
+    font-style: italic;
+}
+
+.mat-table {
+    overflow: auto;
+    font-family: "Open Sans", sans-serif;
+    word-break: break-word;
+  }
+
+  .btn {
+    text-transform: none;
+  }
+
+.mat-cell:nth-child(5),
+.mat-header-cell:nth-child(5) {
+  flex: 0 0 4rem;
+}
+
+.mat-cell:nth-child(6),
+.mat-header-cell:nth-child(6) {
+  flex: 0 0 4rem;
+}
+
+.mat-column-serial_number {
+  max-width: 7rem;
+  // justify-content: center;
+}
+
+.mat-column-circuit_name,
+.mat-column-location_name {
+  max-width: 16rem;
+  // justify-content: center;
+}
+

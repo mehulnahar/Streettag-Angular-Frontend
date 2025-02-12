@@ -1,0 +1,68 @@
+<app-content-header
+  [title]="'Questionnaires Report Generator'"
+  [icon]="'question_answer'"
+  [hideBreadcrumb]="true"
+  [hasBgImage]="true"
+  [class]="'pb-3 pt-3'"
+>
+</app-content-header>
+<br />
+<div class="container">
+  <form (ngSubmit)="onSubmit()" [formGroup]="angForm">
+    <div class="row">
+      <div class="col-md-4">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Start date</mat-label>
+          <input matInput [matDatepicker]="startPicker" formControlName="startDate" [min]="minDate" [max]="maxDate">
+          <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+          <mat-datepicker #startPicker></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>End date</mat-label>
+          <input matInput [matDatepicker]="endPicker" formControlName="endDate" [min]="minDate" [max]="maxDate">
+          <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+          <mat-datepicker #endPicker></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Select Location</mat-label>
+          <mat-select formControlName="location_id" (selectionChange)="getCircuits($event.value)">
+            <mat-option [value]="">Select Location</mat-option>
+            <mat-option *ngFor="let option of locationArray | async" [value]="option.id">
+              {{ option.location_name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Select Circuit</mat-label>
+          <mat-select formControlName="circuit_id">
+            <mat-option [value]="">Select Circuit</mat-option>
+            <mat-option *ngFor="let option1 of circuitArray | async" [value]="option1">
+              {{ option1.circuit_name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="form-group" fxLayout="row" fxLayoutAlign="center center">
+      <button mat-raised-button color="primary" type="submit" [disabled]="!angForm.valid">
+        Generate
+      </button>
+    </div>
+  </form>
+  
+  <!-- Conditional Spinner -->
+  <div *ngIf="spiner">
+    <mat-spinner diameter="45" style="margin: 30px auto"></mat-spinner>
+    <h5 class="text-center">Preparing for download...</h5>
+  </div>
+</div>

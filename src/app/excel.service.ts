@@ -5,6 +5,8 @@ import { WorkSheet, WorkBook, JSON2SheetOpts } from "xlsx";
 import { Workbook as ExcelWorkbook, Cell } from "exceljs";
 import moment from "moment";
 import { Buffer } from 'buffer';
+import * as ExcelJS from 'exceljs';
+import { format } from 'date-fns';
 
 
 const EXCEL_TYPE =
@@ -16,16 +18,57 @@ export class ExcelService {
   constructor() {}
 
   public exportAsExcelFile(json: any[], excelFileName: string): void {
-    const worksheet: WorkSheet = XLSX.utils.json_to_sheet(json);
-    const workbook: WorkBook = {
-      Sheets: { data: worksheet },
-      SheetNames: ["data"],
-    };
-    const excelBuffer: any = XLSX.write(workbook, {
-      bookType: "xlsx",
-      type: "array",
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Report');
+
+    // Add headers
+    const headerRow = worksheet.addRow(['Month', 'Number of new Individuals Registered', 'Number of Teams', 'Tags Scanned', 'Total Number of Steps', 'Total Number of Points Awarded', 'Total Miles']);
+    headerRow.eachCell((cell) => {
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFFFFF00' } // Yellow background
+      };
+      cell.border = {
+        top: { style: 'thin' },
+        left: { style: 'thin' },
+        bottom: { style: 'thin' },
+        right: { style: 'thin' }
+      };
+      cell.alignment = {
+        vertical: 'middle',
+        horizontal: 'center',
+        wrapText: true
+      };
     });
-    this.saveAsExcelFile(excelBuffer, excelFileName);
+
+    // Add data
+    json.forEach(item => {
+      const row = worksheet.addRow(Object.values(item));
+      row.eachCell((cell) => {
+        cell.border = {
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' }
+        };
+        cell.alignment = {
+          vertical: 'middle',
+          horizontal: 'center'
+        };
+      });
+    });
+
+    // Auto-fit columns
+    worksheet.columns.forEach(column => {
+      column.width = 20;
+    });
+
+    // Generate Excel file
+    workbook.xlsx.writeBuffer().then((data) => {
+      const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      FileSaver.saveAs(blob, excelFileName + '.xlsx');
+    });
   }
 
   public exportPecodeAsExcel(json: any[], excelFileName: string): void {
@@ -45,116 +88,92 @@ export class ExcelService {
     this.saveAsExcelFile(excelBuffer, excelFileName);
   }
 
-  public exportMoinitoringAsExcel(data: any, circuit: any, year:any): void {
-    let header = [
-      "Month",
-      "Number of new Individuals Registered",
-      "Number of Teams",
-      "Tags Scanned",
-      "Total Number of Steps",
-      "Total Number of Points Awarded",
-      "Total Miles",
+  public exportMoinitoringAsExcel(data: any, circuitName: string, month: string, year: string): void {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Monitoring Report');
+
+    // Set column widths
+    worksheet.columns = [
+      { width: 12 }, // A - Month
+      { width: 25 }, // B - Number of new Individuals
+      { width: 18 }, // C - Number of Teams
+      { width: 15 }, // D - Tags Scanned
+      { width: 18 }, // E - Total Steps
+      { width: 20 }, // F - Total Points
+      { width: 12 }, // G - Total Miles
     ];
-    if (circuit.id == 33 || circuit.id == 39) {
-      header = [
-        "Month",
-        "Number of new Individuals Registered",
-        "Number of Teams",
-        "Tags Scanned",
-        "Total Number of Steps",
-        "Total Number of Points Awarded",
-        "Total Miles",
-        "Number of Books taken out",
-        "Number of Points Awarded",
-      ];
-    }
 
-    let workbook = new ExcelWorkbook();
-    workbook.creator = "Prakhar";
-    workbook.created = new Date();
+    // Headers
+    const headers = [
+      'Month',
+      'Number of new\nIndividuals\nRegistered',
+      'Number of Teams',
+      'Tags Scanned',
+      'Total Number of\nSteps',
+      'Total Number of\nPoints Awarded',
+      'Total Miles'
+    ];
 
-    var worksheet = workbook.addWorksheet(data.month, {
-      pageSetup: { paperSize: 9, orientation: "landscape" },
-    });
+    // Add header row
+    const headerRow = worksheet.addRow(headers);
+    headerRow.height = 45;
 
-    worksheet.mergeCells("B1:F1");
-    worksheet.getCell(
-      "C1"
-    ).value = `Street Tag Monitoring Report (${circuit.circuit_name})`;
-    let titleRow = worksheet.getCell("B1");
-    titleRow.font = {
-      name: "Calibri Light",
-      family: 2,
-      size: 14,
-      bold: true,
-    };
-    titleRow.alignment = {
-      wrapText: true,
-      vertical: "middle",
-      horizontal: "center",
-    };
-    worksheet.getRow(1).height = 22;
-
-    worksheet.addRow(["Date : " + moment().format("ll") + " (Monthly Report)"]);
-    worksheet.addRow([]);
-
-    let headerRow = worksheet.addRow(header);
-    headerRow.eachCell((cell: Cell, number: number) => {
+    // Style header row
+    headerRow.eachCell((cell) => {
       cell.fill = {
-        type: "pattern",
-        pattern: "solid",
-        fgColor: { argb: "FFFFFF00" },
-        bgColor: { argb: "FF0000FF" },
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFFF00' }
+      };
+      cell.font = { 
+        bold: true,
+        size: 11
+      };
+      cell.alignment = {
+        vertical: 'middle',
+        horizontal: 'center',
+        wrapText: true
       };
       cell.border = {
-        top: { style: "thin" },
-        left: { style: "thin" },
-        bottom: { style: "thin" },
-        right: { style: "thin" },
-      };
-      cell.font = { name: "Arial", size: 10, family: 4, bold: true };
-      cell.alignment = {
-        wrapText: true,
-        vertical: "middle",
-        horizontal: "center",
+        top: { style: 'thin' },
+        left: { style: 'thin' },
+        bottom: { style: 'thin' },
+        right: { style: 'thin' }
       };
     });
-    worksheet.getColumn(1).width = 16;
-    worksheet.getColumn(2).width = 21;
-    worksheet.getColumn(3).width = 20;
-    worksheet.getColumn(4).width = 17;
-    worksheet.getColumn(5).width = 16;
-    worksheet.getColumn(6).width = 16;
-    worksheet.getColumn(7).width = 16;
-    if (circuit.id == 33 || circuit.id == 39) {
-      worksheet.getColumn(8).width = 16;
-      worksheet.getColumn(9).width = 16;
-    }
-    worksheet.getRow(4).height = 30;
 
-    //Adding data
-    const propertyValues = Object.values(data);
-    let Data = worksheet.addRow(propertyValues);
-    Data.eachCell((cell: Cell, number: number) => {
+    // Add data row with numeric values
+    const dataRow = worksheet.addRow([
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]);
+
+    // Style data row
+    dataRow.height = 25;
+    dataRow.eachCell((cell) => {
+      cell.alignment = {
+        vertical: 'middle',
+        horizontal: 'center'
+      };
       cell.border = {
-        top: { style: "thin" },
-        left: { style: "thin" },
-        bottom: { style: "thin" },
-        right: { style: "thin" },
+        top: { style: 'thin' },
+        left: { style: 'thin' },
+        bottom: { style: 'thin' },
+        right: { style: 'thin' }
       };
-      cell.font = { name: "Arial", size: 10, family: 4, bold: true };
-      cell.alignment = {
-        wrapText: true,
-        vertical: "middle",
-        horizontal: "center",
-      };
-      cell.numFmt = "#,##,###";
+      // Set numeric format
+      cell.numFmt = '0';
     });
 
-    const filename = `${circuit.circuit_name}_Monitoring-Report(${data.month}-${year}).${EXCEL_EXTENSION}`;
-    workbook.xlsx.writeBuffer().then((buffer: ArrayBuffer) => {
-      const data: Blob = new Blob([buffer], { type: EXCEL_TYPE });
-      FileSaver.saveAs(data, filename);
+    // Generate Excel file
+    workbook.xlsx.writeBuffer().then((buffer) => {
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      FileSaver.saveAs(blob, `monitoring_report_${month}_${year}.xlsx`);
     });
   }
 

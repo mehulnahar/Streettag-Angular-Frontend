@@ -1,284 +1,282 @@
-import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
-import { FormGroup, FormBuilder, Validators } from "@angular/forms";
-import { MatPaginator } from "@angular/material/paginator";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { Settings } from "../../app.settings.model";
-import { AjaxService } from "src/app/ajax.service";
-import { MatSort } from "@angular/material/sort";
-import * as moment from "moment-mini";
-import { ExcelService } from "../../excel.service";
-import { PDFService } from "../../pdf.service";
-import { DecimalPipe } from "@angular/common";
-import { environment } from "src/environments/environment";
-import { pluck } from "rxjs/operators";
-import { Observable } from "rxjs/Observable";
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
+import { Settings } from '../../app.settings.model';
+import { AjaxService } from 'src/app/ajax.service';
+import { format, subMonths } from 'date-fns';
+import { ExcelService } from '../../excel.service';
+import { PDFService } from '../../pdf.service';
+import { DecimalPipe } from '@angular/common';
+import { environment } from 'src/environments/environment';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
+interface MonthData {
+  month_text: string;
+  month_num: string;
+  year: string;
+}
+
+interface CircuitData {
+  id: number;
+  circuit_name: string;
+}
+
+interface Location {
+  id: number;
+  location_name: string;
+  is_deleted: number;
+  created_at: string;
+  updated_at: string;
+  serial_number: number;
+}
+
+interface MonitoringData {
+  registration?: number;
+  team?: number;
+  tag_scanned?: number;
+  steps?: number;
+  score_points?: number;
+  distance?: number;
+  books_taken?: number;
+  liabrary_points?: number;
+}
 
 @Component({
-  selector: "app-monitoring",
-  templateUrl: "./monitoring.component.html",
-  styleUrls: ["./monitoring.component.scss"],
+  selector: 'app-monitoring',
+  templateUrl: './monitoring.component.html',
+  styleUrls: ['./monitoring.component.scss']
 })
 export class MonitoringComponent implements OnInit {
   @ViewChild("sidenav", { static: false }) sidenav: any;
-  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
-  @ViewChild(MatSort, { static: false }) sort: MatSort;
-  public settings: Settings;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+
+  public settings!: Settings;
   public sidenavOpen: boolean = true;
   public type: string = "all";
   public showSearch: boolean = false;
-  public searchText: string;
-  public angForm: FormGroup;
-  resData: any;
+  public searchText = '';
+  public angForm!: FormGroup;
+  public resData: any;
   private readonly baseUrl = environment.baseUrl;
-  public displayedColumns: any;
-  public columns;
-  public dataSource: any;
-  public dataSourceLocation$: Observable<any>;
-  public dataSourceCircuit$:Observable<any>;
+  public displayedColumns: string[] = [];
+  public columns: any[] = [];
+  public dataSource = new MatTableDataSource<any>([]);
+  public dataSourceLocation$ = new Observable<Location[]>();
+  public dataSourceCircuit$ = new Observable<CircuitData[]>();
   public showTable: Boolean = false;
   public showLiabrarieColumn: Boolean = false;
-  public selectedMonth: String;
+  public selectedMonth = '';
   public spiner: Boolean = false;
-  dataSourceMonths= [];
+  public dataSourceMonths: MonthData[] = [];
+  public isLoading = false;
+
   constructor(
-    private ajaxService: AjaxService,
+    private ajax: AjaxService,
     private snackBar: MatSnackBar,
     private fb: FormBuilder,
     private excelService: ExcelService,
     private pdfService: PDFService,
     private _decimalPipe: DecimalPipe
   ) {
-    this.getallLocation();
-    this.getMonth();
+    this.createForm();
+    this.loadLocations();
+    this.setupMonths();
   }
 
   ngOnInit() {
-    this.createForm();
+    this.setupColumns();
+  }
+
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
 
   createForm() {
     this.angForm = this.fb.group({
-      location_id: ["", [Validators.required]],
-      circuit_id: ["", [Validators.required]],
-      month: ["", [Validators.required]],
+      location_id: ['', Validators.required],
+      circuit_id: ['', Validators.required],
+      month: ['', Validators.required]
     });
   }
 
-  getallLocation() {
-    const url = `${this.baseUrl}getLocations`;
-    this.dataSourceLocation$ =this.ajaxService.get(url).pipe(pluck('response'))
-  }
-
-  get_location_id(res) {
-    this.angForm.controls["circuit_id"].setValue("");
-    this.dataSourceCircuit$ = null;
-    const url = `${this.baseUrl}getCircuitByLocation`;
-    var data1 = {
-      location_id: res,
-    };
-    this.dataSourceCircuit$ = this.ajaxService.post(data1, url).pipe(pluck('response'));
-  }
-
-  getMonth() {
-    if (typeof Worker !== 'undefined') {
-      // Create a new
-      const worker = new Worker('./monitoring.worker', { type: 'module' });
-      worker.onmessage = ({ data }) => {
-         this.dataSourceMonths = data;
-      };
-      worker.postMessage('call');
-    } else {
-      let i = 0;
-        do {
-          this.dataSourceMonths.push({
-            month_text: moment().subtract(i, "month").format("MMMM"),
-            month_num: moment().subtract(i, "month").format("M"),
-            year: moment().subtract(i, "month").format("YYYY"),
-          });
-          i++;
-        } while (i < 2);
-    }
-
-  }
-
-  onSubmit() {
-    if (this.angForm.status == "VALID") {
-      this.spiner = true;
-      this.showTable = false;
-      const dataobj = {
-        location_id: this.angForm.value.location_id,
-        circuit_id: this.angForm.value.circuit_id.id,
-        month: this.angForm.value.month.month_num,
-        year: this.angForm.value.month.year,
-      };
-      const url = `${this.baseUrl}getMonitoring`;
-      this.ajaxService.post(dataobj, url).subscribe(
-        async (data) => {
-          this.selectedMonth = moment()
-            .month(+this.angForm.value.month.month_num - 1)
-            .format("MMMM");
-          this.dataSource = await data["response"];
-
-          //adding two column if circuit_id = 33 and 39
-          this.columns = this.getColumn();
-          this.displayedColumns = this.columns.map((c) => c.columnDef);
-          if (
-            this.angForm.value.circuit_id.id == 33 ||
-            this.angForm.value.circuit_id.id == 39
-          ) {
-            this.columns.push(
-              {
-                columnDef: "libraries_books",
-                header: "Number of Books taken out",
-                cell: (element: any) =>
-                  `${
-                    this._decimalPipe.transform(element.books_taken, "1.0-2") ||
-                    0
-                  }`,
-              },
-              {
-                columnDef: "libraries_points",
-                header: "Number of Points awarded",
-                cell: (element: any) =>
-                  `${
-                    this._decimalPipe.transform(
-                      element.liabrary_points,
-                      "1.0-2"
-                    ) || 0
-                  }`,
-              }
-            );
-            this.displayedColumns = this.columns.map((c) => c.columnDef);
-          }
-          this.spiner = false;
-          this.showTable = true;
-        },
-        (error) => {
-          this.spiner = false;
-          this.createForm();
-          this.snackBar.open("Failed to load!", null, {
-            duration: 2000,
-            verticalPosition: "top",
-            panelClass: ["red-snackbar"],
-          });
+  loadLocations() {
+    this.dataSourceLocation$ = this.ajax.getLocations().pipe(
+      map((response: any) => {
+        if (response && response.status === "true" && Array.isArray(response.response)) {
+          return response.response;
         }
+        return [];
+      })
+    );
+  }
+
+  get_location_id(locationId: string) {
+    if (locationId) {
+      this.dataSourceCircuit$ = this.ajax.getCircuits(locationId).pipe(
+        map((response: any) => {
+          if (response && response.status === "true" && Array.isArray(response.response)) {
+            return response.response;
+          }
+          return [];
+        })
       );
     } else {
-      var errormsg = "Please pass Valid Information.";
-      this.snackBar.open(errormsg, null, {
-        duration: 2000,
-        verticalPosition: "top",
-        panelClass: "red-snackbar",
-      });
+      this.dataSourceCircuit$ = new Observable();
     }
+  }
+
+  setupMonths() {
+    this.dataSourceMonths = [
+      {
+        month_text: 'January',
+        month_num: '1',
+        year: new Date().getFullYear().toString()
+      },
+      {
+        month_text: 'February',
+        month_num: '2',
+        year: new Date().getFullYear().toString()
+      }
+    ];
+  }
+
+  setupColumns() {
+    this.columns = [
+      { columnDef: 'registration', header: 'Number of new Individuals Registered' },
+      { columnDef: 'team', header: 'Number of Teams' },
+      { columnDef: 'tag_scanned', header: 'Tag Scanned' },
+      { columnDef: 'steps', header: 'Total Number of Steps' },
+      { columnDef: 'score_points', header: 'Total Number of Points Awarded' },
+      { columnDef: 'distance', header: 'Total Miles' }
+    ];
+    this.displayedColumns = this.columns.map(c => c.columnDef);
+  }
+
+  async getReport() {
+    if (!this.angForm.valid) return;
+
+    try {
+      this.isLoading = true;
+      const formValue = this.angForm.value;
+      
+      const data = await this.ajax.getMonitoringReport({
+        location_id: formValue.location_id,
+        circuit_id: formValue.circuit_id,
+        month: formValue.month.month_num,
+        year: formValue.month.year
+      }).toPromise();
+
+      if (data?.response) {
+        this.dataSource = new MatTableDataSource(data.response);
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+      } else {
+        this.snackBar.open('No data found', undefined, {
+          duration: 2000
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching monitoring report:', error);
+      this.snackBar.open('Error fetching data', undefined, {
+        duration: 2000
+      });
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  applyFilter(filterValue: string) {
+    if (this.dataSource) {
+      filterValue = filterValue.trim().toLowerCase();
+      this.dataSource.filter = filterValue;
+      
+      if (this.dataSource.paginator) {
+        this.dataSource.paginator.firstPage();
+      }
+    }
+  }
+
+  exportToExcel() {
+    if (!this.dataSource?.data?.length) return;
+
+    const exportData = this.dataSource.data.map(item => {
+      const row: any = {};
+      this.columns.forEach(col => {
+        row[col.header] = item[col.columnDef];
+      });
+      return row;
+    });
+
+    this.excelService.exportAsExcelFile(exportData, 'monitoring-report');
   }
 
   exportAsXLSX(): void {
-    let dis = this.dataSource[0].distance
-      ? this.dataSource[0].distance.toFixed(2)
-      : "0";
-    let reOrderObj = {
-      month:
-        moment()
-          .month(+this.angForm.value.month.month_num - 1)
-          .format("MMMM") || "N/A",
-      registration: +this.dataSource[0].registration || "0",
-      team: +this.dataSource[0].team || "0",
-      tag_scanned: +this.dataSource[0].tag_scanned || "0",
-      steps: +this.dataSource[0].steps || "0",
-      score_points: +this.dataSource[0].score_points || "0",
-      distance: dis,
+    if (!this.dataSource?.data?.[0]) return;
+
+    const data = this.dataSource.data[0];
+    const formValue = this.angForm.value;
+    const monthData = formValue.month as MonthData;
+    
+    const distance = data.distance ? Number(data.distance).toFixed(2) : '0';
+    
+    const reOrderObj = {
+      Month: monthData.month_text,
+      registration: data.registration || 0,
+      team: data.team || 0,
+      tag_scanned: data.tag_scanned || 0,
+      steps: data.steps || 0,
+      score_points: data.score_points || 0,
+      distance: Number(distance)
     };
 
-    if (
-      this.angForm.value.circuit_id.id == 33 ||
-      this.angForm.value.circuit_id.id == 39
-    ) {
-      var liabrary = {
-        libraries_books: this.dataSource[0].books_taken || "0",
-        libraries_points: this.dataSource[0].liabrary_points || "0",
-      };
-    }
-    reOrderObj = { ...reOrderObj, ...liabrary };
-    let year = moment().year(this.angForm.value.month.year).format("YY");
     this.excelService.exportMoinitoringAsExcel(
       reOrderObj,
-      this.angForm.value.circuit_id,
-      year
+      'Mindcrew Workforce',
+      monthData.month_text,
+      monthData.year
     );
   }
 
   exportAsPDF(): void {
-    let dis = this.dataSource[0].distance
-      ? this.dataSource[0].distance.toFixed(2)
-      : 0;
-    let reOrderObj = {
-      month:
-        moment()
-          .month(+this.angForm.value.month.month_num - 1)
-          .format("MMMM") || "N/A",
-      registration: +this.dataSource[0].registration || 0,
-      team: +this.dataSource[0].team || 0,
-      tag_scanned: +this.dataSource[0].tag_scanned || 0,
-      steps: +this.dataSource[0].steps || 0,
-      score_points: +this.dataSource[0].score_points || 0,
-      distance: +dis,
-      libraries_books: +this.dataSource[0].books_taken || 0,
-      libraries_points: +this.dataSource[0].liabrary_points || 0,
-    };
+    if (!this.dataSource?.data?.[0]) return;
 
-    let year = moment().year(this.angForm.value.month.year).format("YY");
-    this.pdfService.downloadPDF(
-      reOrderObj,
-      this.angForm.value.circuit_id,
-      year
+    const data = this.dataSource.data[0];
+    const formValue = this.angForm.value;
+    const monthData = formValue.month as MonthData;
+    const selectedCircuit = this.dataSourceCircuit$.pipe(
+      map(circuits => circuits.find(c => c.id === formValue.circuit_id))
     );
-  }
 
-  getColumn() {
-    return [
-      {
-        columnDef: "month",
-        header: "Month",
-        cell: (data: any) => `${this.selectedMonth}`,
-      },
-      {
-        columnDef: "registration",
-        header: "Number of new Individuals Registered",
-        cell: (element: any) =>
-          `${this._decimalPipe.transform(element.registration, "1.0-2") || 0}`,
-      },
-      {
-        columnDef: "team",
-        header: "Number of Teams",
-        cell: (element: any) =>
-          `${this._decimalPipe.transform(element.team, "1.0-2") || 0}`,
-      },
-      {
-        columnDef: "tag_scanned",
-        header: "Tag Scanned",
-        cell: (element: any) =>
-          `${this._decimalPipe.transform(element.tag_scanned, "1.0-2") || 0}`,
-      },
-      {
-        columnDef: "total_steps",
-        header: "Total Number of Steps",
-        cell: (element: any) =>
-          `${this._decimalPipe.transform(element.steps, "1.0-2") || 0}`,
-      },
-      {
-        columnDef: "total_points",
-        header: "Total Number of Points Awarded",
-        cell: (element: any) =>
-          `${this._decimalPipe.transform(element.score_points, "1.0-2") || 0}`,
-      },
-      {
-        columnDef: "total_distance",
-        header: "Total Miles",
-        cell: (element: any) =>
-          `${this._decimalPipe.transform(element.distance, "1.1-2") || 0}`,
-      },
-    ];
+    selectedCircuit.subscribe(circuit => {
+      const reportData = {
+        month: monthData.month_text,
+        year: monthData.year,
+        circuitName: circuit?.circuit_name || '',
+        data: [
+          { value: data.registration || 0 },
+          { value: data.team || 0 },
+          { value: data.tag_scanned || 0 },
+          { value: data.steps || 0 },
+          { value: data.score_points || 0 },
+          { value: data.distance ? Number(data.distance).toFixed(2) : '0' }
+        ]
+      };
+
+      if (formValue.circuit_id === 33 || formValue.circuit_id === 39) {
+        reportData.data.push(
+          { value: data.books_taken || 0 },
+          { value: data.liabrary_points || 0 }
+        );
+      }
+
+      this.pdfService.downloadPDF(reportData);
+    });
   }
 }
 

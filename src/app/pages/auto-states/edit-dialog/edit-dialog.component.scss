@@ -1,0 +1,50 @@
+.fill-remaining-space {
+    flex: 1 1 auto;
+}
+
+.btn-dialog-close {
+    min-width: 48px;
+    min-height: 48px;
+    padding: 0;
+    border: none;
+    color: white;
+}
+
+:host {
+    .mat-toolbar {
+        margin: -24px -24px 0 -24px;
+        width: calc(100% + 48px);
+    }
+}
+
+.w-100 {
+    width: 100%;
+}
+
+.mt-3 {
+    margin-top: 1rem;
+}
+
+.mat-mdc-form-field {
+    margin-bottom: 1rem;
+}
+
+.mat-mdc-chip-grid {
+    width: 100%;
+    min-height: 50px;
+}
+
+.mat-mdc-chip {
+    margin: 4px;
+}
+
+.mat-mdc-dialog-content {
+    max-height: 80vh;
+    padding: 24px;
+}
+
+.mat-mdc-dialog-actions {
+    padding: 16px 24px;
+    justify-content: flex-end;
+    gap: 8px;
+}

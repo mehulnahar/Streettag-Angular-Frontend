@@ -1,0 +1,156 @@
+<div class="chart-report">
+  <app-content-header
+    [icon]="'multiline_chart'"
+    [title]="'Graphical Analytics'"
+    [hideBreadcrumb]="true"
+    [hasBgImage]="true"
+    [class]="'pb-2 pt-2'">
+  </app-content-header>
+
+  <div class="chart-container">
+    <form [formGroup]="angForm" class="chart-form">
+      <div class="form-row">
+        <mat-form-field>
+          <mat-label>Select Location</mat-label>
+          <mat-select formControlName="location_id" (selectionChange)="get_location_id($event.value)">
+            <mat-option *ngFor="let option of dataSourceLocation$ | async" [value]="option.id">
+              {{ option.location_name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Select Circuit</mat-label>
+          <mat-select formControlName="circuit_id">
+            <mat-option *ngFor="let option of dataSourceCircuit$ | async" [value]="option.id">
+              {{ option.circuit_name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field>
+          <mat-label>Select Report Type</mat-label>
+          <mat-select formControlName="report_type">
+            <mat-option value="1">Activity Distribution (Pie Chart)</mat-option>
+            <mat-option value="2">Steps Count (Line Chart)</mat-option>
+            <mat-option value="3">Tags Scanned (Bar Chart)</mat-option>
+            <mat-option value="4">New Players Registration (Line Chart)</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Select Duration</mat-label>
+          <mat-select formControlName="duration">
+            <mat-option *ngFor="let duration of durations" [value]="duration.id">
+              {{ duration.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row" *ngIf="showgraph && angForm.get('duration')?.value === 'custom'">
+        <mat-form-field>
+          <mat-label>Start Date</mat-label>
+          <input matInput [matDatepicker]="dp1" formControlName="start_date">
+          <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
+          <mat-datepicker #dp1></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>End Date</mat-label>
+          <input matInput [matDatepicker]="dp2" formControlName="end_date">
+          <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
+          <mat-datepicker #dp2></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <div class="form-actions">
+        <button mat-raised-button color="primary" (click)="getReport()" [disabled]="!angForm.valid">
+          Generate Report
+        </button>
+        <button mat-raised-button color="accent" (click)="downloadChart()" [disabled]="!pieChartData.length && !lineChartData.length && !barChartData.length">
+          <mat-icon>get_app</mat-icon>
+          Download
+        </button>
+      </div>
+    </form>
+
+    <div class="chart-content">
+      <div class="spinner-container" *ngIf="isLoading">
+        <mat-progress-spinner mode="indeterminate" diameter="50"></mat-progress-spinner>
+      </div>
+
+      <div class="charts" *ngIf="!isLoading">
+        <!-- Pie Chart -->
+        <mat-card class="chart-card" *ngIf="pieChartData.length > 0">
+          <mat-card-header>
+            <mat-card-title>{{ chartTitle }}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <ngx-charts-pie-chart
+              [results]="pieChartData"
+              [scheme]="colorScheme"
+              [legend]="showLegend"
+              [labels]="showLabels"
+              [animations]="animations">
+            </ngx-charts-pie-chart>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Line Chart -->
+        <mat-card class="chart-card" *ngIf="lineChartData.length > 0">
+          <mat-card-header>
+            <mat-card-title>{{ chartTitle }}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <ngx-charts-line-chart
+              [results]="lineChartData"
+              [scheme]="colorScheme"
+              [legend]="showLegend"
+              [showXAxisLabel]="showXAxisLabel"
+              [showYAxisLabel]="showYAxisLabel"
+              [xAxis]="xAxis"
+              [yAxis]="yAxis"
+              [xAxisLabel]="xAxisLabel"
+              [yAxisLabel]="yAxisLabel"
+              [timeline]="timeline"
+              [autoScale]="autoScale"
+              [animations]="animations">
+            </ngx-charts-line-chart>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Bar Chart -->
+        <mat-card class="chart-card" *ngIf="barChartData.length > 0">
+          <mat-card-header>
+            <mat-card-title>{{ chartTitle }}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <ngx-charts-bar-vertical
+              [results]="barChartData"
+              [scheme]="colorScheme"
+              [gradient]="false"
+              [xAxis]="true"
+              [yAxis]="true"
+              [legend]="false"
+              [showXAxisLabel]="true"
+              [showYAxisLabel]="true"
+              [xAxisLabel]="'Date'"
+              [yAxisLabel]="'No. of Scanned Tags'"
+              [showDataLabel]="true"
+              [barPadding]="50"
+              [roundDomains]="true"
+              [roundEdges]="true"
+              [maxYAxisTickLength]="16"
+              [yAxisTickFormatting]="yAxisTickFormatting"
+              [tooltipDisabled]="false"
+              [view]="[800, 400]">
+            </ngx-charts-bar-vertical>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</div>

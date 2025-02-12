@@ -18,14 +18,13 @@ export const verticalMenuItems = [
     new Menu (16, 'Send Gift', '/admin/sendgift', null, 'card_giftcard', null, false, 0),
     new Menu (17, 'Questionnaires', '/admin/questionnaires', null, 'question_answer', null, false, 0),
     new Menu (18, 'Vendors', '/admin/vendor', null, 'store', null, false, 0),
-    //new Menu (19, 'Assets', '/asset', null, 'event', null, false, 0),
     new Menu (19, 'Generate School QR', '/admin/schoolQr', null, 'qr_code', null, false, 0),
     new Menu (20, 'PolyTag Management', '/admin/polytags', null, 'room', null, false, 0),
     new Menu (21, 'Withdrawal Request', '/admin/withdraw-approval', null, 'account_balance_wallet', null, false, 0), 
     new Menu (22, 'Trainer', '/admin/trainer', null, 'event', null, false, 0), 
-	new Menu (23, 'Pecode', '/admin/pecode', null, 'qr_code', null, false, 0),	
-	new Menu (24, 'Charity', '/admin/charity', null, 'groups', null, false, 0), 
-	//new Menu (25, 'Broadcast Management', '/admin/broadcast', null, 'event', null, false, 0),
+    new Menu (23, 'Pecode', '/admin/pecode', null, 'qr_code', null, false, 0),	
+    new Menu (24, 'Charity', '/admin/charity', null, 'groups', null, false, 0), 
+    new Menu (38, 'Auto Stats for LA', '/admin/auto-states', null, 'autorenew', null, false, 0),
   
     new Menu (25, 'Broadcast', null, null, 'format_list_bulleted', null, true, 0), 
     new Menu (26, 'Broadcast Management', '/admin/broadcast', null, 'wifi_tethering', null, false, 25), 
@@ -34,113 +33,29 @@ export const verticalMenuItems = [
     new Menu (28, 'Reports', null, null, 'format_list_bulleted', null, true, 0), 
     new Menu (39, 'Monitoring Report', '/admin/report/monitoring-report', null, 'library_books', null, false, 28), 
     new Menu (30, 'Heat Map', '/admin/report/heat-map', null, 'map', null, false, 28),
-    new Menu (31, 'Graphical Analytics', '/admin/report/charts', null, 'multiline_chart', null, false, 28),
-    new Menu (32, 'Questionnaires Generator', '/admin/report/ques-genrator', null, 'question_answer', null, false, 28), 
-    new Menu (38, 'Auto Stats for LA', '/admin/report/auto-states', null, 'autorenew', null, false, 28), 
-   
-    new Menu (33, 'Monument', null, null, 'account_balance', null, true, 0), 
-    new Menu (34, 'Monument Management', '/admin/monument/details', null, 'location_city', null, false, 33), 
-    new Menu (35, 'Monument Tour', '/admin/monument/tour', null, 'tour', null, false, 33), 
-   
-    new Menu (36, 'NFC Management', null, null, 'format_list_bulleted', null, true, 0), 
-    new Menu (37, 'NFC Registration', '/admin/nfc/nfc-registration', null, 'nfc', null, false, 36), 
-    // new Menu (38, 'Child Registration ', '/admin/nfc/child-registration', null, 'nfc', null, false, 36), 
-    new Menu (39, 'Child Registration', '/admin/nfc/child-registration', null, 'nfc', null, false, 36), 
-    
-    //Support
-    new Menu (40, 'Steps Suppot', '/admin/steps-support', null, 'support_agent', null, false, 0), 
-    
-    //DOB
-    new Menu (41, 'DOB Change', '/admin/dob-change', null, 'event', null, false, 0),
+    new Menu (31, 'Graphical Analytics', '/admin/report/chart-report', null, 'multiline_chart', null, false, 28),
+    new Menu (32, 'Questionnaires Generator', '/admin/report/ques-report', null, 'question_answer', null, false, 28), 
+    new Menu (33, 'Steps Support', '/admin/steps-support', null, 'directions_walk', null, false, 0),
+    new Menu (34, 'DOB Change', '/admin/dob-change', null, 'date_range', null, false, 0),
+    new Menu (35, 'Demo', '/admin/demo', null, 'play_circle_outline', null, false, 0),
+    new Menu (36, 'User Remove', '/admin/user-delete', null, 'person_remove', null, false, 0),
+    new Menu (37, 'User Report', '/admin/user-report', null, 'assessment', null, false, 0),
+    new Menu (38, 'NFC Management', null, null, 'nfc', null, true, 0),
+    new Menu (381, 'NFC Registration', '/admin/nfc-registration', null, 'add_box', null, false, 38),
+    new Menu (382, 'Child Registration', '/admin/child-registration', null, 'child_care', null, false, 38),
+    new Menu (383, 'Stage Support', '/admin/stage-support', null, 'support', null, false, 38),
+    new Menu (39, 'Monument', null, null, 'account_balance', null, true, 0),
+    new Menu (391, 'Monument Management', '/admin/monument-management', null, 'business', null, false, 39),
+    new Menu (392, 'Monument Tour', '/admin/monument-tour', null, 'tour', null, false, 39),
+    new Menu (393, 'Monument Report', '/admin/monument-report', null, 'assessment', null, false, 39),
+    new Menu (40, 'Reports', '/admin/report', null, 'library_books', null, false, 0),
 
-    //Fruit Card
-    new Menu (41, 'Fruit Card', '/admin/demo', null, 'qr_code', null, false, 0),
-
-    // User Delete
-    new Menu (41, 'User Remove', '/admin/user-delete', null, 'perm_identity', null, false, 0),    
-
-    // User Report
-    new Menu (44, 'User Report', '/admin/user-report', null, 'library_books', null, false, 0),     
-
-    //Fruit Card
-    // new Menu (45, 'Fruit Details', '/admin/demo', null, 'shopping_cart', null, false, 0),    
-
-    //RF ID
-    new Menu (41, 'RF Management', null, null, 'format_list_bulleted', null, true, 0), 
-    new Menu (42, 'RF Registration', '/rfid/rf-registration', null, 'sd_card', null, false, 41),
-    new Menu (43, 'RF Circuit', '/rfid/rf-circuit', null, 'sd_card', null, false, 41),
-    new Menu (44, 'RF Box', '/rfid/rf-box', null, 'sd_card', null, false, 41),
-    new Menu (45, 'RF Box Time', '/rfid/rf-device-time', null, 'sd_card', null, false, 41),
-    //new Menu (46, 'Issue Report', '/admin/issue-report', null, 'assignment_late', null, false, 0),
-    //new Menu (47, 'Active Team Code', '/admin/active-team', null, 'check_circle', null, false, 0),
-
-    
-    
-    
-   
-    //new Menu (18, 'Kingstone', '/kingstone', null, 'event', null, false, 0),
-    //new Menu (14, 'Events QR', '/eventsqr', null, 'event', null, false, 0),
-
-
-    //new Menu (4, 'Search Management', '/search_mng', null, 'search', null, false, 0), 
-    //new Menu (5, 'Transaction Management', '/transaction_mng', null, 'add_shopping_cart', null, false, 0), 
-    // new Menu (3, 'Event Management', null, null, 'computer', null, false, 0),   
-    // new Menu (4, 'Search Management', null, null, 'keyboard', null, false, 0),  
-    // new Menu (5, 'Transaction Management', null, null, 'card_membership', null, false, 0), 
-    // new Menu (6, 'Lists', '/ui/lists', null, 'list', null, false, 3), 
-    // new Menu (7, 'Grids', '/ui/grids', null, 'grid_on', null, false, 3), 
-    // new Menu (8, 'Tabs', '/ui/tabs', null, 'tab', null, false, 3), 
-    // new Menu (9, 'Expansion Panel', '/ui/expansion-panel', null, 'dns', null, false, 3),
-    // new Menu (10, 'Chips', '/ui/chips', null, 'label', null, false, 3),
-    // new Menu (11, 'Progress', '/ui/progress', null, 'data_usage', null, false, 3), 
-    // new Menu (12, 'Dialog', '/ui/dialog', null, 'open_in_new', null, false, 3), 
-    // new Menu (13, 'Tooltip', '/ui/tooltip', null, 'chat_bubble', null, false, 3), 
-    // new Menu (14, 'Snackbar', '/ui/snack-bar', null, 'sms', null, false, 3), 
-    // new Menu (15, 'Dynamic Menu', '/dynamic-menu', null, 'format_list_bulleted', null, false, 0),    
-    // new Menu (16, 'Mailbox', '/mailbox', null, 'email', null, false, 0),
-    // new Menu (17, 'Chat', '/chat', null, 'chat', null, false, 0),
-    // new Menu (20, 'Form Controls', null, null, 'dvr', null, true, 0), 
-    // new Menu (21, 'Autocomplete', '/form-controls/autocomplete', null, 'short_text', null, false, 20), 
-    // new Menu (22, 'Checkbox', '/form-controls/checkbox', null, 'check_box', null, false, 20), 
-    // new Menu (23, 'Datepicker', '/form-controls/datepicker', null, 'today', null, false, 20), 
-    // new Menu (24, 'Form field', '/form-controls/form-field', null, 'view_stream', null, false, 20), 
-    // new Menu (25, 'Input', '/form-controls/input', null, 'input', null, false, 20), 
-    // new Menu (26, 'Radio button', '/form-controls/radio-button', null, 'radio_button_checked', null, false, 20), 
-    // new Menu (27, 'Select', '/form-controls/select', null, 'playlist_add_check', null, false, 20), 
-    // new Menu (28, 'Slider', '/form-controls/slider', null, 'tune', null, false, 20), 
-    // new Menu (29, 'Slide toggle', '/form-controls/slide-toggle', null, 'star_half', null, false, 20), 
-    // new Menu (30, 'Tables', null, null, 'view_module', null, true, 0),
-    // new Menu (31, 'Basic', '/tables/basic', null, 'view_column', null, false, 30), 
-    // new Menu (32, 'Paging', '/tables/paging', null, 'last_page', null, false, 30), 
-    // new Menu (33, 'Sorting', '/tables/sorting', null, 'sort', null, false, 30),
-    // new Menu (34, 'Filtering', '/tables/filtering', null, 'format_line_spacing', null, false, 30),
-    // new Menu (35, 'Selecting', '/tables/selecting', null, 'playlist_add_check', null, false, 30),
-    // new Menu (36, 'NGX DataTable', '/tables/ngx-table', null, 'view_array', null, false, 30), 
-    // new Menu (40, 'Pages', null, null, 'library_books', null, true, 0),
-    // new Menu (43, 'Login', '/login', null, 'exit_to_app', null, false, 40),    
-    // new Menu (44, 'Register', '/register', null, 'person_add', null, false, 40),
-    // new Menu (45, 'Blank', '/blank', null, 'check_box_outline_blank', null, false, 40),
-    // new Menu (46, 'Page Not Found', '/pagenotfound', null, 'error_outline', null, false, 40),
-    // new Menu (47, 'Error', '/error', null, 'warning', null, false, 40),
-    // new Menu (48, 'Search', '/search', null, 'search', null, false, 40),
-    // new Menu (49, 'Landing', '/landing', null, 'filter', null, false, 40),
-    // new Menu (50, 'Schedule', '/schedule', null, 'event_note', null, false, 0),
-    // new Menu (66, 'Maps', null, null, 'map', null, true, 0),
-    // new Menu (67, 'Google Maps', '/maps/googlemaps', null, 'location_on', null, false, 66),
-    // new Menu (68, 'Leaflet Maps', '/maps/leafletmaps', null, 'my_location', null, false, 66),
-    // new Menu (70, 'Charts', null, null, 'multiline_chart', null, true, 0),
-    // new Menu (71, 'Bar Charts', '/charts/bar', null, 'insert_chart', null, false, 70),
-    // new Menu (72, 'Pie Charts', '/charts/pie', null, 'pie_chart', null, false, 70),
-    // new Menu (73, 'Line Charts', '/charts/line', null, 'show_chart', null, false, 70),
-    // new Menu (74, 'Bubble Charts', '/charts/bubble', null, 'bubble_chart', null, false, 70), 
-    // new Menu (81, 'Drag & Drop', '/drag-drop', null, 'mouse', null, false, 0),  
-    // new Menu (85, 'Material Icons', '/icons', null, 'insert_emoticon', null, false, 0),  
-    // new Menu (140, 'Level 1', null, null, 'more_horiz', null, true, 0),
-    // new Menu (141, 'Level 2', null, null, 'folder_open', null, true, 140),
-    // new Menu (142, 'Level 3', null, null, 'folder_open', null, true, 141),
-    // new Menu (143, 'Level 4', null, null, 'folder_open', null, true, 142),
-    // new Menu (144, 'Level 5', null, 'http://themeseason.com', 'link', null, false, 143),
-    // new Menu (200, 'External Link', null, 'http://themeseason.com', 'open_in_new', '_blank', false, 0)
+    // RF Management
+    new Menu (41, 'RF Management', null, null, 'settings_remote', null, true, 0),
+    new Menu (42, 'RF Registration', '/admin/rf-registration', null, 'add_box', null, false, 41),
+    new Menu (43, 'RF Circuit', '/admin/rf-circuit', null, 'track_changes', null, false, 41),
+    new Menu (44, 'RF Box', '/admin/rf-box', null, 'inbox', null, false, 41),
+    new Menu (45, 'RF Box Time', '/admin/rf-device-time', null, 'access_time', null, false, 41)
 ]
 
 export const horizontalMenuItems = [ 
