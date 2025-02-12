@@ -1,6 +1,6 @@
 <app-content-header
-  [title]="'RF Registration'"
-  [icon]="'nfc'"
+  [title]="'RF Management'"
+  [icon]="'settings_remote'"
   [hideBreadcrumb]="true"
   [hasBgImage]="true"
   [class]="'pt-2'"
@@ -17,10 +17,10 @@
       mat-button
       mat-raised-button
       color="accent"
-      (click)="registerNewDevice()"
+      (click)="openAddMessageDialog()"
       class="compose"
     >
-      Register RF Device
+      Add Player
     </button>
   </div>
 </mat-toolbar>
@@ -43,33 +43,28 @@
       class="mat-elevation-z8"
     >
       <ng-container matColumnDef="id">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Device ID</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header>S No.</mat-header-cell>
         <mat-cell *matCellDef="let element">{{element.id}}</mat-cell>
       </ng-container>
 
-      <ng-container matColumnDef="name">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{element.name}}</mat-cell>
-      </ng-container>
-      
-      <ng-container matColumnDef="status">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
-        <mat-cell *matCellDef="let element">
-          <span [class.text-success]="element.status === 'Active'" 
-                [class.text-danger]="element.status === 'Inactive'">
-            {{element.status}}
-          </span>
-        </mat-cell>
+      <ng-container matColumnDef="rf_id">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>RF Id</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.rf_id}}</mat-cell>
       </ng-container>
 
-      <ng-container matColumnDef="lastSeen">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Last Seen</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{element.lastSeen}}</mat-cell>
+      <ng-container matColumnDef="player_id">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Player Id</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.player_id}}</mat-cell>
       </ng-container>
 
-      <ng-container matColumnDef="location">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Location</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{element.location}}</mat-cell>
+      <ng-container matColumnDef="fullname">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Full Name</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.fullname}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="email">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Email</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.email || 'N/A'}}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="actions">
@@ -78,7 +73,15 @@
           <button
             mat-icon-button
             color="primary"
-            (click)="editDevice(element)"
+            (click)="openDetailDialog(element)"
+            matTooltip="View"
+          >
+            <mat-icon>visibility</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            color="accent"
+            (click)="openEditDialog(element)"
             matTooltip="Edit"
           >
             <mat-icon>edit</mat-icon>
@@ -86,7 +89,7 @@
           <button
             mat-icon-button
             color="warn"
-            (click)="deleteDevice(element)"
+            (click)="confirmDialog(element)"
             matTooltip="Delete"
           >
             <mat-icon>delete</mat-icon>
@@ -96,6 +99,10 @@
 
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
       <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="6">No data matching the filter</td>
+      </tr>
     </mat-table>
     <mat-paginator
       #paginator

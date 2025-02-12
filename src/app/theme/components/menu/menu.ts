@@ -35,20 +35,21 @@ export const verticalMenuItems = [
     new Menu (30, 'Heat Map', '/admin/report/heat-map', null, 'map', null, false, 28),
     new Menu (31, 'Graphical Analytics', '/admin/report/chart-report', null, 'multiline_chart', null, false, 28),
     new Menu (32, 'Questionnaires Generator', '/admin/report/ques-report', null, 'question_answer', null, false, 28), 
+    new Menu (33, 'Monument', null, null, 'account_balance', null, true, 0), 
+    new Menu (34, 'Monument Management', '/admin/monument/details', null, 'location_city', null, false, 33), 
+    new Menu (35, 'Monument Tour', '/admin/monument/tour', null, 'tour', null, false, 33), 
+    new Menu (36, 'NFC Management', null, null, 'format_list_bulleted', null, true, 0), 
+    new Menu (37, 'NFC Registration', '/admin/nfc/nfc-registration', null, 'nfc', null, false, 36), 
+    new Menu (39, 'Child Registration', '/admin/nfc/child-registration', null, 'nfc', null, false, 36), 
     new Menu (33, 'Steps Support', '/admin/steps-support', null, 'directions_walk', null, false, 0),
     new Menu (34, 'DOB Change', '/admin/dob-change', null, 'date_range', null, false, 0),
-    new Menu (35, 'Demo', '/admin/demo', null, 'play_circle_outline', null, false, 0),
+    new Menu (35, 'Fruit Card', '/admin/demo', null, 'qr_code', null, false, 0),
     new Menu (36, 'User Remove', '/admin/user-delete', null, 'person_remove', null, false, 0),
     new Menu (37, 'User Report', '/admin/user-report', null, 'assessment', null, false, 0),
-    new Menu (38, 'NFC Management', null, null, 'nfc', null, true, 0),
-    new Menu (381, 'NFC Registration', '/admin/nfc-registration', null, 'add_box', null, false, 38),
-    new Menu (382, 'Child Registration', '/admin/child-registration', null, 'child_care', null, false, 38),
-    new Menu (383, 'Stage Support', '/admin/stage-support', null, 'support', null, false, 38),
-    new Menu (39, 'Monument', null, null, 'account_balance', null, true, 0),
-    new Menu (391, 'Monument Management', '/admin/monument-management', null, 'business', null, false, 39),
-    new Menu (392, 'Monument Tour', '/admin/monument-tour', null, 'tour', null, false, 39),
-    new Menu (393, 'Monument Report', '/admin/monument-report', null, 'assessment', null, false, 39),
-    new Menu (40, 'Reports', '/admin/report', null, 'library_books', null, false, 0),
+    
+    // new Menu (383, 'Stage Support', '/admin/stage-support', null, 'support', null, false, 38),
+    
+    
 
     // RF Management
     new Menu (41, 'RF Management', null, null, 'settings_remote', null, true, 0),

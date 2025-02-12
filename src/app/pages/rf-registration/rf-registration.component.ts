@@ -36,12 +36,19 @@ export const MY_DATE_FORMATS = {
   },
 };
 
-export interface RfDevice {
-  id: string;
-  name: string;
-  status: string;
-  lastSeen: string;
-  location: string;
+export interface RfRegistration {
+  id: number;
+  rf_id: string;
+  player_id: string;
+  circuit_id: number;
+  fullname: string;
+  email: string;
+  gender: string;
+  date_of_birth: string;
+  postal_code: string;
+  is_deleted: number;
+  created_at: string;
+  updated_at: string;
 }
 
 @Component({
@@ -78,13 +85,13 @@ export class RfRegistrationComponent implements OnInit {
   public zoom: number = 7;
   public displayedColumns = [
     'id',
-    'name',
-    'status',
-    'lastSeen',
-    'location',
+    'rf_id',
+    'player_id',
+    'fullname',
+    'email',
     'actions'
   ];
-  public dataSource: MatTableDataSource<RfDevice>;
+  public dataSource: MatTableDataSource<RfRegistration>;
 
   lastelementData: any;
 
@@ -97,7 +104,7 @@ export class RfRegistrationComponent implements OnInit {
     private ajaxService: AjaxService
   ) {
     this.settings = this.appSettings.settings;
-    this.dataSource = new MatTableDataSource<RfDevice>();
+    this.dataSource = new MatTableDataSource<RfRegistration>();
   }
 
   ngAfterViewInit() {
@@ -242,20 +249,34 @@ export class RfRegistrationComponent implements OnInit {
   loadRfDevices() {
     // TODO: Implement API call to load RF devices
     // For now using mock data
-    const mockData: RfDevice[] = [
+    const mockData: RfRegistration[] = [
       {
-        id: 'RF001',
-        name: 'Device 1',
-        status: 'Active',
-        lastSeen: '2024-03-20 10:30:00',
-        location: 'Building A'
+        id: 1,
+        rf_id: 'RF001',
+        player_id: 'Player1',
+        circuit_id: 1,
+        fullname: 'John Doe',
+        email: 'john@example.com',
+        gender: 'male',
+        date_of_birth: '1990-05-15',
+        postal_code: '10001',
+        is_deleted: 0,
+        created_at: '2024-03-20 10:30:00',
+        updated_at: '2024-03-20 10:30:00'
       },
       {
-        id: 'RF002',
-        name: 'Device 2',
-        status: 'Inactive',
-        lastSeen: '2024-03-19 15:45:00',
-        location: 'Building B'
+        id: 2,
+        rf_id: 'RF002',
+        player_id: 'Player2',
+        circuit_id: 2,
+        fullname: 'Jane Smith',
+        email: 'jane@example.com',
+        gender: 'female',
+        date_of_birth: '1995-07-20',
+        postal_code: '10002',
+        is_deleted: 0,
+        created_at: '2024-03-19 15:45:00',
+        updated_at: '2024-03-19 15:45:00'
       }
     ];
     this.dataSource.data = mockData;
@@ -266,12 +287,12 @@ export class RfRegistrationComponent implements OnInit {
     console.log('Register new device clicked');
   }
 
-  editDevice(device: RfDevice) {
+  editDevice(device: RfRegistration) {
     // TODO: Implement edit device dialog
     console.log('Edit device clicked', device);
   }
 
-  deleteDevice(device: RfDevice) {
+  deleteDevice(device: RfRegistration) {
     const message = `Are you sure you want to delete device ${device.id}?`;
     const dialogData = new ConfirmDialogModel('Confirm Action', message);
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
