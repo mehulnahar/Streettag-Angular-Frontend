@@ -65,6 +65,7 @@ export class RfBoxComponent implements OnInit {
   public zoom: number = 7;
   public displayedColumns = [
     'serial_number',
+    'time',
     'device_id',
     'device_name',
     'score',
@@ -200,6 +201,15 @@ export class RfBoxComponent implements OnInit {
             });
           }
         );
+      }
+    });
+  }
+
+  public navigateToDeviceTime(element: RfBoxData) {
+    this.router.navigate(['/admin/rf-device-time'], {
+      queryParams: { 
+        deviceId: element.device_id,
+        deviceName: element.device_name
       }
     });
   }

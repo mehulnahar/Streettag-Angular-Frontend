@@ -50,6 +50,15 @@
         </mat-cell>
       </ng-container>
 
+      <ng-container matColumnDef="time">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Time</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <button mat-button color="primary" (click)="navigateToDeviceTime(element)">
+            <mat-icon>schedule</mat-icon> View Time
+          </button>
+        </mat-cell>
+      </ng-container>
+
       <ng-container matColumnDef="device_id">
         <mat-header-cell *matHeaderCellDef mat-sort-header
           >Box Id

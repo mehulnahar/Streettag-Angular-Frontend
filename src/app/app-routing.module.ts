@@ -21,6 +21,11 @@ const routes: Routes = [
         data: { breadcrumb: 'Dashboard' }
       },
       {
+        path: 'rf-device-time',
+        loadChildren: () => import('./pages/rf-device-time/rf-device-time.module').then(m => m.RfDeviceTimeModule),
+        data: { breadcrumb: 'RF Device Time' }
+      },
+      {
         path: 'auto-states',
         loadChildren: () => import('./pages/auto-states/auto-states.module').then(m => m.AutoStatesModule),
         data: { breadcrumb: 'Auto States LA' }
