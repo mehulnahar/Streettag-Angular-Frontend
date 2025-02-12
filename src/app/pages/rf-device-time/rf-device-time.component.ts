@@ -263,11 +263,89 @@ export class RfDeviceTimeComponent implements OnInit {
   encapsulation: ViewEncapsulation.None,
 })
 export class RfDeviceTimeAddDialog {
+  private readonly baseUrl = environment.baseUrl;
   id!: number;
   edit: boolean = false;
   formateddate!: any;
-  devices: any = [];
-  private readonly baseUrl = environment.baseUrl;
+  devices = [
+    {
+      id: 101,
+      device_id: "RFB101",
+      device_name: "RF BOX 101",
+      score: "50",
+      lat: "22.753300376804898",
+      lng: "75.8645967888855",
+      is_deleted: 0,
+      created_at: "2022-08-03T12:04:31.000Z",
+      updated_at: "2022-09-08T12:39:06.000Z"
+    },
+    {
+      id: 102,
+      device_id: "RFB102",
+      device_name: "RF BOX 102",
+      score: "50",
+      lat: "22.751979657998888",
+      lng: "75.86447340727082",
+      is_deleted: 0,
+      created_at: "2022-09-02T12:00:17.000Z",
+      updated_at: "2022-09-08T12:40:02.000Z"
+    },
+    {
+      id: 103,
+      device_id: "RFB103",
+      device_name: "RF BOX 103",
+      score: "50",
+      lat: "22.75243960444233",
+      lng: "75.86770815134278",
+      is_deleted: 0,
+      created_at: "2022-09-02T12:04:17.000Z",
+      updated_at: "2022-09-07T14:23:55.000Z"
+    },
+    {
+      id: 104,
+      device_id: "RFB104",
+      device_name: "RF BOX 104",
+      score: "50",
+      lat: "22.7533052",
+      lng: "75.8650474",
+      is_deleted: 0,
+      created_at: "2022-11-02T10:10:33.000Z",
+      updated_at: "2022-11-02T10:10:33.000Z"
+    },
+    {
+      id: 105,
+      device_id: "RFB105",
+      device_name: "RF BOX 105",
+      score: "50",
+      lat: "22.7533052",
+      lng: "75.8650474",
+      is_deleted: 0,
+      created_at: "2022-12-02T10:15:36.000Z",
+      updated_at: "2022-12-02T10:15:36.000Z"
+    },
+    {
+      id: 106,
+      device_id: "RFB106",
+      device_name: "RF BOX 106",
+      score: "50",
+      lat: "22.7533052",
+      lng: "75.8650474",
+      is_deleted: 0,
+      created_at: "2022-12-14T17:27:02.000Z",
+      updated_at: "2022-12-14T17:27:02.000Z"
+    },
+    {
+      id: 107,
+      device_id: "RFB107",
+      device_name: "RF BOX 107",
+      score: "50",
+      lat: "51.5339834",
+      lng: "0.0753218",
+      is_deleted: 0,
+      created_at: "2022-12-14T17:27:47.000Z",
+      updated_at: "2022-12-14T17:27:47.000Z"
+    }
+  ];
   resData: any;
   removable: boolean = true;
   toppingList: any = [
@@ -294,7 +372,6 @@ export class RfDeviceTimeAddDialog {
     public formBuilder: FormBuilder,
     private dateAdapter: DateAdapter<Date>
   ) {
-    this.getallDevices();
     this.dateAdapter.setLocale('en-GB');
 
     if (data && data.id) {
@@ -363,15 +440,6 @@ export class RfDeviceTimeAddDialog {
       const emptyarr: string[] = [];
       return emptyarr;
     }
-  }
-
-  getallDevices() {
-    const url = `${this.baseUrl}getDevices`;
-    this.ajaxService.get<ApiResponse<any[]>>(url).subscribe((response) => {
-      if (response?.data) {
-        this.devices = response.data;
-      }
-    });
   }
 
   changeSelected($event: any, category: any): void {
@@ -526,7 +594,6 @@ export class RfDeviceTimeEditDialog {
     private ajaxService: AjaxService,
     public snackBar: MatSnackBar
   ) {
-    this.getallDevices();
     this.angForm = this.formBuilder.group({
       device_id: [''],
     });
