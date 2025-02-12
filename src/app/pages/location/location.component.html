@@ -15,7 +15,7 @@
 
   <div class="mat-elevation-z8" style="margin-bottom: 20px;">
     <mat-form-field style="width: 100%; background: white;">
-      <input matInput (keyup)="applyFilter($any($event.target).value)" placeholder="Type to filter all columns">
+      <input matInput (keyup)="applyFilter($event)" placeholder="Type to filter all columns">
     </mat-form-field>
 
     <mat-table #table [dataSource]="dataSource" matSort>

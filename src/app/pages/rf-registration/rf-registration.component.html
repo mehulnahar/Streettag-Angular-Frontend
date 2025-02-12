@@ -159,6 +159,23 @@ mat-table {
 mat-paginator {
   border-top: 1px solid rgba(0,0,0,0.12);
 }
+
+/* Add spacing between action buttons */
+.mat-cell button {
+  margin: 0 4px;
+}
+
+/* Ensure action buttons are visible */
+.mat-cell button mat-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Make sure the actions column has enough width */
+.mat-column-actions {
+  min-width: 150px;
+}
 </style>
 
 

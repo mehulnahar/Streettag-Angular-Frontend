@@ -72,7 +72,7 @@ export class LocationComponent implements OnInit {
     "created_at",
     "edit",
   ];
-  public dataSource: any;
+  public dataSource: MatTableDataSource<Location> = new MatTableDataSource<Location>();
 
   lastelementData: any;
 
@@ -85,20 +85,30 @@ export class LocationComponent implements OnInit {
     private ajaxService: AjaxService
   ) {
     this.settings = this.appSettings.settings;
+    // Initialize filter predicate
+    this.dataSource.filterPredicate = (data: Location, filter: string): boolean => {
+      if (!filter) return true;
+      
+      const searchStr = filter.toLowerCase();
+      const locationNameMatch = data.location_name?.toLowerCase().includes(searchStr) || false;
+      const dateMatch = data.created_at?.toLowerCase().includes(searchStr) || false;
+      
+      return locationNameMatch || dateMatch;
+    };
   }
 
   ngAfterViewInit() {
-    setTimeout(() => {
-      this.dataSource.paginator = this.paginator;
-    }, 1500);
-    setTimeout(() => {
-      this.dataSource.sort = this.sort;
-    }, 3000);
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
   }
 
   ngOnInit() {
@@ -169,9 +179,7 @@ export class LocationComponent implements OnInit {
           ...location,
           created_at: this.transformDate(location.created_at)
         }));
-        this.dataSource = new MatTableDataSource<Location>(transformedData);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
+        this.dataSource.data = transformedData;
       },
       (error) => {
         if (error.status === 403) {
