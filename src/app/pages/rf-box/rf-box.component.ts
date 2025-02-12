@@ -65,7 +65,6 @@ export class RfBoxComponent implements OnInit {
   public zoom: number = 7;
   public displayedColumns = [
     'serial_number',
-    'time',
     'device_id',
     'device_name',
     'score',
