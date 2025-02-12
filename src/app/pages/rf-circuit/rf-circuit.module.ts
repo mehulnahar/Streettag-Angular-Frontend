@@ -4,7 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../../shared/shared.module';
 import { PipesModule } from '../../theme/pipes/pipes.module';
-import { RfRegistrationComponent, RfidAddDialog, RfidViewDialog } from './rf-registration.component';
+import { RfCircuitComponent, RfCircuitAddDialog } from './rf-circuit.component';
 
 // Material Imports
 import { MatTableModule } from '@angular/material/table';
@@ -14,17 +14,16 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { MatRadioModule } from '@angular/material/radio';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 export const routes: Routes = [
-  { path: '', component: RfRegistrationComponent, pathMatch: 'full' }
+  { path: '', component: RfCircuitComponent, pathMatch: 'full' }
 ];
 
 @NgModule({
@@ -42,19 +41,17 @@ export const routes: Routes = [
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    MatAutocompleteModule,
     MatSnackBarModule,
     MatIconModule,
     MatToolbarModule,
     MatSelectModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatRadioModule
+    MatTooltipModule
   ],
   declarations: [
-    RfRegistrationComponent,
-    RfidAddDialog,
-    RfidViewDialog
+    RfCircuitComponent,
+    RfCircuitAddDialog
   ]
 })
-export class RfRegistrationModule { }
+export class RfCircuitModule { }

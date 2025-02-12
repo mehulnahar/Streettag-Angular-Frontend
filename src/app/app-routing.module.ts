@@ -184,6 +184,16 @@ const routes: Routes = [
         path: 'rf-registration',
         loadChildren: () => import('./pages/rf-registration/rf-registration.module').then(m => m.RfRegistrationModule),
         data: { breadcrumb: 'RF Registration' }
+      },
+      {
+        path: 'rf-circuit',
+        loadChildren: () => import('./pages/rf-circuit/rf-circuit.module').then(m => m.RfCircuitModule),
+        data: { breadcrumb: 'RF Circuit' }
+      },
+      {
+        path: 'rf-box',
+        loadChildren: () => import('./pages/rf-box/rf-box.module').then(m => m.RfBoxModule),
+        data: { breadcrumb: 'RF Box' }
       }
     ]
   },

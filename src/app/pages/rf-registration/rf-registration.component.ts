@@ -151,13 +151,15 @@ export class RfRegistrationComponent implements OnInit {
     }
   }
 
-  openEditDialog(data:any): void {
-    let dialogRef = this.dialog.open(RfidAddDialog, {
+  openEditDialog(data: any): void {
+    const dialogRef = this.dialog.open(RfidAddDialog, {
       width: '600px',
-      data: data,
+      data: { ...data, circuits: this.circuits, edit: true }
     });
-    dialogRef.afterClosed().subscribe((result:any) => {
-      this.getallUsers();
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.getallUsers();
+      }
     });
   }
 
@@ -169,24 +171,22 @@ export class RfRegistrationComponent implements OnInit {
   }
 
   openDetailDialog(data: any): void {
-    data.circuit_id = this.circuits.filter((it: any) => it.id == data.circuit_id);
-    let dialogRef = this.dialog.open(RfidViewDialog, {
+    const dialogRef = this.dialog.open(RfidViewDialog, {
       width: '600px',
-      data: data,
-    });
-    dialogRef.afterClosed().subscribe((result: any) => {
-      this.getallUsers();
+      data: data
     });
   }
 
   openAddMessageDialog(): void {
-    let dialogRef = this.dialog.open(RfidAddDialog, {
+    const dialogRef = this.dialog.open(RfidAddDialog, {
       width: '600px',
-      data: { groups: this.groupList }
+      data: { circuits: this.circuits }
     });
-    dialogRef.afterClosed().subscribe((result: any) => {
-      this.getallUsers();
-      this.toggle();
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.getallUsers();
+      }
     });
   }
 
@@ -195,15 +195,15 @@ export class RfRegistrationComponent implements OnInit {
   }
 
   confirmDialog(data: any): void {
-    const message = `Are you sure you want to delete player ${data.player_id} ?`;
+    const message = `Are you sure you want to delete player ${data.player_id}?`;
     const dialogData = new ConfirmDialogModel('Confirm Action', message);
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       maxWidth: '600px',
-      data: dialogData,
+      data: dialogData
     });
 
-    dialogRef.afterClosed().subscribe((dialogResult:any ) => {
-      if (dialogResult == true) {
+    dialogRef.afterClosed().subscribe((dialogResult: boolean) => {
+      if (dialogResult) {
         this.deleteRFData(data.id);
       }
     });
@@ -311,7 +311,106 @@ export class RfRegistrationComponent implements OnInit {
 
 @Component({
   selector: 'app-rfid-add-dialog',
-  template: '<!-- Your template here -->'
+  template: `
+    <h2 mat-dialog-title>{{edit ? 'Edit Player' : 'Add Player'}}</h2>
+    <form [formGroup]="angForm" (ngSubmit)="formsubmit()">
+      <mat-dialog-content>
+        <div class="form-container">
+          <mat-form-field>
+            <mat-label>RF ID</mat-label>
+            <input matInput formControlName="rf_id" required>
+            <mat-error *ngIf="angForm.controls['rf_id'].hasError('required')">RF ID is required</mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Player ID</mat-label>
+            <input matInput formControlName="player_id" required>
+            <mat-error *ngIf="angForm.controls['player_id'].hasError('required')">Player ID is required</mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Full Name</mat-label>
+            <input matInput formControlName="fullname" required>
+            <mat-error *ngIf="angForm.controls['fullname'].hasError('required')">Full Name is required</mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" type="email">
+            <mat-error *ngIf="angForm.controls['email'].hasError('email')">Please enter a valid email</mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Date of Birth</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="date_of_birth">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Postal Code</mat-label>
+            <input matInput formControlName="postal_code">
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Circuit</mat-label>
+            <mat-select formControlName="circuit_id" required>
+              <mat-option *ngFor="let circuit of circuits" [value]="circuit.id">
+                {{circuit.name}}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="angForm.controls['circuit_id'].hasError('required')">Circuit is required</mat-error>
+          </mat-form-field>
+
+          <div class="radio-group">
+            <label class="radio-label">Gender</label>
+            <mat-radio-group formControlName="gender">
+              <mat-radio-button value="male">Male</mat-radio-button>
+              <mat-radio-button value="female">Female</mat-radio-button>
+            </mat-radio-group>
+          </div>
+        </div>
+      </mat-dialog-content>
+      <mat-dialog-actions align="end">
+        <button mat-button type="button" (click)="onNoClick()">Cancel</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="!angForm.valid">
+          {{edit ? 'Update' : 'Save'}}
+        </button>
+      </mat-dialog-actions>
+    </form>
+  `,
+  styles: [`
+    .form-container { 
+      display: grid;
+      gap: 16px;
+      padding: 20px;
+    }
+    mat-form-field { 
+      width: 100%;
+    }
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .radio-label {
+      font-size: 14px;
+      color: rgba(0,0,0,0.6);
+      margin-bottom: 4px;
+    }
+    mat-radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    mat-radio-button {
+      margin: 5px;
+    }
+    mat-dialog-content {
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+  `]
 })
 export class RfidAddDialog {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -455,7 +554,56 @@ export class RfidAddDialog {
 
 @Component({
   selector: 'app-rfid-view-dialog',
-  template: '<!-- Your template here -->'
+  template: `
+    <h2 mat-dialog-title>Player Details</h2>
+    <mat-dialog-content>
+      <div class="details-container">
+        <div class="detail-row">
+          <strong>RF ID:</strong> {{data.rf_id}}
+        </div>
+        <div class="detail-row">
+          <strong>Player ID:</strong> {{data.player_id}}
+        </div>
+        <div class="detail-row">
+          <strong>Full Name:</strong> {{data.fullname}}
+        </div>
+        <div class="detail-row">
+          <strong>Email:</strong> {{data.email || 'N/A'}}
+        </div>
+        <div class="detail-row">
+          <strong>Date of Birth:</strong> {{data.date_of_birth || 'N/A'}}
+        </div>
+        <div class="detail-row">
+          <strong>Gender:</strong> {{data.gender || 'N/A'}}
+        </div>
+        <div class="detail-row">
+          <strong>Postal Code:</strong> {{data.postal_code || 'N/A'}}
+        </div>
+        <div class="detail-row">
+          <strong>Circuit:</strong> {{data.circuit_id}}
+        </div>
+      </div>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button (click)="onNoClick()">Close</button>
+    </mat-dialog-actions>
+  `,
+  styles: [`
+    .details-container {
+      display: grid;
+      gap: 16px;
+      padding: 20px;
+    }
+    .detail-row {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 16px;
+      align-items: center;
+    }
+    strong {
+      color: rgba(0,0,0,0.6);
+    }
+  `]
 })
 export class RfidViewDialog {
   constructor(

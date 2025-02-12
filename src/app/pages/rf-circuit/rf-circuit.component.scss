@@ -1,0 +1,54 @@
+.mat-cell:nth-child(6),
+.mat-header-cell:nth-child(6) {
+  flex: 0 0 4rem;
+}
+
+.toolbar {
+  margin-bottom: 16px;
+}
+
+.toolbar-content {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.content-container {
+  padding: 16px;
+}
+
+.table-container {
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.filter-container {
+  padding: 16px 16px 0;
+}
+
+.filter-field {
+  width: 100%;
+}
+
+mat-table {
+  width: 100%;
+}
+
+.mat-cell, .mat-header-cell {
+  padding: 0 16px;
+}
+
+.mat-header-cell {
+  font-weight: bold;
+  color: rgba(0,0,0,0.87);
+}
+
+.mat-cell mat-icon {
+  font-size: 20px;
+}
+
+mat-paginator {
+  border-top: 1px solid rgba(0,0,0,0.12);
+}

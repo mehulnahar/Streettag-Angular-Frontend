@@ -1,6 +1,6 @@
 <app-content-header
-  [title]="'RF Management'"
-  [icon]="'sd_card'"
+  [title]="'RF Circuit Management'"
+  [icon]="'outlet'"
   [hideBreadcrumb]="true"
   [hasBgImage]="true"
   [class]="'pt-2'"
@@ -12,10 +12,10 @@
       mat-button
       mat-raised-button
       color="accent"
-      (click)="openAddMessageDialog()"
+      (click)="addCircuit()"
       class="compose"
     >
-      Add Player
+      Add Circuit
     </button>
   </div>
 </mat-toolbar>
@@ -38,29 +38,24 @@
       matSort
       class="mat-elevation-z8"
     >
-      <ng-container matColumnDef="id">
+      <ng-container matColumnDef="serial_number">
         <mat-header-cell *matHeaderCellDef mat-sort-header>S No.</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{element.id}}</mat-cell>
+        <mat-cell *matCellDef="let element">{{element.serial_number}}</mat-cell>
       </ng-container>
 
-      <ng-container matColumnDef="rf_id">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>RF Id</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{element.rf_id}}</mat-cell>
+      <ng-container matColumnDef="circuit_name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Circuit Name</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.circuit_name}}</mat-cell>
       </ng-container>
 
-      <ng-container matColumnDef="player_id">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Player Id</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{element.player_id}}</mat-cell>
+      <ng-container matColumnDef="start_date">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Start Date</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.start_date}}</mat-cell>
       </ng-container>
 
-      <ng-container matColumnDef="fullname">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Full Name</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{element.fullname}}</mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="email">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Email</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{element.email || 'N/A'}}</mat-cell>
+      <ng-container matColumnDef="end_date">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>End Date</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.end_date}}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="actions">
@@ -69,15 +64,7 @@
           <button
             mat-icon-button
             color="primary"
-            (click)="openDetailDialog(element)"
-            matTooltip="View"
-          >
-            <mat-icon>visibility</mat-icon>
-          </button>
-          <button
-            mat-icon-button
-            color="accent"
-            (click)="openEditDialog(element)"
+            (click)="editCircuit(element)"
             matTooltip="Edit"
           >
             <mat-icon>edit</mat-icon>
@@ -85,7 +72,7 @@
           <button
             mat-icon-button
             color="warn"
-            (click)="confirmDialog(element)"
+            (click)="deleteCircuit(element)"
             matTooltip="Delete"
           >
             <mat-icon>delete</mat-icon>
@@ -97,7 +84,7 @@
       <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
 
       <tr class="mat-row" *matNoDataRow>
-        <td class="mat-cell" colspan="6">No data matching the filter</td>
+        <td class="mat-cell" colspan="5">No data matching the filter</td>
       </tr>
     </mat-table>
 
@@ -160,5 +147,3 @@ mat-paginator {
   border-top: 1px solid rgba(0,0,0,0.12);
 }
 </style>
-
-
