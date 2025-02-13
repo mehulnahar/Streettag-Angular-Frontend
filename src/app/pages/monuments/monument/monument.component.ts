@@ -718,48 +718,62 @@ export class EditMonumentDialog implements OnInit, OnDestroy {
     if (this.angForm.status == "VALID") {
       this.clicked = true;
       const url = `${this.baseUrl}editMonument`;
+      this.angForm.value.id = this.data.data.id;
+      const fd: any = new FormData();
+      fd.append("name", this.angForm.get("name")?.value.replaceAll("'","`").replaceAll('"','``'));
+      fd.append(
+        "description",
+        JSON.stringify(this.angForm.get("description")?.value)
+      );
+      fd.append("id", this.data.data.id);
+      fd.append("link", (this.angForm.get("link")?.value || '').toString().trim());
+      fd.append("basketFlag",this.angForm.get("basketFlag")?.value);
+      if (this.multipleImages != null) {
+        Array.from(this.multipleImages).forEach(img => {
+          fd.append("img", img);
+        });
+      }
 
-      // Create payload as a simple object
-      const payload = {
-        name: (this.angForm.get("name")?.value || '').toString().trim(),
-        description: [this.angForm.get("description")?.value[0] || ''],
-        id: this.data.data.id,
-        link: (this.angForm.get("link")?.value || '').toString().trim(),
-        basketFlag: parseInt(this.angForm.get("basketFlag")?.value || '0', 10) // Convert string back to number
-      };
+      if (this.multipleAudio != null) {
+        Array.from(this.multipleAudio).forEach(audio => {
+          fd.append("audio", audio);
+        });
+      }
 
+      if (this.multipleVideos != null) {
+        Array.from(this.multipleVideos).forEach(vid => {
+          fd.append("videos", vid);
+        });
+      }
       this.edit$ = this._http
-        .post(url, payload, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          }
+        .post(url, fd, {
+          reportProgress: true,
+          observe: "events",
         })
         .subscribe(
-          (response: any) => {
-            this.resData = response;
-            this.snackBar.open("Monument Updated Successfully", undefined, {
-              duration: 3000,
-              verticalPosition: "top",
-              panelClass: ["blue-snackbar"]
-            });
-            this.dialogRef.close(true);
+          (data) => {
+            if (data.type === HttpEventType.UploadProgress && data.total) {
+              this.showBar = true;
+              this.progrees = Math.round((data.loaded / data.total) * 100);
+            } else if (data.type === HttpEventType.Response) {
+              this.resData = data;
+              this.snackBar.open("Monument Updated Successfully", undefined, {
+                duration: 3000,
+                verticalPosition: "top",
+                panelClass: ["blue-snackbar"],
+              });
+              this.dialogRef.close();
+            }
           },
           (error) => {
-            this.clicked = false;
-            this.snackBar.open(error.error?.msg || "Error updating monument", undefined, {
+            this.snackBar.open(error.error.msg || 'Something went wrong , please try again', undefined, {
               duration: 2500,
               verticalPosition: "top",
-              panelClass: ["red-snackbar"]
+              panelClass: ["red-snackbar"],
             });
+            this.dialogRef.close();
           }
         );
-    } else {
-      this.snackBar.open("Please fill all required fields correctly", undefined, {
-        duration: 2500,
-        verticalPosition: "top",
-        panelClass: "red-snackbar"
-      });
     }
   }
   ngOnDestroy(): void {
