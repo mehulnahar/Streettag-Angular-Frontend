@@ -718,64 +718,128 @@ export class EditMonumentDialog implements OnInit, OnDestroy {
     if (this.angForm.status == "VALID") {
       this.clicked = true;
       const url = `${this.baseUrl}editMonument`;
-      this.angForm.value.id = this.data.data.id;
-      const fd: any = new FormData();
-      fd.append("name", this.angForm.get("name")?.value.replaceAll("'","`").replaceAll('"','``'));
-      fd.append(
-        "description",
-        JSON.stringify(this.angForm.get("description")?.value)
-      );
-      fd.append("id", this.data.data.id);
-      fd.append("link", (this.angForm.get("link")?.value || '').toString().trim());
-      fd.append("basketFlag",this.angForm.get("basketFlag")?.value);
-      if (this.multipleImages != null) {
-        Array.from(this.multipleImages).forEach(img => {
-          fd.append("img", img);
-        });
-      }
+      
+      // Create FormData object
+      const fd = new FormData();
+      
+      try {
+        // Safely get and format values
+        const name = (this.angForm.get("name")?.value || '').toString().trim();
+        const description = this.angForm.get("description")?.value || [];
+        const link = (this.angForm.get("link")?.value || '').toString().trim();
+        const basketFlag = this.angForm.get("basketFlag")?.value || '0';
+        
+        // Append basic form fields
+        fd.append("name", name);
+        fd.append("description", JSON.stringify(description));
+        fd.append("id", this.data.data.id.toString());
+        fd.append("link", link);
+        fd.append("basketFlag", basketFlag);
 
-      if (this.multipleAudio != null) {
-        Array.from(this.multipleAudio).forEach(audio => {
-          fd.append("audio", audio);
-        });
-      }
+        // Handle file uploads
+        if (this.multipleImages != null && this.multipleImages.length > 0) {
+          Array.from(this.multipleImages).forEach(img => {
+            fd.append("images[]", img, img.name);
+          });
+        }
 
-      if (this.multipleVideos != null) {
-        Array.from(this.multipleVideos).forEach(vid => {
-          fd.append("videos", vid);
-        });
-      }
-      this.edit$ = this._http
-        .post(url, fd, {
-          reportProgress: true,
-          observe: "events",
-        })
-        .subscribe(
-          (data) => {
-            if (data.type === HttpEventType.UploadProgress && data.total) {
-              this.showBar = true;
-              this.progrees = Math.round((data.loaded / data.total) * 100);
-            } else if (data.type === HttpEventType.Response) {
-              this.resData = data;
-              this.snackBar.open("Monument Updated Successfully", undefined, {
-                duration: 3000,
-                verticalPosition: "top",
-                panelClass: ["blue-snackbar"],
-              });
-              this.dialogRef.close();
+        if (this.multipleAudio != null && this.multipleAudio.length > 0) {
+          Array.from(this.multipleAudio).forEach(audio => {
+            fd.append("audio[]", audio, audio.name);
+          });
+        }
+
+        if (this.multipleVideos != null && this.multipleVideos.length > 0) {
+          Array.from(this.multipleVideos).forEach(vid => {
+            fd.append("videos[]", vid, vid.name);
+          });
+        }
+
+        // Make the HTTP request
+        this.edit$ = this._http
+          .post(url, fd, {
+            reportProgress: true,
+            observe: "events",
+            headers: {
+              'Accept': 'application/json',
+              // Don't set Content-Type - browser will set it with boundary for FormData
             }
-          },
-          (error) => {
-            this.snackBar.open(error.error.msg || 'Something went wrong , please try again', undefined, {
-              duration: 2500,
-              verticalPosition: "top",
-              panelClass: ["red-snackbar"],
-            });
-            this.dialogRef.close();
+          })
+          .subscribe({
+            next: (event) => {
+              if (event.type === HttpEventType.UploadProgress && event.total) {
+                this.showBar = true;
+                this.progrees = Math.round((event.loaded / event.total) * 100);
+              } else if (event.type === HttpEventType.Response) {
+                const response = event.body;
+                if (response && typeof response === 'object') {
+                  this.resData = response;
+                  this.snackBar.open("Monument Updated Successfully", undefined, {
+                    duration: 3000,
+                    verticalPosition: "top",
+                    panelClass: ["blue-snackbar"],
+                  });
+                  this.dialogRef.close(true);
+                } else {
+                  throw new Error('Invalid response format');
+                }
+              }
+            },
+            error: (error) => {
+              console.error('Error updating monument:', error);
+              this.clicked = false;
+              let errorMessage = 'Something went wrong, please try again';
+              
+              if (error.error instanceof Blob) {
+                // Read the Blob as text
+                const reader = new FileReader();
+                reader.onload = () => {
+                  try {
+                    const errorBody = JSON.parse(reader.result as string);
+                    errorMessage = errorBody.msg || errorMessage;
+                  } catch (e) {
+                    console.error('Error parsing error response:', e);
+                  }
+                  this.showErrorSnackbar(errorMessage);
+                };
+                reader.onerror = () => this.showErrorSnackbar(errorMessage);
+                reader.readAsText(error.error);
+              } else {
+                errorMessage = error.error?.msg || errorMessage;
+                this.showErrorSnackbar(errorMessage);
+              }
+            }
+          });
+      } catch (e) {
+        console.error('Error formatting form data:', e);
+        this.clicked = false;
+        this.snackBar.open(
+          'Something went wrong while preparing the form data',
+          undefined,
+          {
+            duration: 2500,
+            verticalPosition: "top",
+            panelClass: ["red-snackbar"],
           }
         );
+      }
+    } else {
+      this.snackBar.open("Please fill all required fields correctly", undefined, {
+        duration: 2500,
+        verticalPosition: "top",
+        panelClass: ["red-snackbar"],
+      });
     }
   }
+
+  private showErrorSnackbar(message: string) {
+    this.snackBar.open(message, undefined, {
+      duration: 2500,
+      verticalPosition: "top",
+      panelClass: ["red-snackbar"],
+    });
+  }
+
   ngOnDestroy(): void {
     if (this.edit$) this.edit$.unsubscribe();
   }
