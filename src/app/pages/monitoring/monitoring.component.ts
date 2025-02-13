@@ -11,7 +11,7 @@ import { ExcelService } from '../../excel.service';
 import { PDFService } from '../../pdf.service';
 import { DecimalPipe } from '@angular/common';
 import { environment } from 'src/environments/environment';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 interface MonthData {
@@ -66,8 +66,10 @@ export class MonitoringComponent implements OnInit {
   public displayedColumns: string[] = [];
   public columns: any[] = [];
   public dataSource = new MatTableDataSource<any>([]);
-  public dataSourceLocation$ = new Observable<Location[]>();
-  public dataSourceCircuit$ = new Observable<CircuitData[]>();
+  private locationSubject = new BehaviorSubject<Location[]>([]);
+  public dataSourceLocation$ = this.locationSubject.asObservable();
+  private circuitSubject = new BehaviorSubject<CircuitData[]>([]);
+  public dataSourceCircuit$ = this.circuitSubject.asObservable();
   public showTable: Boolean = false;
   public showLiabrarieColumn: Boolean = false;
   public selectedMonth = '';
@@ -84,12 +86,12 @@ export class MonitoringComponent implements OnInit {
     private _decimalPipe: DecimalPipe
   ) {
     this.createForm();
-    this.loadLocations();
     this.setupMonths();
   }
 
   ngOnInit() {
     this.setupColumns();
+    this.loadLocations();
   }
 
   ngAfterViewInit() {
@@ -106,28 +108,54 @@ export class MonitoringComponent implements OnInit {
   }
 
   loadLocations() {
-    this.dataSourceLocation$ = this.ajax.getLocations().pipe(
-      map((response: any) => {
+    this.ajax.getLocations().subscribe({
+      next: (response: any) => {
+        console.log('Full Response:', response);
         if (response && response.status === "true" && Array.isArray(response.response)) {
-          return response.response;
+          // Sort locations by serial_number
+          const sortedLocations = response.response
+            .filter((loc: Location) => loc.is_deleted === 0)
+            .sort((a: Location, b: Location) => a.serial_number - b.serial_number);
+
+          console.log('Sorted Locations:', sortedLocations);
+          this.locationSubject.next(sortedLocations);
+        } else {
+          this.locationSubject.next([]);
+          this.snackBar.open('No locations found', '', { duration: 2000 });
         }
-        return [];
-      })
-    );
+      },
+      error: (error) => {
+        console.error('Error loading locations:', error);
+        this.snackBar.open('Error loading locations', '', { duration: 2000 });
+        this.locationSubject.next([]);
+      }
+    });
   }
 
   get_location_id(locationId: string) {
     if (locationId) {
-      this.dataSourceCircuit$ = this.ajax.getCircuits(locationId).pipe(
-        map((response: any) => {
+      this.ajax.getCircuits(locationId).subscribe({
+        next: (response: any) => {
+          console.log('Circuit Response:', response);
           if (response && response.status === "true" && Array.isArray(response.response)) {
-            return response.response;
+            // Sort circuits by name for better readability
+            const sortedCircuits = response.response.sort((a: CircuitData, b: CircuitData) => 
+              a.circuit_name.localeCompare(b.circuit_name)
+            );
+            this.circuitSubject.next(sortedCircuits);
+          } else {
+            this.circuitSubject.next([]);
+            this.snackBar.open('No circuits found for this location', '', { duration: 2000 });
           }
-          return [];
-        })
-      );
+        },
+        error: (error) => {
+          console.error('Error loading circuits:', error);
+          this.snackBar.open('Error loading circuits', '', { duration: 2000 });
+          this.circuitSubject.next([]);
+        }
+      });
     } else {
-      this.dataSourceCircuit$ = new Observable();
+      this.circuitSubject.next([]);
     }
   }
 

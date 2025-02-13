@@ -94,12 +94,12 @@ export class AjaxService {
 
     getLocations(): Observable<any> {
         const url = `${this.baseUrl}getLocations`;
-        return this.get(url).pipe(pluck('response'));
+        return this.get(url);
     }
 
     getCircuits(locationId: string): Observable<any> {
         const url = `${this.baseUrl}getCircuitByLocation`;
-        return this.post({ location_id: locationId }, url).pipe(pluck('response'));
+        return this.post({ location_id: locationId }, url);
     }
 
     getMonitoringReport(params: any): Observable<any> {

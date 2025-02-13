@@ -12,20 +12,28 @@
       <div class="form-row">
         <mat-form-field>
           <mat-label>Select Location</mat-label>
-          <mat-select formControlName="location_id" (selectionChange)="get_location_id($event.value)">
-            <mat-option *ngFor="let option of dataSourceLocation$ | async" [value]="option.id">
-              {{ option.location_name }}
+          <mat-select formControlName="location_id" (selectionChange)="get_location_id($event.value)" required>
+            <mat-option>Select Location</mat-option>
+            <mat-option *ngFor="let location of (dataSourceLocation$ | async)" [value]="location.id">
+              {{ location.location_name }}
             </mat-option>
           </mat-select>
+          <mat-error *ngIf="angForm.get('location_id')?.hasError('required')">
+            Please select a location
+          </mat-error>
         </mat-form-field>
 
         <mat-form-field>
           <mat-label>Select Circuit</mat-label>
-          <mat-select formControlName="circuit_id">
-            <mat-option *ngFor="let option of dataSourceCircuit$ | async" [value]="option.id">
-              {{ option.circuit_name }}
+          <mat-select formControlName="circuit_id" required>
+            <mat-option>Select Circuit</mat-option>
+            <mat-option *ngFor="let circuit of dataSourceCircuit$ | async" [value]="circuit.id">
+              {{ circuit.circuit_name }}
             </mat-option>
           </mat-select>
+          <mat-error *ngIf="angForm.get('circuit_id')?.hasError('required')">
+            Please select a circuit
+          </mat-error>
         </mat-form-field>
 
         <mat-form-field>
