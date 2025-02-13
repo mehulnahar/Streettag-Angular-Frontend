@@ -90,23 +90,33 @@ export class ExcelService {
 
   public exportMoinitoringAsExcel(data: any, circuitName: string, month: string, year: string): void {
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet('Monitoring Report');
+    const worksheet = workbook.addWorksheet('Report');
+
+    // Title and Date
+    const titleRow = worksheet.addRow(['', 'Street Tag Monitoring Report (Mindcrew Workforce)']);
+    titleRow.getCell(2).font = { bold: true, size: 14 };
+    
+    const dateRow = worksheet.addRow(['', `Date : ${month} ${year} (Monthly Report)`]);
+    dateRow.getCell(2).font = { size: 12 };
+    
+    // Add empty row for spacing
+    worksheet.addRow([]);
 
     // Set column widths
     worksheet.columns = [
-      { width: 12 }, // A - Month
-      { width: 25 }, // B - Number of new Individuals
-      { width: 18 }, // C - Number of Teams
+      { width: 15 }, // A - Month
+      { width: 30 }, // B - Number of new Individuals
+      { width: 20 }, // C - Number of Teams
       { width: 15 }, // D - Tags Scanned
-      { width: 18 }, // E - Total Steps
+      { width: 20 }, // E - Total Steps
       { width: 20 }, // F - Total Points
-      { width: 12 }, // G - Total Miles
+      { width: 15 }, // G - Total Miles
     ];
 
     // Headers
     const headers = [
       'Month',
-      'Number of new\nIndividuals\nRegistered',
+      'Number of new\nIndividuals Registered',
       'Number of Teams',
       'Tags Scanned',
       'Total Number of\nSteps',
@@ -116,14 +126,14 @@ export class ExcelService {
 
     // Add header row
     const headerRow = worksheet.addRow(headers);
-    headerRow.height = 45;
+    headerRow.height = 40;
 
     // Style header row
     headerRow.eachCell((cell) => {
       cell.fill = {
         type: 'pattern',
         pattern: 'solid',
-        fgColor: { argb: 'FFFF00' }
+        fgColor: { argb: 'FFFF00' } // Yellow background
       };
       cell.font = { 
         bold: true,
@@ -142,15 +152,15 @@ export class ExcelService {
       };
     });
 
-    // Add data row with numeric values
+    // Add data row
     const dataRow = worksheet.addRow([
-      1,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0
+      month,
+      data.registration,
+      data.team,
+      data.tag_scanned,
+      data.steps,
+      data.score_points,
+      data.distance
     ]);
 
     // Style data row
@@ -166,8 +176,10 @@ export class ExcelService {
         bottom: { style: 'thin' },
         right: { style: 'thin' }
       };
-      // Set numeric format
-      cell.numFmt = '0';
+      // Set numeric format for number cells
+      if (Number(cell.col) > 1) {
+        cell.numFmt = '0';
+      }
     });
 
     // Generate Excel file

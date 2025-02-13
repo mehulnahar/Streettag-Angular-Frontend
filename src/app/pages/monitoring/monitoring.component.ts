@@ -233,15 +233,27 @@ export class MonitoringComponent implements OnInit {
   exportToExcel() {
     if (!this.dataSource?.data?.length) return;
 
-    const exportData = this.dataSource.data.map(item => {
-      const row: any = {};
-      this.columns.forEach(col => {
-        row[col.header] = item[col.columnDef];
-      });
-      return row;
-    });
+    const formValue = this.angForm.value;
+    const month = formValue.month.month_text;
+    const year = formValue.month.year;
+    const circuit = this.circuitSubject.value.find(c => c.id === formValue.circuit_id);
+    
+    if (!circuit) {
+      this.snackBar.open('Circuit information not found', '', { duration: 2000 });
+      return;
+    }
 
-    this.excelService.exportAsExcelFile(exportData, 'monitoring-report');
+    const data = this.dataSource.data[0];
+    const exportData = {
+      registration: data.registration || 0,
+      team: data.team || 0,
+      tag_scanned: data.tag_scanned || 0,
+      steps: data.steps || 0,
+      score_points: data.score_points || 0,
+      distance: data.distance || 0
+    };
+
+    this.excelService.exportMoinitoringAsExcel(exportData, circuit.circuit_name, month, year);
   }
 
   exportAsXLSX(): void {
