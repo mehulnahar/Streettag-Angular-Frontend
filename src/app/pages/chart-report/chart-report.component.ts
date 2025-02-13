@@ -197,39 +197,29 @@ export class ChartReportComponent implements OnInit {
   }
 
   downloadChart(): void {
-    if (!this.angForm.valid) {
-      this.snackBar.open('Please fill all required fields', '', { duration: 2000 });
+    // Get the chart element
+    const chartElement = document.querySelector('.chart-card mat-card-content') as HTMLElement;
+    if (!chartElement) {
+      this.snackBar.open('No chart found to download', '', { duration: 2000 });
       return;
     }
 
-    const formValue = this.angForm.value;
-    const requestObj = {
-      circuit_id: formValue.circuit_id,
-      location_id: formValue.location_id,
-      start_date: format(new Date(formValue.start_date), 'yyyy-MM-dd'),
-      end_date: format(new Date(formValue.end_date), 'yyyy-MM-dd'),
-      report_type: formValue.report_type
-    };
-
-    this.isLoading = true;
-    this.ajax.downloadChartData(requestObj).pipe(
-      finalize(() => this.isLoading = false)
-    ).subscribe({
-      next: (response: Blob) => {
-        const blob = new Blob([response], { type: 'application/vnd.ms-excel' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `chart_report_${format(new Date(), 'yyyy-MM-dd')}.xlsx`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error('Error downloading chart:', error);
-        this.snackBar.open('Error downloading chart data', '', { duration: 2000 });
-      }
+    // Use html2canvas to capture the chart
+    import('html2canvas').then(html2canvas => {
+      html2canvas.default(chartElement, {
+        scale: 2, // Increase quality
+        backgroundColor: '#ffffff',
+        logging: false
+      }).then(canvas => {
+        // Convert to PNG and download
+        const link = document.createElement('a');
+        link.download = `${this.chartTitle || 'chart'}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      });
+    }).catch(err => {
+      console.error('Error downloading chart:', err);
+      this.snackBar.open('Error downloading chart', '', { duration: 2000 });
     });
   }
 

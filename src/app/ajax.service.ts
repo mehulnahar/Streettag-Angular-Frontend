@@ -69,13 +69,20 @@ export class AjaxService {
             .pipe(catchError(this.handleError));
     }
 
-    getLocation<T>(url: string): Observable<T> {
+    getLocation(url: string): Observable<any> {
+        // Remove content-type header to allow CORS preflight to succeed
         const headers = new HttpHeaders({
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
+            'Accept': '*/*'
         });
-        return this.http.get<T>(url, { headers })
-            .pipe(catchError(this.handleError));
+        
+        return this.http.get(url, { 
+            headers,
+            // Allow credentials and specify response type
+            withCredentials: false,
+            responseType: 'json'
+        }).pipe(
+            catchError(this.handleError)
+        );
     }
 
     postFile<T>(data: any, url: string, file: File): Observable<T> {

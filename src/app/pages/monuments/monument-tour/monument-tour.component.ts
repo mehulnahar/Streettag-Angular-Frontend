@@ -132,22 +132,25 @@ export class MonumentTourComponent implements OnInit, OnDestroy {
 
   getTourList() {
     const url = `${environment.baseUrl}getTourList`;
+    if (this.tourList$) {
+      this.tourList$.unsubscribe();
+    }
     this.tourList$ = this.http.get<{response: MonumentTour[]}>(url)
       .pipe(map(response => response.response))
-      .subscribe(
-        (tours) => {
+      .subscribe({
+        next: (tours) => {
           this.dataSource = new MatTableDataSource(tours);
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.sort;
         },
-        (error) => {
+        error: (error) => {
           this.snackBar.open(error.error?.msg || 'Error fetching tours', undefined, {
             duration: 3000,
             verticalPosition: 'top',
             panelClass: ['red-snackbar']
           });
         }
-      );
+      });
   }
 
   openAddMessageDialog(): void {
@@ -159,7 +162,7 @@ export class MonumentTourComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
+      if (result === true) {
         this.getTourList();
       }
     });
@@ -175,7 +178,7 @@ export class MonumentTourComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
+      if (result === true) {
         this.getTourList();
       }
     });
@@ -344,79 +347,72 @@ export class AddTourDialog implements OnDestroy {
 
   setlocation() {
     if (this.address.trim()) {
-      this.snackBar.open('Searching location...', undefined, {
-        duration: 2000,
-        verticalPosition: 'top'
-      });
+        this.snackBar.open('Searching location...', undefined, {
+            duration: 2000,
+            verticalPosition: 'top'
+        });
 
-      const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(this.address)}&key=AIzaSyB9stNP2UYOkJCJkR2CfnabPiNP6g08UH8`;
-      
-      this.setLocation$ = this.ajaxService.getLocation(url)
-        .subscribe(
-          (data: any) => {
-            if (data && data.results && data.results.length > 0) {
-              const location = data.results[0].geometry.location;
-              
-              // Update form values
-              this.lat = location.lat;
-              this.lng = location.lng;
-              this.address = data.results[0].formatted_address || this.address;
-              
-              // Update map
-              this.center = {
-                lat: location.lat,
-                lng: location.lng
-              };
-              
-              // Update markers
-              this.markers = [{
-                position: {
-                  lat: location.lat,
-                  lng: location.lng
-                },
-                options: {
-                  draggable: true,
-                  animation: google.maps.Animation.DROP
+        // Use Google Maps Geocoding Service
+        const geocoder = new google.maps.Geocoder();
+        
+        geocoder.geocode(
+            { address: this.address },
+            (results: google.maps.GeocoderResult[] | null, status: google.maps.GeocoderStatus) => {
+                if (status === google.maps.GeocoderStatus.OK && results && results.length > 0) {
+                    const location = results[0].geometry.location;
+                    
+                    // Update form values
+                    this.lat = location.lat();
+                    this.lng = location.lng();
+                    this.address = results[0].formatted_address || this.address;
+                    
+                    // Update map
+                    this.center = {
+                        lat: location.lat(),
+                        lng: location.lng()
+                    };
+                    
+                    // Update markers
+                    this.markers = [{
+                        position: {
+                            lat: location.lat(),
+                            lng: location.lng()
+                        },
+                        options: {
+                            draggable: true,
+                            animation: google.maps.Animation.DROP
+                        }
+                    }];
+                    
+                    // Update form controls
+                    this.angForm.patchValue({
+                        lat: location.lat(),
+                        lng: location.lng()
+                    });
+                    
+                    // Set zoom level for better view
+                    this.zoom = 15;
+                    
+                    this.snackBar.open('Location found!', undefined, {
+                        duration: 2000,
+                        verticalPosition: 'top',
+                        panelClass: ['green-snackbar']
+                    });
+                } else {
+                    this.snackBar.open('Location not found. Please try a different search.', undefined, {
+                        duration: 3000,
+                        verticalPosition: 'top',
+                        panelClass: ['red-snackbar']
+                    });
                 }
-              }];
-              
-              // Update form controls
-              this.angForm.patchValue({
-                lat: location.lat,
-                lng: location.lng
-              });
-              
-              // Set zoom level for better view
-              this.zoom = 15;
-              
-              this.snackBar.open('Location found!', undefined, {
-                duration: 2000,
-                verticalPosition: 'top',
-                panelClass: ['green-snackbar']
-              });
-            } else {
-              this.snackBar.open('Location not found. Please try a different search.', undefined, {
-                duration: 3000,
-                verticalPosition: 'top',
-                panelClass: ['red-snackbar']
-              });
             }
-          },
-          (error) => {
-            console.error('Location search error:', error);
-            this.snackBar.open('Error searching location. Please try again.', undefined, {
-              duration: 3000,
-              verticalPosition: 'top',
-              panelClass: ['red-snackbar']
-            });
-          }
         );
     } else {
-      this.snackBar.open('Please enter a location to search', undefined, {
-        duration: 3000,
-        verticalPosition: 'top',
-        panelClass: ['red-snackbar']
-      });
+        this.snackBar.open('Please enter a location to search', undefined, {
+            duration: 3000,
+            verticalPosition: 'top',
+            panelClass: ['red-snackbar']
+        });
     }
   }
 
@@ -476,42 +472,44 @@ export class AddTourDialog implements OnDestroy {
 
   addevent() {
     if (this.angForm.status == "VALID") {
-      this.clicked = true;
-      let reqObj = {
-        tourName : this.angForm.get('tourName')?.value.replaceAll("'","`").replaceAll('"','``'),
-        location : this.angForm.get('location')?.value,
-        description : this.angForm.get('description')?.value.replaceAll("'","`").replaceAll('"','``'),
-        lat : this.angForm.get('lat')?.value,
-        lng : this.angForm.get('lng')?.value,
-        tour_image : this.angForm.get('tour_image')?.value,
-      }
-      const url = `${this.baseUrl}addMonumentTour`;
-      this.add$ = this.ajaxService.post(reqObj , url).subscribe(
-        (data) => {
-          this.resData = data;
-          this.snackBar.open(this.resData.msg, undefined, {
-            duration: 3000,
-            verticalPosition: "top",
-            panelClass: ["blue-snackbar"],
-          });
-          this.dialogRef.close();
-        },
-        (error) => {
-          this.snackBar.open(error.error.msg || "Something went wrong , please try again.", undefined, {
-            duration: 4000,
-            verticalPosition: "top",
-            panelClass: ["red-snackbar"],
-          });
-          this.dialogRef.close();
+        this.clicked = true;
+        let reqObj = {
+            tourName: this.angForm.get('tourName')?.value.replaceAll("'","`").replaceAll('"','``'),
+            location: this.angForm.get('location')?.value,
+            description: this.angForm.get('description')?.value.replaceAll("'","`").replaceAll('"','``'),
+            lat: this.angForm.get('lat')?.value,
+            lng: this.angForm.get('lng')?.value,
+            tour_image: this.angForm.get('tour_image')?.value,
         }
-      );
+        const url = `${this.baseUrl}addMonumentTour`;
+        this.add$ = this.ajaxService.post(reqObj, url).subscribe(
+            (data) => {
+                this.resData = data;
+                this.snackBar.open(this.resData.msg, undefined, {
+                    duration: 3000,
+                    verticalPosition: "top",
+                    panelClass: ["blue-snackbar"],
+                });
+                // Close dialog with true to indicate successful addition
+                this.dialogRef.close(true);
+            },
+            (error) => {
+                this.snackBar.open(error.error.msg || "Something went wrong, please try again.", undefined, {
+                    duration: 4000,
+                    verticalPosition: "top",
+                    panelClass: ["red-snackbar"],
+                });
+                // Close dialog with false to indicate failure
+                this.dialogRef.close(false);
+            }
+        );
     } else {
-      var errormsg = "Please pass Valid Information.";
-      this.snackBar.open(errormsg, undefined, {
-        duration: 2500,
-        verticalPosition: "top",
-        panelClass: "red-snackbar",
-      });
+        var errormsg = "Please pass Valid Information.";
+        this.snackBar.open(errormsg, undefined, {
+            duration: 2500,
+            verticalPosition: "top",
+            panelClass: "red-snackbar",
+        });
     }
   }
 
@@ -726,43 +724,45 @@ export class EditTourDialog implements OnDestroy {
 
   editevent() {
     if (this.angForm.status == "VALID") {
-      this.clicked = true;
-      const url = `${this.baseUrl}editMonumentTour`;
-      
-      let reqObj = {
-        tourName : this.angForm.get('tourName')?.value.replaceAll("'","`").replaceAll('"','``'),
-        location : this.angForm.get('location')?.value,
-        description : this.angForm.get('description')?.value.replaceAll("'","`").replaceAll('"','``'),
-        tour_id : this.angForm.get('tour_id')?.value,
-        imageChanged : this.angForm.get('imageChanged')?.value,
-        tour_image : this.angForm.get('tour_image')?.value,
-      }
-      this.edit$ = this.ajaxService.post(reqObj, url).subscribe(
-        (data) => {
-          this.resData = data;
-          this.snackBar.open(this.resData.msg, undefined, {
-            duration: 3000,
-            verticalPosition: "top",
-            panelClass: ["blue-snackbar"],
-          });
-
-          this.dialogRef.close();
-        },
-        (error) => {
-          this.snackBar.open(error.error.msg || "Something went wrong , please try again.", undefined, {
+        this.clicked = true;
+        const url = `${this.baseUrl}editMonumentTour`;
+        
+        let reqObj = {
+            tourName: this.angForm.get('tourName')?.value.replaceAll("'","`").replaceAll('"','``'),
+            location: this.angForm.get('location')?.value,
+            description: this.angForm.get('description')?.value.replaceAll("'","`").replaceAll('"','``'),
+            tour_id: this.angForm.get('tour_id')?.value,
+            imageChanged: this.angForm.get('imageChanged')?.value,
+            tour_image: this.angForm.get('tour_image')?.value,
+        }
+        this.edit$ = this.ajaxService.post(reqObj, url).subscribe(
+            (data) => {
+                this.resData = data;
+                this.snackBar.open(this.resData.msg, undefined, {
+                    duration: 3000,
+                    verticalPosition: "top",
+                    panelClass: ["blue-snackbar"],
+                });
+                // Close dialog with true to indicate successful edit
+                this.dialogRef.close(true);
+            },
+            (error) => {
+                this.snackBar.open(error.error.msg || "Something went wrong, please try again.", undefined, {
+                    duration: 2500,
+                    verticalPosition: "top",
+                    panelClass: ["red-snackbar"],
+                });
+                // Close dialog with false to indicate failure
+                this.dialogRef.close(false);
+            }
+        );
+    } else {
+        var errormsg = "Please pass Valid Information.";
+        this.snackBar.open(errormsg, undefined, {
             duration: 2500,
             verticalPosition: "top",
-            panelClass: ["red-snackbar"],
-          });
-        }
-      );
-    } else {
-      var errormsg = "Please pass Valid Information.";
-      this.snackBar.open(errormsg, undefined, {
-        duration: 2500,
-        verticalPosition: "top",
-        panelClass: "red-snackbar",
-      });
+            panelClass: "red-snackbar",
+        });
     }
   }
 
