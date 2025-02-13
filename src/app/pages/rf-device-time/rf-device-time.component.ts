@@ -169,7 +169,11 @@ export class RfDeviceTimeComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
-        this.getDeviceTimeData();
+        if (this.deviceId) {
+          this.getDeviceTimeData();
+        } else {
+          this.getallCircuits();
+        }
       }
     });
   }
@@ -595,15 +599,19 @@ export class RfDeviceTimeEditDialog {
     public snackBar: MatSnackBar
   ) {
     this.angForm = this.formBuilder.group({
-      device_id: [''],
+      device_id: [{value: '', disabled: true}],
     });
     if (data) {
       console.log(data);
       this.id = data.id;
-      this.angForm.setValue({
-        device_id: data.id ? data.id : 'All',
+      this.angForm.patchValue({
+        device_id: data.id
       });
-      
+      this.devices = [{
+        id: data.id,
+        device_id: data.device_id,
+        device_name: data.device_name
+      }];
       this.getfulldetails(data.id);
     }
   }
@@ -660,22 +668,28 @@ export class RfDeviceTimeEditDialog {
     this.ajaxService.post<ApiResponse<any>>(data, url).subscribe(
       (response) => {
         this.resData = response;
-        this.dialogRef.close(true);
-        this.snackBar.open(this.resData.msg, undefined, {
+        if (this.resData.status) {
+          this.snackBar.open(this.resData.msg || 'Updated successfully', undefined, {
+            duration: 3000,
+            verticalPosition: 'top',
+          });
+          this.dialogRef.close(true);
+        } else {
+          this.snackBar.open(this.resData.msg || 'Update failed', undefined, {
+            duration: 3000,
+            verticalPosition: 'top',
+            panelClass: ['red-snackbar']
+          });
+        }
+      },
+      (error) => {
+        this.snackBar.open('Error updating data', undefined, {
           duration: 3000,
           verticalPosition: 'top',
+          panelClass: ['red-snackbar']
         });
       }
     );
-  }
-
-  getallDevices() {
-    const url = `${this.baseUrl}getRFDeviceData`;
-    this.ajaxService.get<ApiResponse<any[]>>(url).subscribe((response) => {
-      if (response?.data) {
-        this.devices = response.data;
-      }
-    });
   }
 
   onCatRemoved(cat: string, control: string) {

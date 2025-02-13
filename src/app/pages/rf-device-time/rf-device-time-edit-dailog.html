@@ -12,9 +12,8 @@
           class="w-100 d-flex"
           style="flex-flow: column wrap"
         >
-          <mat-label>Select Device</mat-label>
-          <mat-select formControlName="device_id" [disabled]="true">
-            <mat-option value="all"> All </mat-option>
+          <mat-label>Device Name</mat-label>
+          <mat-select formControlName="device_id">
             <mat-option *ngFor="let device of devices" [value]="device.id">
               {{device.device_name}}
             </mat-option>
