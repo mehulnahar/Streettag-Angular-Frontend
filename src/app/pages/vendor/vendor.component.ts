@@ -354,27 +354,45 @@ export class DialogAddVendor {
   }
 
   setlocation(res: any) {
-    //this.location=this.location;
+    if (!res) {
+      this.snackBar.open('Please enter a location', undefined, {
+        duration: 2000,
+        verticalPosition: 'top'
+      });
+      return;
+    }
 
-    var url =
-      "https://maps.googleapis.com/maps/api/geocode/json?address=" +
-      res +
-      "&key=AIzaSyB9stNP2UYOkJCJkR2CfnabPiNP6g08UH8";
+    const geocoder = new google.maps.Geocoder();
+    geocoder.geocode({ address: res }, (results, status) => {
+      if (status === 'OK' && results && results[0]) {
+        const location = results[0].geometry.location;
+        this.lat = location.lat();
+        this.lng = location.lng();
+        
+        this.center = {
+          lat: this.lat,
+          lng: this.lng
+        };
+        
+        this.markerPosition = {
+          lat: this.lat,
+          lng: this.lng
+        };
 
-    this.ajaxService.getLocation(url).subscribe((data: any) => {
-      if (
-        typeof data != "undefined" &&
-        data != "" &&
-        typeof data.results != "undefined" &&
-        data.results != ""
-      ) {
-        var lattitude = data.results[0].geometry.location.lat;
-        var longitude = data.results[0].geometry.location.lng;
+        this.angForm.patchValue({
+          lat: this.lat,
+          lng: this.lng
+        });
 
-        this.lat = lattitude;
-        this.lng = longitude;
-
-        this.angForm.patchValue({ lat: this.lat, lng: this.lng });
+        this.snackBar.open('Location set successfully', undefined, {
+          duration: 2000,
+          verticalPosition: 'top'
+        });
+      } else {
+        this.snackBar.open('Location not found. Please try again.', undefined, {
+          duration: 2000,
+          verticalPosition: 'top'
+        });
       }
     });
   }
@@ -678,25 +696,45 @@ export class DialogTagVendor {
   }
 
   setlocation(res: any) {
-    var url =
-      "https://maps.googleapis.com/maps/api/geocode/json?address=" +
-      res +
-      "&key=AIzaSyB9stNP2UYOkJCJkR2CfnabPiNP6g08UH8";
+    if (!res) {
+      this.snackBar.open('Please enter a location', undefined, {
+        duration: 2000,
+        verticalPosition: 'top'
+      });
+      return;
+    }
 
-    this.ajaxService.getLocation(url).subscribe((data: any) => {
-      if (
-        typeof data != "undefined" &&
-        data != "" &&
-        typeof data.results != "undefined" &&
-        data.results != ""
-      ) {
-        var lattitude = data.results[0].geometry.location.lat;
-        var longitude = data.results[0].geometry.location.lng;
+    const geocoder = new google.maps.Geocoder();
+    geocoder.geocode({ address: res }, (results, status) => {
+      if (status === 'OK' && results && results[0]) {
+        const location = results[0].geometry.location;
+        this.lat = location.lat();
+        this.lng = location.lng();
+        
+        this.center = {
+          lat: this.lat,
+          lng: this.lng
+        };
+        
+        this.markerPosition = {
+          lat: this.lat,
+          lng: this.lng
+        };
 
-        this.lat = lattitude;
-        this.lng = longitude;
+        this.angForm.patchValue({
+          lat: this.lat,
+          lng: this.lng
+        });
 
-        this.angForm.patchValue({ lat: this.lat, lng: this.lng });
+        this.snackBar.open('Location set successfully', undefined, {
+          duration: 2000,
+          verticalPosition: 'top'
+        });
+      } else {
+        this.snackBar.open('Location not found. Please try again.', undefined, {
+          duration: 2000,
+          verticalPosition: 'top'
+        });
       }
     });
   }

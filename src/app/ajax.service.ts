@@ -70,11 +70,12 @@ export class AjaxService {
     }
 
     getLocation<T>(url: string): Observable<T> {
-        // set header to let HTTP_INTERCEPTORS know to handle or not.
-        const option = {  
-            headers: new HttpHeaders({ 'Anonymous': '' }) 
-        }
-        return this.http.get<T>(url, option);
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        });
+        return this.http.get<T>(url, { headers })
+            .pipe(catchError(this.handleError));
     }
 
     postFile<T>(data: any, url: string, file: File): Observable<T> {
