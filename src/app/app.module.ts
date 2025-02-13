@@ -34,6 +34,7 @@ import { AppSettings } from './app.settings';
 
 // Import the TokenInterceptor
 import { TokenInterceptor } from './services/auth/token.interceptor';
+import { LoaderInterceptor } from './shared/interceptors/loader.interceptor';
 
 @NgModule({
   declarations: [
@@ -72,6 +73,11 @@ import { TokenInterceptor } from './services/auth/token.interceptor';
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: LoaderInterceptor,
       multi: true
     }
   ],

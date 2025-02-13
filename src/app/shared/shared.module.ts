@@ -38,6 +38,7 @@ import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 import { SnackBarComponent } from './snack-bar/snack-bar.component';
 import { ImageViewerComponent } from './image-viewer/image-viewer.component';
+import { LoaderComponent } from './loader/loader.component';
 
 
 @NgModule({
@@ -113,7 +114,8 @@ import { ImageViewerComponent } from './image-viewer/image-viewer.component';
     MatTooltipModule,
     MatStepperModule,
     ContentHeaderComponent,
-    BreadcrumbComponent
+    BreadcrumbComponent,
+    LoaderComponent
   ],
   declarations: [
     ContentHeaderComponent,
@@ -121,6 +123,7 @@ import { ImageViewerComponent } from './image-viewer/image-viewer.component';
     ConfirmDialogComponent,
     SnackBarComponent,
     ImageViewerComponent,
+    LoaderComponent
   ],
 providers:[
     SnackBarComponent
