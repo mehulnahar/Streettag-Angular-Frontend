@@ -67,6 +67,14 @@ export class DialogOverviewAddMessageDialogCircuit {
   ) {
     this.angForm = this.createForm();
     this.getallLocations();
+    
+    // Subscribe to form value changes
+    this.angForm.valueChanges.subscribe(values => {
+      this.location_name = values.location_name;
+      this.circuit_name = values.circuit_name;
+      this.start_date = values.start_date;
+      this.end_date = values.end_date;
+    });
   }
 
   onNoClick(): void {
@@ -93,36 +101,52 @@ export class DialogOverviewAddMessageDialogCircuit {
 
   private createForm(): FormGroup {
     return this.fb.group({
-      circuit_name: ['', [Validators.required]],
-      location_name: ['', Validators.required],
-      start_date: ['', Validators.required],
-      end_date: ['', Validators.required],
+      circuit_name: [this.circuit_name, [Validators.required]],
+      location_name: [this.location_name, Validators.required],
+      start_date: [this.start_date, Validators.required],
+      end_date: [this.end_date, Validators.required],
     });
   }
 
   addevent() {
     if (this.angForm.valid) {
+      const formValues = this.angForm.value;
       const url = `${this.baseUrl}addCircuit`;
       const data = {
-        location_name: this.location_name,
-        circuit_name: this.circuit_name,
-        start_date: this.start_date,
-        end_date: this.end_date,
+        location_name: formValues.location_name,
+        circuit_name: formValues.circuit_name,
+        start_date: new Date(formValues.start_date).toISOString(),
+        end_date: new Date(formValues.end_date).toISOString(),
       };
 
-      this.ajaxService.post(data, url).subscribe((response: any) => {
-        this.resData = response;
-        this.getallCircuits();
-        
-        const dynamicSnackColor = this.resData.status === 'false' ? 'red-snackbar' : 'blue-snackbar';
-        
-        this.snackBar.open(this.resData.msg, undefined, {
-          duration: 3000,
-          verticalPosition: 'top',
-          panelClass: dynamicSnackColor,
-        });
+      this.ajaxService.post(data, url).subscribe(
+        (response: any) => {
+          this.resData = response;
+          this.getallCircuits();
+          
+          const dynamicSnackColor = this.resData.status === 'false' ? 'red-snackbar' : 'blue-snackbar';
+          
+          this.snackBar.open(this.resData.msg, undefined, {
+            duration: 3000,
+            verticalPosition: 'top',
+            panelClass: dynamicSnackColor,
+          });
 
-        this.dialogRef.close();
+          this.dialogRef.close();
+        },
+        (error) => {
+          this.snackBar.open('Error adding circuit. Please try again.', undefined, {
+            duration: 3000,
+            verticalPosition: 'top',
+            panelClass: 'red-snackbar',
+          });
+        }
+      );
+    } else {
+      this.snackBar.open('Please fill all required fields', undefined, {
+        duration: 3000,
+        verticalPosition: 'top',
+        panelClass: 'red-snackbar',
       });
     }
   }

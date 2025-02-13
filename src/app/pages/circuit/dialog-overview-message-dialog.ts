@@ -82,8 +82,8 @@ export class DialogOverviewMessageDialogCircuit {
         circuit_id: this.circuit_id,
         circuit_name: this.circuit_name,
         location_name: this.location_name,
-        start_date: this.start_date,
-        end_date: this.end_date,
+        start_date: new Date(this.start_date).toISOString(),
+        end_date: new Date(this.end_date).toISOString(),
       };
     
       this.ajaxService.post(data, url).subscribe((response: any) => {
