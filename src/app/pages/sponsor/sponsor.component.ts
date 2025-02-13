@@ -24,8 +24,8 @@ import { MapMarker } from '@angular/google-maps';
 export interface SponsorData {
   id: number;
   sponsor_name: string;
-  sponsor_image: string;
-  sponsor_image2: string;
+  tag_image: string;
+  tag_image2: string;
   diameter: number;
   lat: number;
   lng: number;
@@ -376,11 +376,11 @@ export class DialogAddSponsor implements OnInit {
     if (this.angForm.valid && this.tag_image && this.tag_image2) {
       const formData = {
         ...this.angForm.value,
-        sponsor_image: this.tag_image,
-        sponsor_image2: this.tag_image2
+        tag_image: this.tag_image,
+        tag_image2: this.tag_image2
       };
 
-      const url = `${environment.baseUrl}addSponsor`;
+      const url = `${environment.baseUrl}addSponsors`;
       this.ajaxService.post(formData, url).subscribe({
         next: (response: any) => {
           this.snackBar.open("Sponsor added successfully!", undefined, {
@@ -485,8 +485,8 @@ export class DialogEditSponsor extends DialogAddSponsor {
     this.sponsorId = data.event.id;
     
     // Set initial values
-    this.tag_image = data.event.sponsor_image;
-    this.tag_image2 = data.event.sponsor_image2;
+    this.tag_image = data.event.tag_image;
+    this.tag_image2 = data.event.tag_image2;
     this.center = { lat: data.event.lat, lng: data.event.lng };
     this.markerPosition = this.center;
     this.tagDiameter = data.event.diameter.toString();
@@ -503,12 +503,12 @@ export class DialogEditSponsor extends DialogAddSponsor {
     if (this.angForm.valid) {
       const formData = {
         ...this.angForm.value,
-        sponsor_image: this.tag_image,
-        sponsor_image2: this.tag_image2,
-        sponsor_id: this.sponsorId
+        tag_image: this.tag_image,
+        tag_image2: this.tag_image2,
+        id: this.sponsorId
       };
 
-      const url = `${environment.baseUrl}updateSponsor`;
+      const url = `${environment.baseUrl}editSponsors`;
       this.ajaxService.post(formData, url).subscribe({
         next: (response: any) => {
           this.snackBar.open("Sponsor updated successfully!", undefined, {
