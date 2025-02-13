@@ -423,38 +423,40 @@ export class AddMonumentDialog implements OnInit, OnDestroy {
   addevent() {
     if (this.angForm.status == "VALID") {
       this.clicked = true;
-      const fd = new FormData();
-
-      // Basic fields
-      fd.append("name", this.angForm.get("name")?.value || '');
-      fd.append("description", JSON.stringify(this.angForm.get("description")?.value.filter((desc: string) => desc.trim() !== '')));
-      
-      // Coordinates and address
-      if (this.markerPosition) {
-        fd.append("lat", this.markerPosition.lat.toString());
-        fd.append("lng", this.markerPosition.lng.toString());
-      }
-      fd.append("address", this.getAddress || '');
-      
-      // Link and basket flag
-      fd.append("link", this.angForm.get("link")?.value || '');
-      fd.append("basketFlag", this.angForm.get("basketFlag")?.value || '0');
-
-      // Media files
-      if (this.multipleVideos?.length) {
-        fd.append("videos", this.multipleVideos[0]);
-      }
-
-      if (this.multipleAudio?.length) {
-        fd.append("audio", this.multipleAudio[0]);
-      }
-
-      if (this.multipleImages?.length) {
-        fd.append("img", this.multipleImages[0]);
-      }
-
       const url = `${this.baseUrl}addMonument`;
-      this.add$ = this.ajaxService.post(fd, url).subscribe(
+
+      // Create FormData object
+      const formData = new FormData();
+
+      // Add fields in exact order to match required format
+      formData.append("name", (this.angForm.get("name")?.value || '').toString().trim());
+      formData.append("description", JSON.stringify([this.angForm.get("description")?.value[0] || '']));
+      
+      if (this.markerPosition) {
+        formData.append("lat", this.markerPosition.lat.toString());
+        formData.append("lng", this.markerPosition.lng.toString());
+      }
+      
+      formData.append("address", this.getAddress || '');
+      formData.append("link", (this.angForm.get("link")?.value || '').toString().trim());
+      formData.append("basketFlag", "0");
+
+      // Add files with proper Content-Type
+      if (this.multipleImages?.length) {
+        const imageFile = this.multipleImages[0];
+        formData.append("img", imageFile, imageFile.name);
+      }
+      if (this.multipleAudio?.length) {
+        const audioFile = this.multipleAudio[0];
+        formData.append("audio", audioFile, audioFile.name);
+      }
+      if (this.multipleVideos?.length) {
+        const videoFile = this.multipleVideos[0];
+        formData.append("videos", videoFile, videoFile.name);
+      }
+
+      // Send using HttpClient to let browser handle FormData properly
+      this.add$ = this._http.post(url, formData).subscribe(
         (response: any) => {
           this.resData = response;
           this.snackBar.open(this.resData?.msg || "Monument added successfully", undefined, {
@@ -707,54 +709,32 @@ export class EditMonumentDialog implements OnInit, OnDestroy {
     if (this.angForm.status == "VALID") {
       this.clicked = true;
       const url = `${this.baseUrl}editMonument`;
-      const fd = new FormData();
 
-      // Basic fields with exact values
-      fd.append("name", (this.angForm.get("name")?.value || '').toString().trim());
-      fd.append("description", JSON.stringify(this.angForm.get("description")?.value.filter((desc: string) => desc.trim() !== '')));
-      fd.append("id", this.data.data.id.toString());
-      
-      // Handle link - ensure it's a string and trimmed
-      const link = (this.angForm.get("link")?.value || '').toString().trim();
-      if (link) {
-        fd.append("link", link);
-      }
-
-      // Handle basketFlag - ensure it's "0" or "1"
-      fd.append("basketFlag", this.angForm.get("basketFlag")?.value === 1 ? "1" : "0");
-
-      // Handle media files one at a time
-      if (this.multipleImages?.length) {
-        fd.append("img", this.multipleImages[0]);
-      }
-
-      if (this.multipleAudio?.length) {
-        fd.append("audio", this.multipleAudio[0]);
-      }
-
-      if (this.multipleVideos?.length) {
-        fd.append("videos", this.multipleVideos[0]);
-      }
+      // Create payload as a simple object
+      const payload = {
+        name: (this.angForm.get("name")?.value || '').toString().trim(),
+        description: [this.angForm.get("description")?.value[0] || ''],
+        id: this.data.data.id,
+        link: (this.angForm.get("link")?.value || '').toString().trim(),
+        basketFlag: 0
+      };
 
       this.edit$ = this._http
-        .post(url, fd, {
-          reportProgress: true,
-          observe: "events"
+        .post(url, payload, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
         })
         .subscribe(
-          (data) => {
-            if (data.type === HttpEventType.UploadProgress && data.total) {
-              this.showBar = true;
-              this.progrees = Math.round((data.loaded / data.total) * 100);
-            } else if (data.type === HttpEventType.Response) {
-              this.resData = data;
-              this.snackBar.open("Monument Updated Successfully", undefined, {
-                duration: 3000,
-                verticalPosition: "top",
-                panelClass: ["blue-snackbar"]
-              });
-              this.dialogRef.close(true);
-            }
+          (response: any) => {
+            this.resData = response;
+            this.snackBar.open("Monument Updated Successfully", undefined, {
+              duration: 3000,
+              verticalPosition: "top",
+              panelClass: ["blue-snackbar"]
+            });
+            this.dialogRef.close(true);
           },
           (error) => {
             this.clicked = false;

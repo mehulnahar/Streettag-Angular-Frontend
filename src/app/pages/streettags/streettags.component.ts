@@ -60,6 +60,12 @@ interface UpdateStreetTagPayload {
   streettag_id: string;
 }
 
+interface MapResponse {
+  location: any;
+  viewport: any;
+  viewportInfo: any;
+}
+
 @Component({
   selector: "app-event",
   templateUrl: "./streettags.component.html",
@@ -110,6 +116,8 @@ export class StreettagsComponent implements OnInit, AfterViewInit {
   ];
 
   streettag_id: string = '';
+
+  private readonly GOOGLE_MAPS_API_KEY = environment.googleMapsApiKey;
 
   constructor(
     public appSettings: AppSettings,
@@ -240,6 +248,67 @@ export class StreettagsComponent implements OnInit, AfterViewInit {
       });
     });
   }
+
+  // Add new methods for Google Maps API calls
+  async getGeocode(address: string) {
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${this.GOOGLE_MAPS_API_KEY}`;
+    return this.http.get(url).toPromise();
+  }
+
+  async getViewportInfo(bounds: number[][], zoom: number) {
+    const url = 'https://maps.googleapis.com/$rpc/google.internal.maps.mapsjs.v1.MapsJsInternalService/GetViewportInfo';
+    const payload = [
+      bounds,
+      zoom,
+      null,
+      "en-US",
+      0,
+      "m@720000000",
+      0,
+      0,
+      null,
+      null,
+      null,
+      2
+    ];
+    return this.http.post(url, payload).toPromise();
+  }
+
+  async setLocationWithMaps(address: string): Promise<MapResponse | null> {
+    try {
+      // First get geocode data
+      const geocodeResponse: any = await this.getGeocode(address);
+      
+      if (geocodeResponse.results && geocodeResponse.results.length > 0) {
+        const location = geocodeResponse.results[0].geometry.location;
+        const viewport = geocodeResponse.results[0].geometry.viewport;
+        
+        // Get viewport bounds
+        const bounds = [
+          [viewport.southwest.lat, viewport.southwest.lng],
+          [viewport.northeast.lat, viewport.northeast.lng]
+        ];
+        
+        // Get viewport info
+        const viewportInfo = await this.getViewportInfo(bounds, 10);
+        
+        // Update map position
+        this.lat = location.lat;
+        this.lng = location.lng;
+        this.zoom = 10;
+        
+        return {
+          location: location,
+          viewport: viewport,
+          viewportInfo: viewportInfo
+        };
+      }
+      return null;
+    } catch (error) {
+      console.error('Error setting location:', error);
+      throw error;
+    }
+  }
 }
 
 @Component({
@@ -297,6 +366,8 @@ export class DialogOverviewAddMessageDialogStreettags implements OnInit {
   public markerOptions: google.maps.MarkerOptions = {
     draggable: true
   };
+
+  private readonly GOOGLE_MAPS_API_KEY = environment.googleMapsApiKey;
 
   constructor(
     public dialogRef: MatDialogRef<DialogOverviewAddMessageDialogStreettags>,
@@ -368,47 +439,58 @@ export class DialogOverviewAddMessageDialogStreettags implements OnInit {
   }
 
   async setlocation() {
-    const location = this.angForm.get('location')?.value;
-    if (!location) {
-      this.snackBar.open('Please enter a location first', 'Close', {
-        duration: 3000,
-      });
-      return;
-    }
-
     try {
-      // Use Nominatim geocoding service
-      const response = await this.http.get(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`).toPromise();
-      const results = response as any[];
-
-      if (results && results.length > 0) {
-        const { lat, lon } = results[0];
+      const locationValue = this.angForm.get('location')?.value;
+      if (locationValue) {
+        const geocoder = new google.maps.Geocoder();
         
-        // Update form values
-        this.lat = parseFloat(lat);
-        this.lng = parseFloat(lon);
-        this.center = { lat: this.lat, lng: this.lng };
-        this.markerPosition = { lat: this.lat, lng: this.lng };
-        this.angForm.patchValue({
-          lat: this.lat,
-          lng: this.lng
-        });
+        geocoder.geocode(
+          { address: locationValue },
+          (results: google.maps.GeocoderResult[] | null, status: google.maps.GeocoderStatus) => {
+            if (status === 'OK' && results && results.length > 0) {
+              const location = results[0].geometry.location;
+              
+              // Update map position
+              this.center = {
+                lat: location.lat(),
+                lng: location.lng()
+              };
+              
+              this.markerPosition = {
+                lat: location.lat(),
+                lng: location.lng()
+              };
 
-        // Update map zoom
-        this.zoom = 15;
+              // Update form values
+              this.angForm.patchValue({
+                lat: location.lat(),
+                lng: location.lng()
+              });
+              
+              // Update map zoom
+              if (this.map) {
+                this.map.zoom = 15;
+              }
 
-        this.snackBar.open('Location set successfully', 'Close', {
-          duration: 3000,
-        });
+              this.snackBar.open('Location set successfully', 'Close', {
+                duration: 3000
+              });
+            } else {
+              this.snackBar.open('Location not found', 'Close', {
+                duration: 3000
+              });
+            }
+          }
+        );
       } else {
-        this.snackBar.open('Location not found. Please try a different search.', 'Close', {
-          duration: 3000,
+        this.snackBar.open('Please enter a location name', 'Close', {
+          duration: 3000
         });
       }
     } catch (error) {
-      console.error('Error geocoding location:', error);
+      console.error('Error setting location:', error);
       this.snackBar.open('Error setting location. Please try again.', 'Close', {
-        duration: 3000,
+        duration: 3000
       });
     }
   }
