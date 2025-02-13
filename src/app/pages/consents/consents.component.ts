@@ -89,7 +89,7 @@ export class ConsentsComponent implements OnInit {
   }
 
   exportAsXLSX(): void {
-    this.excelService.exportAsExcelFile(this.data, "consent-data");
+    this.excelService.exportConsentData(this.data, "consent-data_export");
   }
 
   ngAfterViewInit() {

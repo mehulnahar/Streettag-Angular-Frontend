@@ -231,6 +231,87 @@ await FileSaver.saveAs(
   );
 }
 
+public exportConsentData(json: any[], excelFileName: string): void {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Consent Data');
 
+    // Define headers exactly as shown in the image
+    const headers = [
+        'serial_number',
+        'fullname',
+        'email',
+        'phone_number',
+        'created_at',
+        'share_info'
+    ];
+
+    // Add headers
+    const headerRow = worksheet.addRow(headers);
+    headerRow.eachCell((cell) => {
+        cell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FFFFFF00' }
+        };
+        cell.font = {
+            bold: true,
+            size: 11
+        };
+        cell.border = {
+            top: { style: 'thin' },
+            left: { style: 'thin' },
+            bottom: { style: 'thin' },
+            right: { style: 'thin' }
+        };
+        cell.alignment = {
+            vertical: 'middle',
+            horizontal: 'center'
+        };
+    });
+
+    // Add data rows
+    json.forEach((item) => {
+        const row = worksheet.addRow([
+            item.serial_number,
+            item.fullname,
+            item.email,
+            item.phone_number,
+            item.created_at,
+            item.share_info
+        ]);
+
+        row.eachCell((cell) => {
+            cell.border = {
+                top: { style: 'thin' },
+                left: { style: 'thin' },
+                bottom: { style: 'thin' },
+                right: { style: 'thin' }
+            };
+            cell.alignment = {
+                vertical: 'middle',
+                horizontal: 'left'
+            };
+        });
+    });
+
+    // Auto-fit columns with type-safe column numbers
+    worksheet.columns.forEach((column, index) => {
+        if (column && typeof index === 'number') {
+            const values = worksheet.getColumn(index + 1).values;
+            const maxLength = values
+                .filter((v): v is string | number => v !== null && v !== undefined)
+                .map(v => v.toString().length)
+                .reduce((max, curr) => Math.max(max, curr), 0);
+            
+            column.width = Math.max(maxLength, headers[index]?.length || 0) + 2;
+        }
+    });
+
+    // Generate Excel file
+    workbook.xlsx.writeBuffer().then((data) => {
+        const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        FileSaver.saveAs(blob, excelFileName + '.xlsx');
+    });
+}
 
 }

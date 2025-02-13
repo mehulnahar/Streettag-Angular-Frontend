@@ -77,7 +77,7 @@ export class SponsorComponent implements OnInit {
   public lng: number = -75.697193;
   public zoom: number = 15;
   public displayedColumns = [
-    "id",
+    "serialNumber",
     "sponsor_name",
     "sponsor_image",
     "sponsor_image2",

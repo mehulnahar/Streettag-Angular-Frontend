@@ -14,8 +14,8 @@
         <!-- Search and Add Button Row -->
         <div class="sponsor-header">
             <mat-form-field appearance="outline" class="search-field">
-                <mat-label>Search Sponsors</mat-label>
-                <input matInput #searchInput (keyup)="applyFilter(searchInput.value)" placeholder="Search sponsors...">
+                <mat-label>Type to filter all columns</mat-label>
+                <input matInput #searchInput (keyup)="applyFilter(searchInput.value)" placeholder="Type to filter all columns">
                 <mat-icon matSuffix>search</mat-icon>
             </mat-form-field>
             
@@ -31,10 +31,10 @@
         <div class="mat-elevation-z8 sponsor-table-container" [class.loading]="isLoading">
             <table mat-table [dataSource]="dataSource" matSort>
                 
-                <!-- ID Column -->
-                <ng-container matColumnDef="id">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
-                    <td mat-cell *matCellDef="let row"> {{row.id}} </td>
+                <!-- Serial Number Column -->
+                <ng-container matColumnDef="serialNumber">
+                    <th mat-header-cell *matHeaderCellDef> S.No. </th>
+                    <td mat-cell *matCellDef="let row; let i = index"> {{i + 1}} </td>
                 </ng-container>
 
                 <!-- Sponsor Name Column -->
