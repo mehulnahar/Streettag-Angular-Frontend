@@ -159,6 +159,11 @@ export class RfRegistrationComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.getallUsers();
+        this.snackBar.open('Player updated successfully!', '', {
+          duration: 3000,
+          verticalPosition: 'top',
+          panelClass: ['blue-snackbar']
+        });
       }
     });
   }
@@ -356,7 +361,7 @@ export class RfRegistrationComponent implements OnInit {
             <mat-label>Circuit</mat-label>
             <mat-select formControlName="circuit_id" required>
               <mat-option *ngFor="let circuit of circuits" [value]="circuit.id">
-                {{circuit.name}}
+                {{circuit.circuit_name}}
               </mat-option>
             </mat-select>
             <mat-error *ngIf="angForm.controls['circuit_id'].hasError('required')">Circuit is required</mat-error>
@@ -439,7 +444,8 @@ export class RfidAddDialog {
     public formBuilder: FormBuilder,
     private dateAdapter: DateAdapter<Date>
   ) {
-    this.getallCircuits();
+    // Initialize circuits from the data passed by parent component
+    this.circuits = data.circuits || [];
     this.dateAdapter.setLocale('en-GB');
     this.angForm = this.formBuilder.group({
       rf_id: ['', Validators.required],
@@ -481,13 +487,6 @@ export class RfidAddDialog {
     return this.angForm.controls;
   }
 
-  getallCircuits() {
-    var url = `${this.baseUrl}getRFCircuitData`;
-    this.ajaxService.get(url).subscribe((data: any) => {
-      this.circuits = data['data'];
-    });
-  }
-
   getErrorMessage(field: string, displayname: string): string {
     if (this.angForm.controls[field]?.errors?.['required']) {
       return `${displayname} is required`;
@@ -526,7 +525,7 @@ export class RfidAddDialog {
             panelClass: dynamicSnackColor,
           });
 
-          this.dialogRef.close();
+          this.dialogRef.close(true);
         });
       } else {
         const url = `${this.baseUrl}insertRFData`;
@@ -545,7 +544,7 @@ export class RfidAddDialog {
             panelClass: dynamicSnackColor,
           });
 
-          this.dialogRef.close();
+          this.dialogRef.close(true);
         });
       }
     }
