@@ -1,4 +1,4 @@
-<button mat-icon-button class="full-screen">
+<button mat-icon-button (click)="toggleFullScreen($event)" type="button">
     <mat-icon #expand>fullscreen</mat-icon>
     <mat-icon #compress style="display: none;">fullscreen_exit</mat-icon>
 </button> 
