@@ -215,6 +215,14 @@ export class AddMonumentDialog implements OnInit, OnDestroy {
     draggable: true,
     animation: google.maps.Animation.BOUNCE
   };
+  options: google.maps.MapOptions = {
+    mapTypeId: 'roadmap',
+    zoomControl: true,
+    scrollwheel: true,
+    disableDoubleClickZoom: true,
+    maxZoom: 20,
+    minZoom: 4,
+  };
   zoom = 10;
 
   SetLocation$?: Subscription;
@@ -488,9 +496,28 @@ export class AddMonumentDialog implements OnInit, OnDestroy {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       for (let i = 0; i < input.files.length; i++) {
-        if (input.files[i].type !== 'video/mp4') {
+        if (!input.files[i].type.startsWith('image/')) {
+          this.SelectedImgCount = 0;
+          this.snackBar.open('Only Images are allowed', undefined, {
+            duration: 2500,
+            verticalPosition: "top",
+            panelClass: "red-snackbar",
+          });
+          return;
+        }
+      }
+      this.SelectedImgCount = input.files.length;
+      this.multipleImages = input.files;
+    }
+  }
+
+  onVideoChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      for (let i = 0; i < input.files.length; i++) {
+        if (!input.files[i].type.startsWith('video/')) {
           this.SelectedVideoCount = 0;
-          this.snackBar.open('Only Videos are allowed (MP4)', undefined, {
+          this.snackBar.open('Only Videos are allowed', undefined, {
             duration: 2500,
             verticalPosition: "top",
             panelClass: "red-snackbar",
@@ -503,42 +530,22 @@ export class AddMonumentDialog implements OnInit, OnDestroy {
     }
   }
 
-  onFileChange1(event: Event) {
+  onAudioChange(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       for (let i = 0; i < input.files.length; i++) {
-        if (input.files[i].type !== 'audio/mpeg') {
-          this.snackBar.open('Only Audios are allowed (MP3)', undefined, {
+        if (!input.files[i].type.startsWith('audio/')) {
+          this.SelectedAudioCount = 0;
+          this.snackBar.open('Only Audio files are allowed', undefined, {
             duration: 2500,
             verticalPosition: "top",
             panelClass: "red-snackbar",
           });
-          this.SelectedAudioCount = 0;
           return;
         }
       }
       this.SelectedAudioCount = input.files.length;
       this.multipleAudio = input.files;
-    }
-  }
-
-  onFileChangeImage(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      for (let i = 0; i < input.files.length; i++) {
-        const type = input.files[i].type;
-        if (type !== 'image/jpg' && type !== 'image/jpeg' && type !== 'image/png') {
-          this.snackBar.open('Only Images are allowed (JPG | PNG | JPEG)', undefined, {
-            duration: 2500,
-            verticalPosition: "top",
-            panelClass: "red-snackbar",
-          });
-          this.SelectedImgCount = 0;
-          return;
-        }
-      }
-      this.SelectedImgCount = input.files.length;
-      this.multipleImages = input.files;
     }
   }
 
@@ -640,9 +647,28 @@ export class EditMonumentDialog implements OnInit, OnDestroy {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       for (let i = 0; i < input.files.length; i++) {
-        if (input.files[i].type !== 'video/mp4') {
+        if (!input.files[i].type.startsWith('image/')) {
+          this.SelectedImgCount = 0;
+          this.snackBar.open('Only Images are allowed', undefined, {
+            duration: 2500,
+            verticalPosition: "top",
+            panelClass: "red-snackbar",
+          });
+          return;
+        }
+      }
+      this.SelectedImgCount = input.files.length;
+      this.multipleImages = input.files;
+    }
+  }
+
+  onVideoChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      for (let i = 0; i < input.files.length; i++) {
+        if (!input.files[i].type.startsWith('video/')) {
           this.SelectedVideoCount = 0;
-          this.snackBar.open('Only Videos are allowed (MP4)', undefined, {
+          this.snackBar.open('Only Videos are allowed', undefined, {
             duration: 2500,
             verticalPosition: "top",
             panelClass: "red-snackbar",
@@ -655,42 +681,22 @@ export class EditMonumentDialog implements OnInit, OnDestroy {
     }
   }
 
-  onFileChange1(event: Event) {
+  onAudioChange(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       for (let i = 0; i < input.files.length; i++) {
-        if (input.files[i].type !== 'audio/mpeg') {
-          this.snackBar.open('Only Audios are allowed (MP3)', undefined, {
+        if (!input.files[i].type.startsWith('audio/')) {
+          this.SelectedAudioCount = 0;
+          this.snackBar.open('Only Audio files are allowed', undefined, {
             duration: 2500,
             verticalPosition: "top",
             panelClass: "red-snackbar",
           });
-          this.SelectedAudioCount = 0;
           return;
         }
       }
       this.SelectedAudioCount = input.files.length;
       this.multipleAudio = input.files;
-    }
-  }
-
-  onFileChangeImage(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      for (let i = 0; i < input.files.length; i++) {
-        const type = input.files[i].type;
-        if (type !== 'image/jpg' && type !== 'image/jpeg' && type !== 'image/png') {
-          this.snackBar.open('Only Images are allowed (JPG | PNG | JPEG)', undefined, {
-            duration: 2500,
-            verticalPosition: "top",
-            panelClass: "red-snackbar",
-          });
-          this.SelectedImgCount = 0;
-          return;
-        }
-      }
-      this.SelectedImgCount = input.files.length;
-      this.multipleImages = input.files;
     }
   }
 
