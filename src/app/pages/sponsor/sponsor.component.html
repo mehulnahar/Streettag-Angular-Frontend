@@ -45,7 +45,8 @@
 
                 <!-- Sponsor Image Column -->
                 <ng-container matColumnDef="sponsor_image">
-                    <th mat-header-cell *matHeaderCellDef> Before Image </th>
+                    <th mat-header-cell *matHeaderCellDef> Sponsor Image Before
+                    </th>
                     <td mat-cell *matCellDef="let row">
                         <img [src]="row.sponsor_image || 'assets/images/placeholder.png'" 
                              [alt]="row.sponsor_name + ' Before Image'" 
@@ -56,7 +57,7 @@
 
                 <!-- Sponsor Image 2 Column -->
                 <ng-container matColumnDef="sponsor_image2">
-                    <th mat-header-cell *matHeaderCellDef> After Image </th>
+                    <th mat-header-cell *matHeaderCellDef> Sponsor Image After</th>
                     <td mat-cell *matCellDef="let row">
                         <img [src]="row.sponsor_image2 || 'assets/images/placeholder.png'"
                              [alt]="row.sponsor_name + ' After Image'"
