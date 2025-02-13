@@ -46,7 +46,7 @@
                     </div>
 
                     <div class="map-container" style="height: 400px; margin: 16px 0;">
-                        <google-map [center]="center" [zoom]="zoom" height="100%" width="100%">
+                        <google-map [center]="center" [zoom]="zoom" height="100%" width="100%" (mapClick)="markerDragEnd($event)">
                             <map-marker
                                 [position]="markerPosition"
                                 [options]="markerOptions"
