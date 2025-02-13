@@ -482,23 +482,32 @@ export class DialogAddBroadcastLocation implements OnInit {
   }
 
   setlocation() {
-    const url =
-      "https://maps.googleapis.com/maps/api/geocode/json?address=" +
-      this.location +
-      "&key=AIzaSyB9stNP2UYOkJCJkR2CfnabPiNP6g08UH8";
-    this.ajaxService.getLocation(url).subscribe((data: any) => {
-      if (
-        typeof data != "undefined" &&
-        data != "" &&
-        typeof data.results != "undefined" &&
-        data.results != ""
-      ) {
-        const lattitude = data.results[0].geometry.location.lat;
-        const longitude = data.results[0].geometry.location.lng;
-        this.angForm.controls["lat"].setValue(parseFloat(lattitude));
-        this.angForm.controls["lng"].setValue(parseFloat(longitude));
-        this.center = { lat: lattitude, lng: longitude };
-        this.markerPosition = { lat: lattitude, lng: longitude };
+    if (!this.location) {
+      this.snackBar.open('Please enter a location', undefined, {
+        duration: 2000,
+        verticalPosition: 'top'
+      });
+      return;
+    }
+
+    const geocoder = new google.maps.Geocoder();
+    geocoder.geocode({ address: this.location }, (results, status) => {
+      if (status === 'OK' && results && results[0]) {
+        const location = results[0].geometry.location;
+        const lat = location.lat();
+        const lng = location.lng();
+        
+        this.updatePosition(lat, lng);
+        
+        this.snackBar.open('Location set successfully', undefined, {
+          duration: 2000,
+          verticalPosition: 'top'
+        });
+      } else {
+        this.snackBar.open('Location not found. Please try again.', undefined, {
+          duration: 2000,
+          verticalPosition: 'top'
+        });
       }
     });
   }
