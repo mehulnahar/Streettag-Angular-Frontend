@@ -408,25 +408,22 @@ export class DialogEditSchool implements OnInit {
   updateevent(): void {
     if (this.angForm.valid) {
       const formData = this.angForm.getRawValue(); // Gets values including disabled fields
-      const url = `${environment.baseUrl}updateSchool`;
+      const url = `${environment.baseUrl}editSchool`;
       
-      // Prepare data for API
-      const data: any = {
-        id: this.data.event.id,
-        team_name: formData.team_name,
-        fullname: formData.full_name,  // Changed to match API's 'fullname' field
-        player_id: formData.user_name,
+      // Prepare data to match exact payload format
+      const data = {
+        date_of_birth: formData.date_of_birth ? new Date(formData.date_of_birth).toISOString().split('T')[0] : null,
         email: formData.email,
-        postal_code: formData.postal_code || '',
+        full_name: formData.full_name,
         gender: this.gender,
-        date_of_birth: formData.date_of_birth ? new Date(formData.date_of_birth).toISOString() : null
+        password: formData.password || '',
+        postal_code: formData.postal_code || '',
+        referral_code: '',
+        tb_player_id: this.data.event.id,
+        tb_team_id: this.data.event.tb_team_id || 0,
+        team_name: formData.team_name,
+        user_name: formData.user_name
       };
-
-      // Only include password fields if they have values
-      if (formData.password && formData.password.trim()) {
-        data.password = formData.password;
-        data.confirm_password = formData.confirm_password;
-      }
 
       console.log('Data being sent to API:', data);
 
