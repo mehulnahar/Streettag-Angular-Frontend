@@ -621,11 +621,14 @@ export class EditMonumentDialog implements OnInit, OnDestroy {
   }
 
   createForm() {
+    // Convert basketFlag to string since radio buttons work with strings
+    const basketFlagValue = this.data.data.basketFlag ? '1' : '0';
+    
     this.angForm = this.fb.group({
       name: [this.data.data.name, [Validators.required]],
       description: this.fb.array(JSON.parse(this.data.data.description || '[]')),
       link: [this.data.data.link],
-      basketFlag: [String(this.data.data.basketFlag ? 1 : 0)]
+      basketFlag: [basketFlagValue, [Validators.required]]
     });
   }
 
@@ -722,7 +725,7 @@ export class EditMonumentDialog implements OnInit, OnDestroy {
         description: [this.angForm.get("description")?.value[0] || ''],
         id: this.data.data.id,
         link: (this.angForm.get("link")?.value || '').toString().trim(),
-        basketFlag: 0
+        basketFlag: parseInt(this.angForm.get("basketFlag")?.value || '0', 10) // Convert string back to number
       };
 
       this.edit$ = this._http
