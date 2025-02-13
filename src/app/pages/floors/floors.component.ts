@@ -181,12 +181,17 @@ export class FloorsComponent implements OnInit {
   }
 
   deleteFloor(res: any) {
-    var url = `${this.baseUrl}deleteFloor`;
+    var url = `${this.baseUrl}deleteFloors`;
     var data = { id: res };
     this.ajaxService.post<ApiResponse<Floor>>(data, url).subscribe((response) => {
-      this.dataSource = new MatTableDataSource<Floor>(response.response);
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
+      if(response.status === "true") {
+        this.getFloors();
+        this.snackBar.open("Floor deleted successfully", undefined, {
+          duration: 3000,
+          verticalPosition: "top",
+          panelClass: ["blue-snackbar"],
+        });
+      }
     });
   }
 }
