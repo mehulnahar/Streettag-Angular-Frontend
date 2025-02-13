@@ -333,25 +333,34 @@ export class RfBoxAddDialog {
   }
 
   setlocation() {
-    const url =
-      'https://maps.googleapis.com/maps/api/geocode/json?address=' +
-      this.location +
-      '&key=AIzaSyB9stNP2UYOkJCJkR2CfnabPiNP6g08UH8';
+    if (!this.location) {
+      this.snackBar.open('Please enter a location', 'Close', {
+        duration: 3000
+      });
+      return;
+    }
 
-    return this.ajaxService.getLocation(url).subscribe((data: any) => {
-      if (
-        typeof data !== 'undefined' &&
-        data !== '' &&
-        typeof data.results !== 'undefined' &&
-        data.results !== ''
-      ) {
-        const lattitude = data.results[0].geometry.location.lat;
-        const longitude = data.results[0].geometry.location.lng;
-        this.lat = lattitude;
-        this.lng = longitude;
-        return data;
+    const geocoder = new google.maps.Geocoder();
+    geocoder.geocode({ address: this.location }, (results, status) => {
+      if (status === 'OK' && results && results[0]) {
+        const location = results[0].geometry.location;
+        this.lat = location.lat();
+        this.lng = location.lng();
+        
+        // Update form values
+        this.angForm.patchValue({
+          lat: this.lat,
+          lng: this.lng
+        });
+
+        this.snackBar.open('Location set successfully', 'Close', {
+          duration: 3000
+        });
+      } else {
+        this.snackBar.open('Location not found', 'Close', {
+          duration: 3000
+        });
       }
-      return null;
     });
   }
 
