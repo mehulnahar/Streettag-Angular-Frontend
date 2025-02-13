@@ -79,8 +79,11 @@ export class NfcRegistrationComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result) {
+      if (result === true) {
         this.getNfcPlayers();
+      } else if (typeof result === 'string') {
+        // If result is a string, it's an error message
+        this.snackbar.openSnackBar(result, 'error', 3000);
       }
     });
   }
@@ -97,14 +100,36 @@ export class NfcRegistrationComponent implements OnInit {
   private formatDate(date: string | Date): string {
     if (!date) return 'N/A';
     try {
-      const d = new Date(date);
-      if (isNaN(d.getTime())) return date as string;
+      // If it's a string in dd/MM/yyyy format, return as is
+      if (typeof date === 'string' && /^\d{2}\/\d{2}\/\d{4}$/.test(date)) {
+        return date;
+      }
+
+      let d: Date;
+      if (date instanceof Date) {
+        d = date;
+      } else {
+        d = new Date(date);
+      }
+
+      if (isNaN(d.getTime())) {
+        // Try parsing dd/MM/yyyy format
+        if (typeof date === 'string' && date.includes('/')) {
+          const [day, month, year] = date.split('/').map(num => parseInt(num, 10));
+          d = new Date(year, month - 1, day);
+          if (!isNaN(d.getTime())) {
+            return `${day.toString().padStart(2, '0')}/${month.toString().padStart(2, '0')}/${year}`;
+          }
+        }
+        return 'N/A';
+      }
+
       const day = d.getDate().toString().padStart(2, '0');
       const month = (d.getMonth() + 1).toString().padStart(2, '0');
       const year = d.getFullYear();
       return `${day}/${month}/${year}`;
     } catch (e) {
-      return date as string;
+      return 'N/A';
     }
   }
 
@@ -130,7 +155,8 @@ export class NfcRegistrationComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error fetching NFC players:', error);
-        this.snackbar.openSnackBar('Error fetching players', 'error', 3000);
+        const errorMessage = error.error?.msg || error.error?.message || 'Error fetching players';
+        this.snackbar.openSnackBar(errorMessage, 'error', 3000);
       }
     });
   }

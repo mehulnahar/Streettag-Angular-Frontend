@@ -186,11 +186,14 @@ export class MonumentTourComponent implements OnInit, OnDestroy {
 
   openDetailDialog(data: MonumentTour): void {
     this.dialog.open(DetailDialog, {
-      data,
-      minWidth: "75%",
-      minHeight: 'calc(100vh - 90px)',
-      height: 'auto',
-      disableClose: true
+        data,
+        width: "50%",
+        height: 'auto',
+        maxHeight: '80vh',
+        disableClose: false,
+        position: { top: '50px' },
+        autoFocus: true,
+        panelClass: 'tour-detail-dialog'
     });
   }
 
@@ -826,13 +829,27 @@ export class DetailDialog implements OnDestroy {
   public spinner: Boolean = true;
   private readonly baseUrl = environment.baseUrl;
   showDetails$!: Subscription;
+
   constructor(
     public dialogRef: MatDialogRef<DetailDialog>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private ajaxService: AjaxService
   ) {
     this.showDetail();
+
+    // Add click handler for escape key
+    dialogRef.keydownEvents().subscribe(event => {
+        if (event.key === "Escape") {
+            this.dialogRef.close();
+        }
+    });
+
+    // Add click handler for backdrop click
+    dialogRef.backdropClick().subscribe(() => {
+        this.dialogRef.close();
+    });
   }
+
   showDetail() {
     const url = `${this.baseUrl}tourDetail`;
     let data = { id: this.data.id };
@@ -843,6 +860,8 @@ export class DetailDialog implements OnDestroy {
   }
 
   ngOnDestroy() {
-    this.showDetails$.unsubscribe();
+    if (this.showDetails$) {
+      this.showDetails$.unsubscribe();
+    }
   }
 }

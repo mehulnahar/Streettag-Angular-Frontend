@@ -109,7 +109,13 @@ export class RegisterDialogComponent implements OnInit {
 
       this.nfcService.AddNfcPlayer(payload).subscribe({
         next: (response: any) => {
-          // Handle both 200 and 201 status codes as success
+          // Check for specific error messages in response
+          if (response.status === 'true' && response.msg === 'Player ID already exist.') {
+            this.dialogRef.close(response.msg);
+            return;
+          }
+
+          // Handle success cases
           if (response.status === 'success' || response.statusCode === 201 || response.status === 201) {
             this.snackBar.open('Player registered successfully', 'Close', {
               duration: 3000,
@@ -117,19 +123,15 @@ export class RegisterDialogComponent implements OnInit {
             });
             this.dialogRef.close(true);
           } else {
-            this.snackBar.open(response.message || 'Registration failed', 'Close', {
-              duration: 3000,
-              panelClass: ['error-snackbar']
-            });
+            // Handle other error cases
+            const errorMessage = response.msg || response.message || 'Registration failed';
+            this.dialogRef.close(errorMessage);
           }
         },
         error: (error) => {
-          const errorMessage = error.error?.message || 'Error registering player';
-          this.snackBar.open(errorMessage, 'Close', {
-            duration: 3000,
-            panelClass: ['error-snackbar']
-          });
+          const errorMessage = error.error?.msg || error.error?.message || 'Error registering player';
           console.error('Error:', error);
+          this.dialogRef.close(errorMessage);
         }
       });
     }

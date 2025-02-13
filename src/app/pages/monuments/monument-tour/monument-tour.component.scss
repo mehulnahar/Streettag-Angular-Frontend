@@ -243,3 +243,72 @@ mat-footer-row mat-footer-cell {
 ::-webkit-scrollbar-thumb:hover {
   background: #666;
 }
+
+// Styles for tour detail dialog
+::ng-deep .tour-detail-dialog {
+    .mat-dialog-container {
+        padding: 0;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+
+        .mat-dialog-content {
+            margin: 0;
+            padding: 24px;
+            max-height: calc(80vh - 100px); // Account for padding and headers
+            overflow-y: auto;
+        }
+
+        .dialog-header {
+            background-color: #1976d2;
+            color: white;
+            padding: 16px 24px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            .close-button {
+                margin: -8px -12px -8px auto;
+            }
+        }
+
+        .destination-details {
+            padding: 20px;
+
+            h2 {
+                margin: 0 0 20px 0;
+                color: #333;
+                font-size: 1.5em;
+            }
+
+            .detail-item {
+                margin-bottom: 16px;
+                
+                .label {
+                    font-weight: 500;
+                    color: #666;
+                    margin-bottom: 4px;
+                }
+
+                .value {
+                    color: #333;
+                }
+
+                img {
+                    max-width: 100%;
+                    border-radius: 4px;
+                    margin-top: 8px;
+                }
+            }
+        }
+    }
+}
+
+// Loading spinner styles
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
