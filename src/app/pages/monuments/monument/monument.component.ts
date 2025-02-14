@@ -30,6 +30,7 @@ import { ImageViewerComponent } from "src/app/shared/image-viewer/image-viewer.c
 import { MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { map } from 'rxjs/operators';
 import { GoogleMap } from '@angular/google-maps';
+import * as contentType from 'content-type';
 
 interface Monument {
   id: number;
@@ -228,9 +229,9 @@ export class AddMonumentDialog implements OnInit, OnDestroy {
   SetLocation$?: Subscription;
   add$?: Subscription;
   public location = '';
-  public multipleImages: FileList | null = null;
-  public multipleVideos: FileList | null = null;
-  public multipleAudio: FileList | null = null;
+  public multipleImages: any;
+  public multipleVideos: any;
+  public multipleAudio: any;
   public dataSource1: any;
   public progrees = 0;
   public SelectedVideoCount = 0;
@@ -434,55 +435,77 @@ export class AddMonumentDialog implements OnInit, OnDestroy {
       const url = `${this.baseUrl}addMonument`;
 
       // Create FormData object
-      const formData = new FormData();
+      const fd = new FormData();
 
       // Add fields in exact order to match required format
-      formData.append("name", (this.angForm.get("name")?.value || '').toString().trim());
-      formData.append("description", JSON.stringify([this.angForm.get("description")?.value[0] || '']));
+      fd.append("name", (this.angForm.get("name")?.value || '').toString().trim());
+      fd.append("description", JSON.stringify([this.angForm.get("description")?.value[0] || '']));
       
       if (this.markerPosition) {
-        formData.append("lat", this.markerPosition.lat.toString());
-        formData.append("lng", this.markerPosition.lng.toString());
+        fd.append("lat", this.markerPosition.lat.toString());
+        fd.append("lng", this.markerPosition.lng.toString());
       }
       
-      formData.append("address", this.getAddress || '');
-      formData.append("link", (this.angForm.get("link")?.value || '').toString().trim());
-      formData.append("basketFlag", "0");
+      fd.append("address", this.getAddress || '');
+      fd.append("link", (this.angForm.get("link")?.value || '').toString().trim());
+      fd.append("basketFlag", this.angForm.get("basketFlag")?.value || '0');
 
       // Add files with proper Content-Type
       if (this.multipleImages?.length) {
-        const imageFile = this.multipleImages[0];
-        formData.append("img", imageFile, imageFile.name);
+        const files = Array.from(this.multipleImages) as File[];
+        files.forEach(img => {
+          fd.append("img", img);
+        });
       }
       if (this.multipleAudio?.length) {
-        const audioFile = this.multipleAudio[0];
-        formData.append("audio", audioFile, audioFile.name);
+        const files = Array.from(this.multipleAudio) as File[];
+        files.forEach(audio => {
+          fd.append("audio", audio);
+        });
       }
       if (this.multipleVideos?.length) {
-        const videoFile = this.multipleVideos[0];
-        formData.append("videos", videoFile, videoFile.name);
+        const files = Array.from(this.multipleVideos) as File[];
+        files.forEach(video => {
+          fd.append("videos", video);
+        });
       }
 
-      // Send using HttpClient to let browser handle FormData properly
-      this.add$ = this._http.post(url, formData).subscribe(
-        (response: any) => {
-          this.resData = response;
-          this.snackBar.open(this.resData?.msg || "Monument added successfully", undefined, {
-            duration: 3000,
-            verticalPosition: "top",
-            panelClass: ["blue-snackbar"],
-          });
-          this.dialogRef.close(true);
-        },
-        (error) => {
-          this.clicked = false;
-          this.snackBar.open(error.error?.msg || "Error adding monument", undefined, {
-            duration: 4000,
-            verticalPosition: "top",
-            panelClass: ["red-snackbar"],
-          });
+      // Create XHR to handle the request with proper content type
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', url, true);
+      xhr.setRequestHeader('Accept', 'application/json, text/plain, */*');
+      
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable) {
+          this.showBar = true;
+          this.progrees = Math.round((event.loaded / event.total) * 100);
         }
-      );
+      };
+      
+      xhr.onload = () => {
+        if (xhr.status === 200) {
+          try {
+            const response = JSON.parse(xhr.responseText);
+            this.resData = response;
+            this.snackBar.open(this.resData?.msg || "Monument added successfully", undefined, {
+              duration: 3000,
+              verticalPosition: "top",
+              panelClass: ["blue-snackbar"],
+            });
+            this.dialogRef.close(true);
+          } catch (error) {
+            this.handleError(error);
+          }
+        } else {
+          this.handleError(xhr.responseText);
+        }
+      };
+      
+      xhr.onerror = () => {
+        this.handleError('Network error occurred');
+      };
+      
+      xhr.send(fd);
     } else {
       this.snackBar.open("Please fill all required fields correctly", undefined, {
         duration: 2500,
@@ -490,6 +513,24 @@ export class AddMonumentDialog implements OnInit, OnDestroy {
         panelClass: "red-snackbar",
       });
     }
+  }
+
+  private handleError(error: any) {
+    this.clicked = false;
+    let errorMessage = 'Something went wrong, please try again';
+    if (typeof error === 'string') {
+      try {
+        const parsedError = JSON.parse(error);
+        errorMessage = parsedError.msg || errorMessage;
+      } catch (e) {
+        // Use default error message
+      }
+    }
+    this.snackBar.open(errorMessage, undefined, {
+      duration: 4000,
+      verticalPosition: "top",
+      panelClass: ["red-snackbar"],
+    });
   }
 
   onFileChange(event: Event) {
@@ -567,8 +608,8 @@ export class EditMonumentDialog implements OnInit, OnDestroy {
   clicked = false;
   resData: any;
   angForm!: FormGroup;
-  public videoUrl: string[] = [];
-  public audioUrl: string[] = [];
+  public videoUrl:Array<String>;
+  public audioUrl:Array<String>;
   public imageUrl: string[] = [];
   private readonly baseUrl = environment.baseUrl;
   public multipleImages: FileList | null = null;
@@ -718,126 +759,90 @@ export class EditMonumentDialog implements OnInit, OnDestroy {
     if (this.angForm.status == "VALID") {
       this.clicked = true;
       const url = `${this.baseUrl}editMonument`;
-      
-      // Create FormData object
+      this.angForm.value.id = this.data.data.id;
       const fd = new FormData();
       
-      try {
-        // Safely get and format values
-        const name = (this.angForm.get("name")?.value || '').toString().trim();
-        const description = this.angForm.get("description")?.value || [];
-        const link = (this.angForm.get("link")?.value || '').toString().trim();
-        const basketFlag = this.angForm.get("basketFlag")?.value || '0';
-        
-        // Append basic form fields
-        fd.append("name", name);
-        fd.append("description", JSON.stringify(description));
-        fd.append("id", this.data.data.id.toString());
-        fd.append("link", link);
-        fd.append("basketFlag", basketFlag);
-
-        // Handle file uploads
-        if (this.multipleImages != null && this.multipleImages.length > 0) {
-          Array.from(this.multipleImages).forEach(img => {
-            fd.append("images[]", img, img.name);
-          });
-        }
-
-        if (this.multipleAudio != null && this.multipleAudio.length > 0) {
-          Array.from(this.multipleAudio).forEach(audio => {
-            fd.append("audio[]", audio, audio.name);
-          });
-        }
-
-        if (this.multipleVideos != null && this.multipleVideos.length > 0) {
-          Array.from(this.multipleVideos).forEach(vid => {
-            fd.append("videos[]", vid, vid.name);
-          });
-        }
-
-        // Make the HTTP request
-        this.edit$ = this._http
-          .post(url, fd, {
-            reportProgress: true,
-            observe: "events",
-            headers: {
-              'Accept': 'application/json',
-              // Don't set Content-Type - browser will set it with boundary for FormData
-            }
-          })
-          .subscribe({
-            next: (event) => {
-              if (event.type === HttpEventType.UploadProgress && event.total) {
-                this.showBar = true;
-                this.progrees = Math.round((event.loaded / event.total) * 100);
-              } else if (event.type === HttpEventType.Response) {
-                const response = event.body;
-                if (response && typeof response === 'object') {
-                  this.resData = response;
-                  this.snackBar.open("Monument Updated Successfully", undefined, {
-                    duration: 3000,
-                    verticalPosition: "top",
-                    panelClass: ["blue-snackbar"],
-                  });
-                  this.dialogRef.close(true);
-                } else {
-                  throw new Error('Invalid response format');
-                }
-              }
-            },
-            error: (error) => {
-              console.error('Error updating monument:', error);
-              this.clicked = false;
-              let errorMessage = 'Something went wrong, please try again';
-              
-              if (error.error instanceof Blob) {
-                // Read the Blob as text
-                const reader = new FileReader();
-                reader.onload = () => {
-                  try {
-                    const errorBody = JSON.parse(reader.result as string);
-                    errorMessage = errorBody.msg || errorMessage;
-                  } catch (e) {
-                    console.error('Error parsing error response:', e);
-                  }
-                  this.showErrorSnackbar(errorMessage);
-                };
-                reader.onerror = () => this.showErrorSnackbar(errorMessage);
-                reader.readAsText(error.error);
-              } else {
-                errorMessage = error.error?.msg || errorMessage;
-                this.showErrorSnackbar(errorMessage);
-              }
-            }
-          });
-      } catch (e) {
-        console.error('Error formatting form data:', e);
-        this.clicked = false;
-        this.snackBar.open(
-          'Something went wrong while preparing the form data',
-          undefined,
-          {
-            duration: 2500,
-            verticalPosition: "top",
-            panelClass: ["red-snackbar"],
-          }
-        );
+      fd.append("name", this.angForm.get("name")?.value.replaceAll("'","`").replaceAll('"','``'));
+      fd.append(
+        "description",
+        JSON.stringify(this.angForm.get("description")?.value)
+      );
+      fd.append("id", this.data.data.id.toString());
+      fd.append("link", (this.angForm.get("link")?.value || '').trim());
+      fd.append("basketFlag",this.angForm.get("basketFlag")?.value);
+      if (this.multipleImages != null) {
+        Array.from(this.multipleImages).forEach(img => {
+          fd.append("img", img);
+        });
       }
-    } else {
-      this.snackBar.open("Please fill all required fields correctly", undefined, {
-        duration: 2500,
-        verticalPosition: "top",
-        panelClass: ["red-snackbar"],
-      });
+
+      if (this.multipleAudio != null) {
+        Array.from(this.multipleAudio).forEach(audio => {
+          fd.append("audio", audio);
+        });
+      }
+
+      if (this.multipleVideos != null) {
+        Array.from(this.multipleVideos).forEach(vid => {
+          fd.append("videos", vid);
+        });
+      }
+      
+      // Create XHR to handle the request with proper content type
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', url, true);
+      xhr.setRequestHeader('Accept', 'application/json, text/plain, */*');
+      
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable) {
+          this.showBar = true;
+          this.progrees = Math.round((event.loaded / event.total) * 100);
+        }
+      };
+      
+      xhr.onload = () => {
+        if (xhr.status === 200) {
+          try {
+            const response = JSON.parse(xhr.responseText);
+            this.resData = response;
+            this.snackBar.open("Monument Updated Successfully", undefined, {
+              duration: 3000,
+              verticalPosition: "top",
+              panelClass: ["blue-snackbar"],
+            });
+            this.dialogRef.close();
+          } catch (error) {
+            this.handleError(error);
+          }
+        } else {
+          this.handleError(xhr.responseText);
+        }
+      };
+      
+      xhr.onerror = () => {
+        this.handleError('Network error occurred');
+      };
+      
+      xhr.send(fd);
     }
   }
 
-  private showErrorSnackbar(message: string) {
-    this.snackBar.open(message, undefined, {
+  private handleError(error: any) {
+    let errorMessage = 'Something went wrong, please try again';
+    if (typeof error === 'string') {
+      try {
+        const parsedError = JSON.parse(error);
+        errorMessage = parsedError.msg || errorMessage;
+      } catch (e) {
+        // Use default error message
+      }
+    }
+    this.snackBar.open(errorMessage, undefined, {
       duration: 2500,
       verticalPosition: "top",
       panelClass: ["red-snackbar"],
     });
+    this.dialogRef.close();
   }
 
   ngOnDestroy(): void {
