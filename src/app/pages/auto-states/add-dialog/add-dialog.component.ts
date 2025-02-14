@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { AjaxService } from '../../../ajax.service';
 
@@ -32,7 +32,14 @@ export class AddDialogComponent implements OnInit {
       circuit_id: ['', Validators.required]
     });
 
-    this.dataSourceLocation$ = this.ajaxService.getLocations();
+    this.dataSourceLocation$ = this.ajaxService.getLocations().pipe(
+      map((response: any) => {
+        if (response && response.status === 'true' && Array.isArray(response.response)) {
+          return response.response.sort((a: any, b: any) => a.serial_number - b.serial_number);
+        }
+        return [];
+      })
+    );
     this.dataSourceCircuit$ = new Observable<any>();
   }
 
