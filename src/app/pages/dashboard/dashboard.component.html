@@ -6,30 +6,7 @@
     [class]="'py-3'"></app-content-header>
 
 <div class="p-2">
-    <!-- <div class="filters-section p-3 mb-4">
-        <div fxLayout="row wrap" fxLayoutGap="20px grid">
-            <div fxFlex="calc(50% - 20px)" fxFlex.lt-md="100">
-                <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>Select Location</mat-label>
-                    <mat-select [(ngModel)]="selectedLocation" (selectionChange)="onLocationChange($event.value)">
-                        <mat-option *ngFor="let location of locations" [value]="location.id">
-                            {{location.location_name}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-            <div fxFlex="calc(50% - 20px)" fxFlex.lt-md="100">
-                <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>Select Team</mat-label>
-                    <mat-select [(ngModel)]="selectedTeam" (selectionChange)="onTeamChange($event.value)">
-                        <mat-option *ngFor="let team of teams" [value]="team.id">
-                            {{atob(team.team_name)}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-        </div>
-    </div> -->
+  
     
     <app-tiles></app-tiles>
     <br>
