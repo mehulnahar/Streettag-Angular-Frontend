@@ -18,3 +18,26 @@
         grid-column: span 6;
     }
 }
+
+.filters-section {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.w-100 {
+    width: 100%;
+}
+
+::ng-deep .mat-form-field-wrapper {
+    margin-bottom: -1.25em;
+}
+
+.mb-4 {
+    margin-bottom: 1.5rem;
+}
+
+.p-3 {
+    padding: 1rem;
+}
