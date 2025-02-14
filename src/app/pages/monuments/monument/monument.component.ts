@@ -127,8 +127,15 @@ export class MonumentComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
+      if (result?.success) {
         this.monuments$ = this.getMonuments();
+        this.Monument$ = this.monuments$.subscribe(
+          monuments => {
+            this.dataSource = new MatTableDataSource(monuments);
+            this.dataSource.paginator = this.paginator;
+            this.dataSource.sort = this.sort;
+          }
+        );
       }
     });
   }
@@ -141,9 +148,17 @@ export class MonumentComponent implements OnInit, OnDestroy {
       height: 'auto',
       disableClose: true
     });
+    
     dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
+      if (result?.success) {
         this.monuments$ = this.getMonuments();
+        this.Monument$ = this.monuments$.subscribe(
+          monuments => {
+            this.dataSource = new MatTableDataSource(monuments);
+            this.dataSource.paginator = this.paginator;
+            this.dataSource.sort = this.sort;
+          }
+        );
       }
     });
   }
@@ -492,7 +507,7 @@ export class AddMonumentDialog implements OnInit, OnDestroy {
               verticalPosition: "top",
               panelClass: ["blue-snackbar"],
             });
-            this.dialogRef.close(true);
+            this.dialogRef.close({ success: true, action: 'add' });
           } catch (error) {
             this.handleError(error);
           }
@@ -810,7 +825,7 @@ export class EditMonumentDialog implements OnInit, OnDestroy {
               verticalPosition: "top",
               panelClass: ["blue-snackbar"],
             });
-            this.dialogRef.close();
+            this.dialogRef.close({ success: true, action: 'edit' });
           } catch (error) {
             this.handleError(error);
           }
