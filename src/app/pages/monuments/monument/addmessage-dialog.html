@@ -39,211 +39,210 @@
 .no-ripple .mat-ripple-element {
   display: none !important;
 }
+
+.form-section {
+  margin-bottom: 20px;
+}
+
+.section-title {
+  margin-bottom: 16px;
+  color: #333;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.form-field-container {
+  margin-bottom: 24px;
+}
+
+.description-container {
+  margin-bottom: 16px;
+}
+
+.media-upload-section {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.media-item {
+  flex: 1;
+  background: #f5f5f5;
+  padding: 16px;
+  border-radius: 4px;
+}
+
+.upload-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.upload-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.upload-button {
+  width: 100%;
+}
+
+.location-search {
+  margin-bottom: 16px;
+}
 </style>
 
 <form [formGroup]="angForm" class="dialog-form">
   <mat-dialog-content class="dialog-content">
-    <!-- Basic Information Section -->
     <div class="form-section">
       <div class="section-card">
-   
-        
         <!-- Monument Name -->
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Monument Name</mat-label>
-          <input matInput #inputTitle formControlName="name" maxlength="50" placeholder="Enter monument name">
-          <mat-icon matPrefix>account_balance</mat-icon>
-          <mat-hint align="end">{{inputTitle.value.length || 0}}/50</mat-hint>
-          <mat-error *ngIf="angForm.get('name')?.errors?.['required'] && angForm.get('name')?.touched">
-            Name is required
-          </mat-error>
-        </mat-form-field>
-      </div>
-    </div>
-
-    <!-- Description Section -->
-    <div class="form-section">
-      <div class="section-card">
-        <div class="section-header">
-          <mat-icon class="section-icon">description</mat-icon>
-          <h3 class="section-title">Description</h3>
-        </div>
-
-        <div formArrayName="description" class="description-container">
-          <div *ngFor="let item of description.controls; let i = index" class="description-item">
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Description {{i + 1}}</mat-label>
-              <textarea matInput #inputDesc [formControlName]="i" maxlength="400" 
-                      cdkTextareaAutosize cdkAutosizeMinRows="3" cdkAutosizeMaxRows="5"
-                      placeholder="Enter monument description"></textarea>
-              <mat-icon matPrefix>subject</mat-icon>
-              <mat-hint align="end">{{inputDesc.value.length || 0}}/400</mat-hint>
-            </mat-form-field>
-          </div>
-        </div>
-
-        <div class="button-row">
-          <button mat-stroked-button color="primary" (click)="addMoreDecription()" class="action-button">
-            <mat-icon>add</mat-icon> Add Description
-          </button>
-          <button mat-stroked-button color="warn" (click)="RemoveDecription()" [disabled]="description.length <= 1" class="action-button">
-            <mat-icon>remove</mat-icon> Remove Description
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Link Section -->
-    <div class="form-section">
-      <div class="section-card">
-        <div class="section-header">
-          <mat-icon class="section-icon">link</mat-icon>
-          <h3 class="section-title">Website Link</h3>
-        </div>
-        
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Website Link</mat-label>
-          <input matInput formControlName="link" placeholder="https://example.com">
-          <mat-icon matPrefix>link</mat-icon>
-          <mat-error *ngIf="angForm.get('link')?.errors && angForm.get('link')?.touched">
-            <span *ngIf="angForm.get('link')?.errors?.['required']">Link is required</span>
-            <span *ngIf="angForm.get('link')?.errors?.['pattern']">Please enter a valid URL</span>
-          </mat-error>
-        </mat-form-field>
-      </div>
-    </div>
-
-    <!-- Basket Option Section -->
-    <div class="form-section">
-      <div class="section-card">
-        <div class="section-header">
-          <mat-icon class="section-icon">shopping_basket</mat-icon>
-          <h3 class="section-title">Basket Option</h3>
-        </div>
-
-        <div class="form-row radio-group">
-          <label class="radio-label">Do you want to Activate Basket Option?</label>
-          <mat-radio-group formControlName="basketFlag" class="radio-buttons">
-            <mat-radio-button [value]="0" color="primary">No</mat-radio-button>
-            <mat-radio-button [value]="1" color="primary">Yes</mat-radio-button>
-          </mat-radio-group>
-        </div>
-      </div>
-    </div>
-
-    <!-- Media Section -->
-    <div class="form-section">
-      <div class="section-card">
-        <div class="section-header">
-          <mat-icon class="section-icon">perm_media</mat-icon>
-          <h3 class="section-title">Media</h3>
-        </div>
-
-        <!-- Videos Upload -->
-        <div class="media-upload-section">
-          <div class="upload-header">
-            <mat-icon>videocam</mat-icon>
-            <span>Videos ({{SelectedVideoCount}} selected)</span>
-          </div>
-          <div class="upload-actions">
-            <button mat-stroked-button color="primary" (click)="videoInput.click()" class="upload-button">
-              <mat-icon>cloud_upload</mat-icon>
-              Choose Videos
-            </button>
-            <input #videoInput type="file" (change)="onVideoChange($event)" accept="video/*" multiple hidden>
-          </div>
-        </div>
-
-        <!-- Audio Upload -->
-        <div class="media-upload-section">
-          <div class="upload-header">
-            <mat-icon>audiotrack</mat-icon>
-            <span>Audio ({{SelectedAudioCount}} selected)</span>
-          </div>
-          <div class="upload-actions">
-            <button mat-stroked-button color="primary" (click)="audioInput.click()" class="upload-button">
-              <mat-icon>cloud_upload</mat-icon>
-              Choose Audio
-            </button>
-            <input #audioInput type="file" (change)="onAudioChange($event)" accept="audio/*" multiple hidden>
-          </div>
-        </div>
-
-        <!-- Images Upload -->
-        <div class="media-upload-section">
-          <div class="upload-header">
-            <mat-icon>image</mat-icon>
-            <span>Images ({{SelectedImgCount}} selected)</span>
-          </div>
-          <div class="upload-actions">
-            <button mat-stroked-button color="primary" (click)="fileInput.click()" class="upload-button">
-              <mat-icon>cloud_upload</mat-icon>
-              Choose Images
-            </button>
-            <input #fileInput type="file" (change)="onFileChange($event)" accept="image/*" multiple hidden>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Location Section -->
-    <div class="form-section">
-      <div class="section-card">
-        <div class="section-header">
-          <mat-icon class="section-icon">place</mat-icon>
-          <h3 class="section-title">Location</h3>
-        </div>
-
-        <!-- Location Search -->
-        <div class="location-search">
+        <div class="form-field-container">
+          <h3 class="section-title">Monument Name</h3>
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Search Location</mat-label>
-            <input matInput [(ngModel)]="location" [ngModelOptions]="{standalone: true}" 
-                   placeholder="Enter location to search">
-            <mat-icon matPrefix>search</mat-icon>
+            <mat-label>Monument Name</mat-label>
+            <input matInput #inputTitle formControlName="name" maxlength="50" placeholder="Enter monument name">
+            <mat-hint align="end">{{inputTitle.value.length || 0}}/50</mat-hint>
+            <mat-error *ngIf="angForm.get('name')?.errors?.['required'] && angForm.get('name')?.touched">
+              Name is required
+            </mat-error>
           </mat-form-field>
-          <button mat-flat-button color="accent" (click)="setlocation()" style="padding:28px;">
-           
-            Set Location
-          </button>
         </div>
 
-        <!-- Map -->
-        <div class="map-container">
-          <google-map 
-            #googleMap
-            [center]="center"
-            [zoom]="zoom"
-            [options]="options"
-            (mapClick)="markerDragEnd($event)">
-            <map-marker
-              *ngIf="markerPosition"
-              [position]="markerPosition"
-              [options]="markerOptions"
-              (mapDragend)="markerDragEnd($event)"
-              (mapClick)="openInfoWindow(marker, 'Click to edit location')"
-              #marker="mapMarker">
-            </map-marker>
-            <map-info-window>Click to edit location</map-info-window>
-          </google-map>
+        <!-- Description -->
+        <div class="form-field-container">
+          <h3 class="section-title">Description</h3>
+          <div formArrayName="description" class="description-container">
+            <div *ngFor="let item of description.controls; let i = index" class="description-item">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Description {{i + 1}}</mat-label>
+                <textarea matInput #inputDesc [formControlName]="i" maxlength="400" 
+                        cdkTextareaAutosize cdkAutosizeMinRows="3" cdkAutosizeMaxRows="5"
+                        placeholder="Enter monument description"></textarea>
+                <mat-hint align="end">{{inputDesc.value.length || 0}}/400</mat-hint>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="button-row">
+            <button mat-stroked-button color="primary" (click)="addMoreDecription()" class="action-button">
+              <mat-icon>add</mat-icon> Add Description
+            </button>
+            <button mat-stroked-button color="warn" (click)="RemoveDecription()" [disabled]="description.length <= 1" class="action-button">
+              <mat-icon>remove</mat-icon> Remove Description
+            </button>
+          </div>
         </div>
 
-        <!-- Nearby Monuments -->
-        <div class="nearby-tags" *ngIf="(nearByLatLng | async) as nearByTags">
-          <div class="tags-grid" *ngIf="nearByTags.length > 0">
-            <!-- <h4 class="section-subtitle">Nearby Monuments</h4> -->
-            <!-- <mat-card *ngFor="let item of nearByTags" class="tag-card">
-              <mat-card-content>
-                <div class="tag-info">
-                  <mat-icon class="tag-icon">place</mat-icon>
-                  <p class="tag-name">{{item.name}}</p>
-                </div>
-                <button mat-mini-fab color="warn" (click)="confirmDialog(item.id)" 
-                        class="delete-button" matTooltip="Remove Monument">
-                  <mat-icon>delete</mat-icon>
+        <!-- Website Link -->
+        <div class="form-field-container">
+          <h3 class="section-title">Website Link</h3>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Website Link</mat-label>
+            <input matInput formControlName="link" placeholder="https://example.com">
+            <mat-icon matPrefix>link</mat-icon>
+            <mat-error *ngIf="angForm.get('link')?.errors && angForm.get('link')?.touched">
+              <span *ngIf="angForm.get('link')?.errors?.['required']">Link is required</span>
+              <span *ngIf="angForm.get('link')?.errors?.['pattern']">Please enter a valid URL</span>
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Basket Option -->
+        <div class="form-field-container">
+          <div class="form-row radio-group">
+            <label class="radio-label">Do you want to Activate Basket Option?</label>
+            <mat-radio-group formControlName="basketFlag" class="radio-buttons">
+              <mat-radio-button [value]="0" color="primary">No</mat-radio-button>
+              <mat-radio-button [value]="1" color="primary">Yes</mat-radio-button>
+            </mat-radio-group>
+          </div>
+        </div>
+
+        <!-- Media Upload -->
+        <div class="form-field-container">
+          <h3 class="section-title">Media</h3>
+          <div class="media-upload-section">
+            <!-- Videos Upload -->
+            <div class="media-item">
+              <div class="upload-header">
+                <mat-icon>videocam</mat-icon>
+                <span>Videos ({{SelectedVideoCount}} selected)</span>
+              </div>
+              <div class="upload-actions">
+                <button mat-stroked-button color="primary" (click)="videoInput.click()" class="upload-button">
+                  <mat-icon>cloud_upload</mat-icon>
+                  Choose Videos
                 </button>
-              </mat-card-content>
-            </mat-card> -->
+                <input #videoInput type="file" (change)="onVideoChange($event)" accept="video/*" multiple hidden>
+              </div>
+            </div>
+
+            <!-- Audio Upload -->
+            <div class="media-item">
+              <div class="upload-header">
+                <mat-icon>audiotrack</mat-icon>
+                <span>Audio ({{SelectedAudioCount}} selected)</span>
+              </div>
+              <div class="upload-actions">
+                <button mat-stroked-button color="primary" (click)="audioInput.click()" class="upload-button">
+                  <mat-icon>cloud_upload</mat-icon>
+                  Choose Audio
+                </button>
+                <input #audioInput type="file" (change)="onAudioChange($event)" accept="audio/*" multiple hidden>
+              </div>
+            </div>
+
+            <!-- Images Upload -->
+            <div class="media-item">
+              <div class="upload-header">
+                <mat-icon>image</mat-icon>
+                <span>Images ({{SelectedImgCount}} selected)</span>
+              </div>
+              <div class="upload-actions">
+                <button mat-stroked-button color="primary" (click)="fileInput.click()" class="upload-button">
+                  <mat-icon>cloud_upload</mat-icon>
+                  Choose Images
+                </button>
+                <input #fileInput type="file" (change)="onFileChange($event)" accept="image/*" multiple hidden>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Location -->
+        <div class="form-field-container">
+          <h3 class="section-title">Location</h3>
+          <div class="location-search">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Search Location</mat-label>
+              <input matInput [(ngModel)]="location" [ngModelOptions]="{standalone: true}" 
+                     placeholder="Enter location to search">
+              <mat-icon matPrefix>search</mat-icon>
+            </mat-form-field>
+            <button mat-flat-button color="accent" (click)="setlocation()" style="padding:28px;">
+              Set Location
+            </button>
+          </div>
+
+          <!-- Map -->
+          <div class="map-container">
+            <google-map 
+              #googleMap
+              [center]="center"
+              [zoom]="zoom"
+              [options]="options"
+              (mapClick)="markerDragEnd($event)">
+              <map-marker
+                *ngIf="markerPosition"
+                [position]="markerPosition"
+                [options]="markerOptions"
+                (mapDragend)="markerDragEnd($event)"
+                (mapClick)="openInfoWindow(marker, 'Click to edit location')"
+                #marker="mapMarker">
+              </map-marker>
+              <map-info-window>Click to edit location</map-info-window>
+            </google-map>
           </div>
         </div>
       </div>
