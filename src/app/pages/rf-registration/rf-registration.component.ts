@@ -388,7 +388,7 @@ export class RfRegistrationComponent implements OnInit {
     .form-container { 
       display: grid;
       gap: 16px;
-      padding: 20px;
+    
     }
     mat-form-field { 
       width: 100%;

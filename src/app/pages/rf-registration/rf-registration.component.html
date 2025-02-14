@@ -3,27 +3,24 @@
   [icon]="'sd_card'"
   [hideBreadcrumb]="true"
   [hasBgImage]="true"
-  [class]="'pt-2'"
+  [class]="'pb-4'"
 ></app-content-header>
 
-<mat-toolbar color="primary" class="toolbar">
-  <div class="toolbar-content">
-    <button
-      mat-button
-      mat-raised-button
-      color="accent"
-      (click)="openAddMessageDialog()"
-      class="compose"
-    >
-      Add Player
-    </button>
-  </div>
-</mat-toolbar>
+<div fxLayout="column" class="p-2">
+  <div class="p-2">
+    <mat-toolbar class="toolbar" style="background-color: #283593;">
+      <button
+        mat-raised-button
+        color="accent"
+        (click)="openAddMessageDialog()"
+      >
+        <mat-icon>add</mat-icon> Add Player
+      </button>
+    </mat-toolbar>
 
-<div class="content-container">
-  <div class="table-container">
-    <div class="filter-container">
-      <mat-form-field class="filter-field">
+    <div fxLayout="column" class="mat-elevation-z8">
+      <mat-form-field class="px-3 py-1">
+        <mat-label>Filter</mat-label>
         <input
           matInput
           (keyup)="applyFilter($event)"
@@ -104,6 +101,7 @@
     <mat-paginator
       #paginator
       [pageSizeOptions]="[5, 10, 25, 100]"
+      [pageSize]="10"
       showFirstLastButtons
     ></mat-paginator>
   </div>
