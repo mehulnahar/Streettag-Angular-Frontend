@@ -1,23 +1,52 @@
 <!-- Dialog Header -->
-<mat-toolbar color="primary" class="dialog-header">
+<mat-toolbar  class="dialog-header">
   <div class="header-content">
-    <mat-icon class="header-icon">account_balance</mat-icon>
+    <!-- <mat-icon class="header-icon">account_balance</mat-icon> -->
     <h2 class="header-title">Add New Monument</h2>
   </div>
-  <button mat-icon-button class="close-button" [mat-dialog-close]="true">
+  <button mat-icon-button class="close-button no-ripple" [mat-dialog-close]="true" [disableRipple]="true">
     <mat-icon>close</mat-icon>
   </button>
 </mat-toolbar>
+
+<style>
+.close-button {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 30px !important;
+  line-height: 30px !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.close-button .mat-icon {
+  font-size: 20px !important;
+  width: 20px !important;
+  height: 20px !important;
+  line-height: 20px !important;
+}
+
+.no-ripple::after {
+  background-image: none !important;
+  transition: none !important;
+}
+.no-ripple:hover {
+  background: none !important;
+}
+.no-ripple .mat-ripple-element {
+  display: none !important;
+}
+</style>
 
 <form [formGroup]="angForm" class="dialog-form">
   <mat-dialog-content class="dialog-content">
     <!-- Basic Information Section -->
     <div class="form-section">
       <div class="section-card">
-        <div class="section-header">
-          <mat-icon class="section-icon">info</mat-icon>
-          <h3 class="section-title">Basic Information</h3>
-        </div>
+   
         
         <!-- Monument Name -->
         <mat-form-field appearance="outline" class="full-width">
@@ -29,8 +58,49 @@
             Name is required
           </mat-error>
         </mat-form-field>
+      </div>
+    </div>
 
-        <!-- Website Link -->
+    <!-- Description Section -->
+    <div class="form-section">
+      <div class="section-card">
+        <div class="section-header">
+          <mat-icon class="section-icon">description</mat-icon>
+          <h3 class="section-title">Description</h3>
+        </div>
+
+        <div formArrayName="description" class="description-container">
+          <div *ngFor="let item of description.controls; let i = index" class="description-item">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Description {{i + 1}}</mat-label>
+              <textarea matInput #inputDesc [formControlName]="i" maxlength="400" 
+                      cdkTextareaAutosize cdkAutosizeMinRows="3" cdkAutosizeMaxRows="5"
+                      placeholder="Enter monument description"></textarea>
+              <mat-icon matPrefix>subject</mat-icon>
+              <mat-hint align="end">{{inputDesc.value.length || 0}}/400</mat-hint>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="button-row">
+          <button mat-stroked-button color="primary" (click)="addMoreDecription()" class="action-button">
+            <mat-icon>add</mat-icon> Add Description
+          </button>
+          <button mat-stroked-button color="warn" (click)="RemoveDecription()" [disabled]="description.length <= 1" class="action-button">
+            <mat-icon>remove</mat-icon> Remove Description
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Link Section -->
+    <div class="form-section">
+      <div class="section-card">
+        <div class="section-header">
+          <mat-icon class="section-icon">link</mat-icon>
+          <h3 class="section-title">Website Link</h3>
+        </div>
+        
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Website Link</mat-label>
           <input matInput formControlName="link" placeholder="https://example.com">
@@ -40,14 +110,78 @@
             <span *ngIf="angForm.get('link')?.errors?.['pattern']">Please enter a valid URL</span>
           </mat-error>
         </mat-form-field>
+      </div>
+    </div>
 
-        <!-- Basket Option -->
+    <!-- Basket Option Section -->
+    <div class="form-section">
+      <div class="section-card">
+        <div class="section-header">
+          <mat-icon class="section-icon">shopping_basket</mat-icon>
+          <h3 class="section-title">Basket Option</h3>
+        </div>
+
         <div class="form-row radio-group">
           <label class="radio-label">Do you want to Activate Basket Option?</label>
           <mat-radio-group formControlName="basketFlag" class="radio-buttons">
             <mat-radio-button [value]="0" color="primary">No</mat-radio-button>
             <mat-radio-button [value]="1" color="primary">Yes</mat-radio-button>
           </mat-radio-group>
+        </div>
+      </div>
+    </div>
+
+    <!-- Media Section -->
+    <div class="form-section">
+      <div class="section-card">
+        <div class="section-header">
+          <mat-icon class="section-icon">perm_media</mat-icon>
+          <h3 class="section-title">Media</h3>
+        </div>
+
+        <!-- Videos Upload -->
+        <div class="media-upload-section">
+          <div class="upload-header">
+            <mat-icon>videocam</mat-icon>
+            <span>Videos ({{SelectedVideoCount}} selected)</span>
+          </div>
+          <div class="upload-actions">
+            <button mat-stroked-button color="primary" (click)="videoInput.click()" class="upload-button">
+              <mat-icon>cloud_upload</mat-icon>
+              Choose Videos
+            </button>
+            <input #videoInput type="file" (change)="onVideoChange($event)" accept="video/*" multiple hidden>
+          </div>
+        </div>
+
+        <!-- Audio Upload -->
+        <div class="media-upload-section">
+          <div class="upload-header">
+            <mat-icon>audiotrack</mat-icon>
+            <span>Audio ({{SelectedAudioCount}} selected)</span>
+          </div>
+          <div class="upload-actions">
+            <button mat-stroked-button color="primary" (click)="audioInput.click()" class="upload-button">
+              <mat-icon>cloud_upload</mat-icon>
+              Choose Audio
+            </button>
+            <input #audioInput type="file" (change)="onAudioChange($event)" accept="audio/*" multiple hidden>
+          </div>
+        </div>
+
+        <!-- Images Upload -->
+        <div class="media-upload-section">
+          <div class="upload-header">
+            <mat-icon>image</mat-icon>
+            <span>Images ({{SelectedImgCount}} selected)</span>
+          </div>
+          <div class="upload-actions">
+            <button mat-stroked-button color="primary" (click)="fileInput.click()" class="upload-button">
+              <mat-icon>cloud_upload</mat-icon>
+              Choose Images
+            </button>
+            <input #fileInput type="file" (change)="onFileChange($event)" accept="image/*" multiple hidden>
+          </div>
         </div>
       </div>
     </div>
@@ -68,8 +202,8 @@
                    placeholder="Enter location to search">
             <mat-icon matPrefix>search</mat-icon>
           </mat-form-field>
-          <button mat-flat-button color="primary" (click)="setlocation()" class="search-button">
-            <mat-icon>place</mat-icon>
+          <button mat-flat-button color="accent" (click)="setlocation()" style="padding:28px;">
+           
             Set Location
           </button>
         </div>
@@ -110,93 +244,6 @@
                 </button>
               </mat-card-content>
             </mat-card> -->
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Description Section -->
-    <div class="form-section">
-      <div class="section-card">
-        <div class="section-header">
-          <mat-icon class="section-icon">description</mat-icon>
-          <h3 class="section-title">Description</h3>
-        </div>
-
-        <div formArrayName="description" class="description-container">
-          <div *ngFor="let item of description.controls; let i = index" class="description-item">
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Description {{i + 1}}</mat-label>
-              <textarea matInput #inputDesc [formControlName]="i" maxlength="400" 
-                      cdkTextareaAutosize cdkAutosizeMinRows="3" cdkAutosizeMaxRows="5"
-                      placeholder="Enter monument description"></textarea>
-              <mat-icon matPrefix>subject</mat-icon>
-              <mat-hint align="end">{{inputDesc.value.length || 0}}/400</mat-hint>
-            </mat-form-field>
-          </div>
-        </div>
-
-        <div class="button-row">
-          <button mat-stroked-button color="primary" (click)="addMoreDecription()" class="action-button">
-            <mat-icon>add</mat-icon> Add Description
-          </button>
-          <button mat-stroked-button color="warn" (click)="RemoveDecription()" [disabled]="description.length <= 1" class="action-button">
-            <mat-icon>remove</mat-icon> Remove Description
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Media Section -->
-    <div class="form-section">
-      <div class="section-card">
-        <div class="section-header">
-          <mat-icon class="section-icon">perm_media</mat-icon>
-          <h3 class="section-title">Media</h3>
-        </div>
-
-        <!-- Images Upload -->
-        <div class="media-upload-section">
-          <div class="upload-header">
-            <mat-icon>image</mat-icon>
-            <span>Images ({{SelectedImgCount}} selected)</span>
-          </div>
-          <div class="upload-actions">
-            <button mat-stroked-button color="primary" (click)="fileInput.click()" class="upload-button">
-              <mat-icon>cloud_upload</mat-icon>
-              Choose Images
-            </button>
-            <input #fileInput type="file" (change)="onFileChange($event)" accept="image/*" multiple hidden>
-          </div>
-        </div>
-
-        <!-- Videos Upload -->
-        <div class="media-upload-section">
-          <div class="upload-header">
-            <mat-icon>videocam</mat-icon>
-            <span>Videos ({{SelectedVideoCount}} selected)</span>
-          </div>
-          <div class="upload-actions">
-            <button mat-stroked-button color="primary" (click)="videoInput.click()" class="upload-button">
-              <mat-icon>cloud_upload</mat-icon>
-              Choose Videos
-            </button>
-            <input #videoInput type="file" (change)="onVideoChange($event)" accept="video/*" multiple hidden>
-          </div>
-        </div>
-
-        <!-- Audio Upload -->
-        <div class="media-upload-section">
-          <div class="upload-header">
-            <mat-icon>audiotrack</mat-icon>
-            <span>Audio ({{SelectedAudioCount}} selected)</span>
-          </div>
-          <div class="upload-actions">
-            <button mat-stroked-button color="primary" (click)="audioInput.click()" class="upload-button">
-              <mat-icon>cloud_upload</mat-icon>
-              Choose Audio
-            </button>
-            <input #audioInput type="file" (change)="onAudioChange($event)" accept="audio/*" multiple hidden>
           </div>
         </div>
       </div>

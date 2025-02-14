@@ -1,23 +1,50 @@
 <!-- Dialog Header -->
-<mat-toolbar color="primary" class="dialog-header">
+<mat-toolbar class="dialog-header">
   <div class="header-content">
-    <mat-icon class="header-icon">edit_location</mat-icon>
+ 
     <h2 class="header-title">Edit Monument</h2>
   </div>
   <button mat-icon-button class="close-button" [mat-dialog-close]="true">
     <mat-icon>close</mat-icon>
   </button>
 </mat-toolbar>
-
+<style>
+  .close-button {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 30px !important;
+    line-height: 30px !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  .close-button .mat-icon {
+    font-size: 20px !important;
+    width: 20px !important;
+    height: 20px !important;
+    line-height: 20px !important;
+  }
+  
+  .no-ripple::after {
+    background-image: none !important;
+    transition: none !important;
+  }
+  .no-ripple:hover {
+    background: none !important;
+  }
+  .no-ripple .mat-ripple-element {
+    display: none !important;
+  }
+  </style>
 <form [formGroup]="angForm" class="dialog-form">
   <mat-dialog-content class="dialog-content">
     <!-- Basic Information Section -->
     <div class="form-section">
       <div class="section-card">
-        <div class="section-header">
-          <mat-icon class="section-icon">info</mat-icon>
-          <h3 class="section-title">Basic Information</h3>
-        </div>
+      
         
         <!-- Monument Name -->
         <mat-form-field appearance="outline" class="full-width">
