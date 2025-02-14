@@ -1,0 +1,72 @@
+<app-content-header
+  [title]="'Leaderboard New'"
+  [icon]="'leaderboard'"
+  [hideBreadcrumb]="true"
+  [hasBgImage]="true"
+  [class]="'pb-4 pt-4 text-center'"
+></app-content-header>
+
+<div class="main-container">
+  <form (ngSubmit)="onSubmit(searchForm.value)" #searchForm="ngForm" class="search-form">
+    <select
+      class="form-select"
+      name="location_name"
+      [(ngModel)]="location_name"
+      (ngModelChange)="get_location_id($event)"
+    >
+      <option value="">World</option>
+      <option *ngFor="let location of dataSourceLocation" [value]="location.id">
+        {{ location.location_name }}
+      </option>
+    </select>
+
+    <select
+      class="form-select"
+      name="circuit_name"
+      [(ngModel)]="circuit_name"
+      ngModel
+    >
+      <option value="">World</option>
+      <option *ngFor="let circuit of dataSourceCircuit" [value]="circuit.id">
+        {{ circuit.circuit_name }}
+      </option>
+    </select>
+
+    <button mat-raised-button color="primary" type="submit">
+      <mat-icon>search</mat-icon>
+      <span>SUBMIT</span>
+    </button>
+  </form>
+
+  <div class="table-responsive">
+    <div align="center" *ngIf="spinner">
+      <mat-spinner></mat-spinner>
+    </div>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>RANK</th>
+          <th>TEAM NAME</th>
+          <th>TOTAL POINTS</th>
+          <th>NUMBER OF PLAYERS</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let res of dataSource2" [ngClass]="{
+          'rank-1': res.s_no === 1,
+          'rank-2': res.s_no === 2,
+          'rank-3': res.s_no === 3
+        }">
+          <td>
+            {{ res.s_no }}
+            <mat-icon *ngIf="res.s_no <= 3" class="rank-icon">accessibility_new</mat-icon>
+          </td>
+          <td>{{ res.team_name | decode }}</td>
+          <td>{{ res.totalpoints }}</td>
+          <td>{{ res.totalplayer }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div> 

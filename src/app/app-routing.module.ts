@@ -51,6 +51,11 @@ const routes: Routes = [
         data: { breadcrumb: 'Leaderboard' }
       },
       {
+        path: 'leaderboard-new',
+        loadChildren: () => import('./pages/leaderboard-new/leaderboard-new.module').then(m => m.LeaderboardNewModule),
+        data: { breadcrumb: 'Leaderboard New' }
+      },
+      {
         path: 'opportunities',
         loadChildren: () => import('./pages/opportunities/opportunities.module').then(m => m.OpportunitiesModule),
         data: { breadcrumb: 'Opportunities Management' }

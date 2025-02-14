@@ -1,18 +1,18 @@
-<div class="dialog-content p-3" style="min-width: 400px;">
-    <h3 class="mb-3">Edit Trainer</h3>
+<div class="dialog-content" style="min-width: 400px;">
+    <h2 mat-dialog-title>Edit Trainer</h2>
 
     <form [formGroup]="angForm" novalidate>
         <div class="form-content">
-            <mat-form-field appearance="outline" class="w-100 mb-2">
-                <mat-label>Name</mat-label>
-                <input matInput placeholder="Enter name" name="name"
+            <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Trainer Name</mat-label>
+                <input matInput placeholder="Enter trainer name" name="name"
                     formControlName="name">
                 <mat-error *ngIf="angForm.controls['name'].errors?.['required']">
                     Trainer Name is required
                 </mat-error>
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="w-100 mb-2">
+            <mat-form-field appearance="outline" class="w-100">
                 <mat-label>Email</mat-label>
                 <input matInput placeholder="Enter email" name="email"
                     formControlName="email">
@@ -21,7 +21,7 @@
                 </mat-error>
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="w-100 mb-3">
+            <mat-form-field appearance="outline" class="w-100">
                 <mat-label>Phone</mat-label>
                 <input matInput placeholder="Enter phone" name="phone"
                     formControlName="phone">
@@ -29,14 +29,15 @@
                     Invalid Phone number
                 </mat-error>
             </mat-form-field>
+        </div>
 
-            <div class="text-center mt-2">
-                <button mat-raised-button color="primary" class="px-5"
-                    [disabled]="clicked || angForm.invalid" 
-                    (click)="UpdateTrainer(); clicked=true">
-                    Update Trainer
-                </button>
-            </div>
+        <div mat-dialog-actions align="end">
+            <button mat-button (click)="dialogRef.close()">Cancel</button>
+            <button mat-raised-button color="primary"
+                [disabled]="clicked || angForm.invalid" 
+                (click)="UpdateTrainer(); clicked=true">
+                Update Trainer
+            </button>
         </div>
     </form>
 </div>

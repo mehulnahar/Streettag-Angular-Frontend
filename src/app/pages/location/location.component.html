@@ -7,11 +7,16 @@
 </app-content-header>
 
 <div>
-  <div style=" padding: 0 16px; background-color: #3F50B4;">
+  <!-- <div style=" padding: 0 16px; background-color: #3F50B4;">
     <button mat-raised-button style="background: #ff4081; color: white;" (click)="openAddMessageDialog()" class="add-location-btn">
       Add Location
     </button>
-  </div>
+  </div> -->
+  <mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="space-between center">
+    <div fxLayout="row" fxLayoutAlign="center center">
+      <button mat-raised-button color="accent" (click)="openAddMessageDialog()" class="compose" fxShow="false" fxShow.gt-xs>Add Location</button>       
+    </div>
+  </mat-toolbar>
 
   <div class="mat-elevation-z8" style="margin-bottom: 20px;">
     <mat-form-field style="width: 100%; background: white;">

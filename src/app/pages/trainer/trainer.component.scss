@@ -1,4 +1,3 @@
-
 .mat-column-trainer_name,
 .mat-column-phone{
   max-width: 22rem;
@@ -37,4 +36,43 @@
 .mat-cell:nth-child(6),
 .mat-header-cell:nth-child(6) {
   flex: 0 0 6rem;
+}
+
+.dialog-content {
+    padding: 24px;
+
+    h2 {
+        margin: 0 0 24px 0;
+        font-size: 20px;
+        font-weight: 500;
+    }
+
+    .form-content {
+        margin-bottom: 16px;
+
+        mat-form-field {
+            margin-bottom: 16px;
+            width: 100%;
+        }
+    }
+
+    [mat-dialog-actions] {
+        padding: 8px 0;
+        margin: 0;
+        
+        button {
+            margin-left: 8px;
+        }
+    }
+}
+
+// Table styles
+.mat-elevation-z8 {
+    margin-top: 16px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.remove-border {
+    border: none !important;
 }

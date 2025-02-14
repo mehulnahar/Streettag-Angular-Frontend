@@ -11,6 +11,7 @@ export const verticalMenuItems = [
     new Menu (9, 'Consents', '/admin/consents', null, 'event', null, false, 0),  
     new Menu (10, 'Sponsor', '/admin/sponsor', null, 'euro', null, false, 0),  
     new Menu (11, 'Leaderboard', '/admin/leaderboard', null, 'leaderboard', null, false, 0),
+    new Menu (46, 'Leaderboard New', '/admin/leaderboard-new', null, 'leaderboard', null, false, 0),
     new Menu (12, 'Give Bonus Points', '/admin/give-bonus-points', null, 'emoji_events', null, false, 0),    
     new Menu (13, 'School', '/admin/school', null, 'school', null, false, 0),
     new Menu (14, 'Gift Code Generation', '/admin/giftcard', null, 'card_giftcard', null, false, 0),

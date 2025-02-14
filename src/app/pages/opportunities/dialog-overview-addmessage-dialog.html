@@ -1,22 +1,24 @@
-<div class="mat-typography">
+<div class="dialog-container">
   <h2 mat-dialog-title>Add Opportunity</h2>
 
   <mat-dialog-content>
-    <form [formGroup]="angForm">
-      <mat-form-field appearance="outline" class="w-100">
+    <form [formGroup]="angForm" novalidate>
+      <mat-form-field appearance="fill">
         <mat-label>Opportunity Text</mat-label>
-        <input matInput formControlName="opportunity_data">
+        <input matInput placeholder="Enter opportunity text" formControlName="opportunity_data" [(ngModel)]="opportunity_data">
+        <mat-icon matSuffix>description</mat-icon>
         <mat-error *ngIf="angForm.get('opportunity_data')?.errors?.['required'] && angForm.get('opportunity_data')?.touched">
           Opportunity text required
         </mat-error>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="w-100">
+      <mat-form-field appearance="fill">
         <mat-label>Opportunity Link</mat-label>
-        <input matInput formControlName="opportunity_link">
+        <input matInput placeholder="Enter opportunity link" formControlName="opportunity_link" [(ngModel)]="opportunity_link">
+        <mat-icon matSuffix>link</mat-icon>
       </mat-form-field>
 
-      <div>
+      <div class="file-upload-section">
         <button mat-stroked-button type="button" (click)="fileInput.click()">
           <mat-icon>attach_file</mat-icon>
           Choose File
@@ -24,17 +26,18 @@
         <input hidden (change)="handleInputChange($event)" #fileInput type="file" accept="image/*">
       </div>
 
-      <div *ngIf="imageSrc" class="my-3">
-        <img [src]="imageSrc" style="max-height: 120px; max-width: 120px; border-radius: 4px;">
+      <div *ngIf="imageSrc" class="image-preview">
+        <img [src]="imageSrc" class="preview-image">
       </div>
 
-      <mat-form-field appearance="outline" class="w-100">
+      <mat-form-field appearance="fill">
         <mat-label>Select Circuits</mat-label>
-        <mat-select formControlName="circuit_name" multiple>
+        <mat-select formControlName="circuit_name" [(ngModel)]="circuit_name" multiple>
           <mat-option *ngFor="let circuit of dataSourceCircuit" [value]="circuit.circuit_name">
             {{circuit.circuit_name}}
           </mat-option>
         </mat-select>
+        <mat-icon matSuffix>location_on</mat-icon>
         <mat-error *ngIf="angForm.get('circuit_name')?.errors?.['required'] && angForm.get('circuit_name')?.touched">
           Please select at least one circuit
         </mat-error>
@@ -44,8 +47,68 @@
 
   <mat-dialog-actions align="end">
     <button mat-button mat-dialog-close color="basic">Cancel</button>
-    <button mat-raised-button [ngStyle]="{'background-color': angForm.valid ? '#3f51b5' : '#E0E0E0', 'color': 'white'}" (click)="addevent()" [disabled]="!angForm.valid">
-      Add Opportunity
+    <button mat-raised-button 
+            class="add-btn"
+            (click)="addevent()" 
+            [disabled]="!angForm.valid">
+        <mat-icon>add</mat-icon>
+        Add Opportunity
     </button>
   </mat-dialog-actions>
 </div>
+
+<style>
+/* .dialog-container {
+  padding: 20px;
+} */
+
+.file-upload-section {
+  margin: 16px 0;
+}
+
+.image-preview {
+  display: flex;
+  justify-content: center;
+  margin: 16px 0;
+}
+
+.preview-image {
+  max-height: 120px;
+  max-width: 120px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+mat-form-field {
+  display: block;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+::ng-deep .mat-mdc-form-field {
+  width: 100%;
+}
+
+::ng-deep .mat-mdc-form-field-appearance-fill .mat-mdc-form-field-flex {
+  border-radius: 0 !important;
+  background-color: #f5f5f5;
+}
+
+::ng-deep .mat-mdc-raised-button {
+  border-radius: 0 !important;
+}
+
+::ng-deep .mat-mdc-button {
+  border-radius: 0 !important;
+}
+
+.add-btn {
+  background-color: #3f51b5 !important;
+  color: white !important;
+}
+
+.add-btn:disabled {
+  background-color: rgba(0, 0, 0, 0.12) !important;
+  color: rgba(0, 0, 0, 0.38) !important;
+}
+</style>

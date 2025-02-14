@@ -1,59 +1,61 @@
 <div class="p-4" style="width:100%; height:420px;" perfectScrollbar>
     <div style="width:100%;height:350px;">
-        <h3 class="mb-4">Edit Charity</h3>
-        <div style="width:100%;">
-            <form [formGroup]="angForm" novalidate>
-                <mat-form-field class="w-100" style="margin-top:15px;">
-                    <input matInput placeholder="Title" formControlName="title">
-                </mat-form-field>
+        <div style="width:90%; margin: 0 auto;">
+            <h3 class="mb-4">Edit Charity</h3>
+            <div style="width:100%;">
+                <form [formGroup]="angForm" novalidate style="display: flex; flex-direction: column; width: 100%;">
+                    <mat-form-field style="width:100% !important;" class="w-100">
+                        <input matInput placeholder="Title" formControlName="title">
+                    </mat-form-field>
 
-                <div style="width: 100%;" *ngIf="angForm.get('title')?.invalid && (angForm.get('title')?.dirty || angForm.get('title')?.touched)"
-                    class="alert alert-danger">
-                    <div *ngIf="angForm.get('title')?.errors?.['required']">
-                        Please Enter Title
+                    <div style="width: 100%;" *ngIf="angForm.get('title')?.invalid && (angForm.get('title')?.dirty || angForm.get('title')?.touched)"
+                        class="alert alert-danger">
+                        <div *ngIf="angForm.get('title')?.errors?.['required']">
+                            Please Enter Title
+                        </div>
                     </div>
-                </div>
 
-                <mat-form-field class="w-100" style="margin-top:15px;">
-                    <mat-label>Description</mat-label>
-                    <textarea matInput formControlName="description" rows="3"></textarea>
-                </mat-form-field>
+                    <mat-form-field style="width:100% !important;" class="w-100">
+                        <mat-label>Description</mat-label>
+                        <textarea matInput formControlName="description" rows="3"></textarea>
+                    </mat-form-field>
 
-                <div style="width: 100%;" *ngIf="angForm.get('description')?.invalid && (angForm.get('description')?.dirty || angForm.get('description')?.touched)"
-                    class="alert alert-danger">
-                    <div *ngIf="angForm.get('description')?.invalid">
-                        Description is required.
+                    <div style="width: 100%;" *ngIf="angForm.get('description')?.invalid && (angForm.get('description')?.dirty || angForm.get('description')?.touched)"
+                        class="alert alert-danger">
+                        <div *ngIf="angForm.get('description')?.invalid">
+                            Description is required.
+                        </div>
                     </div>
-                </div>
 
-                <div class="my-3">
-                    <label class="mb-2">Match Fund: </label>
-                    <mat-radio-group [(ngModel)]="Fund" [ngModelOptions]="{standalone: true}" class="ml-3">
-                        <mat-radio-button style="margin-right: 20px; margin-left: 10px;" [value]="'1'">Yes</mat-radio-button>
-                        <mat-radio-button [value]="'0'">No</mat-radio-button>
-                    </mat-radio-group>
-                </div>
+                    <div class="my-3" style="width:100%;">
+                        <label class="mb-2">Match Fund: </label>
+                        <mat-radio-group [(ngModel)]="Fund" [ngModelOptions]="{standalone: true}" class="ml-3" style="display: inline-flex;">
+                            <mat-radio-button style="margin-right: 20px; margin-left: 10px;" [value]="'1'">Yes</mat-radio-button>
+                            <mat-radio-button [value]="'0'">No</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
 
-                <div class="my-3">
-                    <label class="mb-2 d-block">Update Charity Image:</label>
-                    <input type="file" (change)="handleInputChange($event)" 
-                        accept="image/gif,image/jpeg,image/png,image/jpg" class="w-100">
-                </div>
+                    <div class="my-3" style="width:100%;">
+                        <label class="mb-2 d-block">Update Charity Image:</label>
+                        <input type="file" (change)="handleInputChange($event)" 
+                            accept="image/gif,image/jpeg,image/png,image/jpg" style="width:100% !important;">
+                    </div>
 
-                <div class="my-3">
-                    <label class="mb-2 d-block">Current Image:</label>
-                    <img [src]="charity_image" style="height:120px; width:120px;" alt="Charity Image">
-                </div>
+                    <div class="my-3" style="width:100%; margin-top: 10px !important;">
+                        <label class="mb-2 d-block">Current Image:</label>
+                        <img [src]="charity_image" style="height:120px; width:120px;" alt="Charity Image">
+                    </div>
 
-                <div class="text-center mt-4">
-                    <button mat-raised-button color="primary" 
-                        [disabled]="!angForm.valid || clicked"
-                        (click)="editCharityData()"
-                        style="min-width: 120px; border-radius: 20px;">
-                        Update Charity
-                    </button>
-                </div>
-            </form>
+                    <div class="text-center mt-4" style="width:100%;">
+                        <button mat-raised-button color="primary" 
+                            [disabled]="!angForm.valid || clicked"
+                            (click)="editCharityData()"
+                            style="min-width: 120px; border-radius: 20px; margin-top: 19px !important;">
+                            Update Charity
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
