@@ -6,86 +6,90 @@
   [class]="'pb-4'">
 </app-content-header>
 
-<mat-toolbar class="toolbar" style="background-color: #283593;">
-  <button mat-raised-button color="accent" (click)="addMonument()">
-    <mat-icon>add</mat-icon> Add Monument
-  </button>
-</mat-toolbar>
+<div fxLayout="column" class="p-2">
+    <div class="p-2">
+        <mat-toolbar class="toolbar" style="background-color: #283593;">
+            <button mat-raised-button color="accent" (click)="addMonument()">
+                <mat-icon>add</mat-icon> Add Monument
+            </button>
+        </mat-toolbar>
 
-<div class="mat-elevation-z8">
-  <mat-form-field>
-    <mat-label>Filter</mat-label>
-    <input matInput (keyup)="applyFilter($event)" placeholder="Type to filter all columns">
-  </mat-form-field>
+        <div fxLayout="column" class="mat-elevation-z8">
+            <mat-form-field class="px-3 py-1">
+                <mat-label>Filter</mat-label>
+                <input matInput (keyup)="applyFilter($event)" placeholder="Type to filter all columns">
+            </mat-form-field>
+        </div>
 
-  <mat-table [dataSource]="dataSource" matSort>
-    <!-- Serial Number Column -->
-    <ng-container matColumnDef="serial_number">
-      <mat-header-cell *matHeaderCellDef> No. </mat-header-cell>
-      <mat-cell *matCellDef="let i = index"> {{i + 1}} </mat-cell>
-    </ng-container>
+        <mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+            <!-- Serial Number Column -->
+            <ng-container matColumnDef="serial_number">
+                <mat-header-cell *matHeaderCellDef> No. </mat-header-cell>
+                <mat-cell *matCellDef="let i = index"> {{i + 1}} </mat-cell>
+            </ng-container>
 
-    <!-- Name Column -->
-    <ng-container matColumnDef="name">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Monument Name </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
-    </ng-container>
+            <!-- Name Column -->
+            <ng-container matColumnDef="name">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Monument Name </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+            </ng-container>
 
-    <!-- Description Column -->
-    <ng-container matColumnDef="description">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Description </mat-header-cell>
-      <mat-cell *matCellDef="let element" class="line-clamp"> {{element.description}} </mat-cell>
-    </ng-container>
+            <!-- Description Column -->
+            <ng-container matColumnDef="description">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Description </mat-header-cell>
+                <mat-cell *matCellDef="let element" class="line-clamp"> {{element.description}} </mat-cell>
+            </ng-container>
 
-    <!-- Latitude Column -->
-    <ng-container matColumnDef="lat">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Latitude </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element.lat}} </mat-cell>
-    </ng-container>
+            <!-- Latitude Column -->
+            <ng-container matColumnDef="lat">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Latitude </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.lat}} </mat-cell>
+            </ng-container>
 
-    <!-- Longitude Column -->
-    <ng-container matColumnDef="lng">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Longitude </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element.lng}} </mat-cell>
-    </ng-container>
+            <!-- Longitude Column -->
+            <ng-container matColumnDef="lng">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Longitude </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.lng}} </mat-cell>
+            </ng-container>
 
-    <!-- Link Column -->
-    <ng-container matColumnDef="link">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Link </mat-header-cell>
-      <mat-cell *matCellDef="let element">
-        <a *ngIf="element.link" [href]="element.link" target="_blank" rel="noopener" class="visit-link">
-          <mat-icon>link</mat-icon>
-          <span>Visit Link</span>
-        </a>
-      </mat-cell>
-    </ng-container>
+            <!-- Link Column -->
+            <ng-container matColumnDef="link">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Link </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <a *ngIf="element.link" [href]="element.link" target="_blank" rel="noopener" class="visit-link">
+                        <mat-icon>link</mat-icon>
+                        <span>Visit Link</span>
+                    </a>
+                </mat-cell>
+            </ng-container>
 
-    <!-- Basket Flag Column -->
-    <ng-container matColumnDef="basketFlag">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Basket </mat-header-cell>
-      <mat-cell *matCellDef="let element">
-        <span class="status-badge" [class.active]="element.add_basket === 1" [class.inactive]="element.add_basket === 0">
-          {{element.add_basket === 1 ? 'Activated' : 'Deactivated'}}
-        </span>
-      </mat-cell>
-    </ng-container>
+            <!-- Basket Flag Column -->
+            <ng-container matColumnDef="basketFlag">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Basket </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <span class="status-badge" [class.active]="element.add_basket === 1" [class.inactive]="element.add_basket === 0">
+                        {{element.add_basket === 1 ? 'Activated' : 'Deactivated'}}
+                    </span>
+                </mat-cell>
+            </ng-container>
 
-    <!-- Actions Column -->
-    <ng-container matColumnDef="edit">
-      <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
-      <mat-cell *matCellDef="let element">
-        <button mat-icon-button color="primary" (click)="editMonument(element)" matTooltip="Edit">
-          <mat-icon>edit</mat-icon>
-        </button>
-        <button mat-icon-button color="warn" (click)="deleteMonument(element.id)" matTooltip="Delete">
-          <mat-icon>delete</mat-icon>
-        </button>
-      </mat-cell>
-    </ng-container>
+            <!-- Actions Column -->
+            <ng-container matColumnDef="edit">
+                <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <button mat-icon-button color="primary" (click)="editMonument(element)" matTooltip="Edit">
+                        <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button color="warn" (click)="deleteMonument(element.id)" matTooltip="Delete">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </mat-cell>
+            </ng-container>
 
-    <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-  </mat-table>
+            <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
 
-  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" [pageSize]="10" showFirstLastButtons></mat-paginator>
+        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" [pageSize]="10" showFirstLastButtons></mat-paginator>
+    </div>
 </div>
