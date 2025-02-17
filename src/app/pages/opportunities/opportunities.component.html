@@ -49,7 +49,10 @@
 
             <ng-container matColumnDef="opportunity_link">
                 <mat-header-cell *matHeaderCellDef>Opportunity Link </mat-header-cell>
-                <mat-cell *matCellDef="let element"> <a [href]="element.opportunity_link" target="_blank"> Link</a></mat-cell>
+                <mat-cell *matCellDef="let element"> 
+                    <a [href]="formatUrl(element.opportunity_link)" target="_blank" *ngIf="element.opportunity_link"> Link</a>
+                    <span *ngIf="!element.opportunity_link">-</span>
+                </mat-cell>
             </ng-container>
 
             <ng-container matColumnDef="circuits">

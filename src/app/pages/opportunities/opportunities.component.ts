@@ -230,6 +230,17 @@ export class OpportunitiesComponent implements OnInit {
       }
     );
   }
+
+  formatUrl(url: string): string {
+    if (!url) return '';
+    
+    // Check if the URL starts with http:// or https://
+    if (!url.match(/^https?:\/\//i)) {
+      // If not, prepend https://
+      url = 'https://' + url;
+    }
+    return url;
+  }
 }
 
 @Component({
@@ -269,7 +280,8 @@ export class DialogOverviewAddMessageDialogOpportunities {
   createForm() {
     this.angForm = this.fb.group({
       opportunity_data: ['', [Validators.required]],
-      circuit_name: ['', [Validators.required]]
+      circuit_name: ['', [Validators.required]],
+      opportunity_link: ['']
     });
   }
 
@@ -318,8 +330,8 @@ export class DialogOverviewAddMessageDialogOpportunities {
       const data = {
         circuits: this.circuit_name,
         opportunity_data: this.opportunity_data,
-        opportunity_image: this.imageSrc,
-        opportunity_link: this.opportunity_link,
+        opportunity_image: this.imageSrc || '',
+        opportunity_link: this.opportunity_link || '',
         circuit_ids: circuit_id_str,
       };
 
