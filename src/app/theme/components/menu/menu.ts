@@ -42,7 +42,7 @@ export const verticalMenuItems = [
     new Menu (36, 'NFC Management', null, null, 'format_list_bulleted', null, true, 0), 
     new Menu (37, 'NFC Registration', '/admin/nfc/nfc-registration', null, 'nfc', null, false, 36), 
     new Menu (39, 'Child Registration', '/admin/nfc/child-registration', null, 'nfc', null, false, 36), 
-    new Menu (33, 'Steps Support', '/admin/steps-support', null, 'directions_walk', null, false, 0),
+    new Menu (40, 'Steps Support', '/admin/steps-support', null, 'directions_walk', null, false, 0),
     new Menu (34, 'DOB Change', '/admin/dob-change', null, 'date_range', null, false, 0),
     new Menu (35, 'Fruit Card', '/admin/demo', null, 'qr_code', null, false, 0),
     new Menu (36, 'User Remove', '/admin/user-delete', null, 'person_remove', null, false, 0),
