@@ -33,16 +33,16 @@
                 <ng-container matColumnDef="edit">
                     <mat-header-cell *matHeaderCellDef>Edit</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        <button mat-icon-button matTooltip="Click to Edit" (click)="openEditDialog(element)">
+                        <button mat-icon-button color="primary" matTooltip="Click to Edit" (click)="openEditDialog(element)">
                             <mat-icon>edit</mat-icon>
                         </button>
                     </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="delete">
-                    <mat-header-cell *matHeaderCellDef>Delete</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef >Delete</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        <button mat-icon-button matTooltip="Click to Delete" (click)="confirmDialog(element)">
+                        <button mat-icon-button color="warn" matTooltip="Click to Delete" (click)="confirmDialog(element)">
                             <mat-icon>delete</mat-icon>
                         </button>
                     </mat-cell>
