@@ -1,63 +1,58 @@
 <app-content-header [title]="'Send Gift Card'" [icon]="'card_giftcard'" [hideBreadcrumb]="true" [hasBgImage]="true"
     [class]="'pt-2'"></app-content-header>
 
-<div class="page-header">
+<div fxLayout="column" class="p-2">
+  <div class="p-2" style="margin-bottom: 30px;">
+    <mat-toolbar class="toolbar" style="background-color: #283593;">
+      <button mat-raised-button color="accent" (click)="openAddMessageDialog()">
+        <mat-icon>card_giftcard</mat-icon> Send Gift Codes
+      </button>
+    </mat-toolbar>
 
- 
-        <button mat-raised-button color="accent" (click)="openAddMessageDialog()" class="send-gift-btn">
-            Send Gift Codes
-        </button>
-  
-</div>
-
-
-
-<div class="container">
-    <div class="mat-elevation-z8">
-        <div class="table-header">
-            <mat-form-field appearance="outline">
-                <mat-label>Filter</mat-label>
-                <input matInput (keyup)="applyFilter($event)" placeholder="Type to filter all columns">
-            </mat-form-field>
-        </div>
-
-        <mat-table [dataSource]="dataSource" matSort class="w-100">
-            <ng-container matColumnDef="serial_number">
-                <mat-header-cell *matHeaderCellDef mat-sort-header>S No.</mat-header-cell>
-                <mat-cell *matCellDef="let element; let i = index">{{ i + 1 }}</mat-cell>
-            </ng-container>
-
-            <ng-container matColumnDef="player_id">
-                <mat-header-cell *matHeaderCellDef mat-sort-header>Player ID</mat-header-cell>
-                <mat-cell *matCellDef="let element" class="player-id-cell">
-                    <span class="player-id">{{ element.player_id | decode}}</span>
-                </mat-cell>
-            </ng-container>
-
-            <ng-container matColumnDef="amount">
-                <mat-header-cell *matHeaderCellDef mat-sort-header>Amount</mat-header-cell>
-                <mat-cell *matCellDef="let element">{{ element.amount }}</mat-cell>
-            </ng-container>
-
-            <ng-container matColumnDef="gift_code">
-                <mat-header-cell *matHeaderCellDef mat-sort-header>Gift Card</mat-header-cell>
-                <mat-cell *matCellDef="let element">{{ element.gift_code }}</mat-cell>
-            </ng-container>
-
-            <ng-container matColumnDef="creationRequestId">
-                <mat-header-cell *matHeaderCellDef mat-sort-header>Request ID</mat-header-cell>
-                <mat-cell *matCellDef="let element">{{ element?.creationRequestId || element?.request_id }}</mat-cell>
-            </ng-container>
-
-            <ng-container matColumnDef="alloted_date">
-                <mat-header-cell *matHeaderCellDef mat-sort-header>Alloted Date</mat-header-cell>
-                <mat-cell *matCellDef="let element">{{ element.alloted_date }}</mat-cell>
-            </ng-container>
-
-            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
-        </mat-table>
-
-        <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    <div fxLayout="column" class="mat-elevation-z8">
+      <mat-form-field class="px-3 py-1">
+        <mat-label>Filter</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Type to filter all columns">
+      </mat-form-field>
     </div>
+
+    <mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+      <ng-container matColumnDef="serial_number">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>S No.</mat-header-cell>
+        <mat-cell *matCellDef="let element; let i = index">{{ i + 1 }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="player_id">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Player ID</mat-header-cell>
+        <mat-cell *matCellDef="let element" class="player-id-cell">
+          <span class="player-id">{{ element.player_id | decode}}</span>
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="amount">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Amount</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.amount }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="gift_code">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Gift Card</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.gift_code }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="creationRequestId">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Request ID</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element?.creationRequestId || element?.request_id }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="alloted_date">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Alloted Date</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.alloted_date }}</mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    </mat-table>
+
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" [pageSize]="10" showFirstLastButtons></mat-paginator>
+  </div>
 </div>
