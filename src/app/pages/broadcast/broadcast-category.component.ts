@@ -333,7 +333,7 @@ export class DeleteConfirmationDialogComponent {
     </mat-toolbar>
 
     <div fxLayout="column" class="p-2">
-      <div class="p-2">
+      <div class="p-2" style="margin-bottom: 30px;">
         <div fxLayout="column" class="mat-elevation-z8">
           <mat-form-field class="px-3 py-1">
             <input matInput [(ngModel)]="searchText" (keyup)="applyFilter($event)" placeholder="Type to filter all columns">
@@ -389,25 +389,8 @@ export class DeleteConfirmationDialogComponent {
     </div>
   `,
   styles: [`
-    .mat-toolbar {
-      margin-bottom: 20px;
-      border-radius: 4px;
-    }
-
-    .compose {
-      box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
-    }
-
-    .mat-elevation-z8 {
-      margin-bottom: 20px;
-    }
-
     .mat-form-field {
       width: 100%;
-    }
-
-    .mat-cell img {
-      object-fit: cover;
     }
 
     .mat-header-cell {
@@ -415,16 +398,12 @@ export class DeleteConfirmationDialogComponent {
       color: rgba(0, 0, 0, 0.87);
     }
 
+    .mat-cell img {
+      object-fit: cover;
+    }
+
     .mat-row:hover {
       background: rgba(0, 0, 0, 0.04);
-    }
-
-    .mat-icon-button {
-      transition: all 0.2s ease-in-out;
-    }
-
-    .mat-icon-button:hover {
-      transform: scale(1.1);
     }
 
     .mat-column-serial_number {
@@ -438,10 +417,6 @@ export class DeleteConfirmationDialogComponent {
     .mat-column-edit, .mat-column-delete {
       flex: 0 0 60px;
       justify-content: center;
-    }
-
-    .mat-paginator {
-      border-top: 1px solid rgba(0, 0, 0, 0.12);
     }
   `]
 })
