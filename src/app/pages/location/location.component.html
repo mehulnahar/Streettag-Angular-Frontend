@@ -1,29 +1,27 @@
 <app-content-header
-  [title]="'Location Management'"
   [icon]="'my_location'"
+  [title]="'Location Management'"
   [hideBreadcrumb]="true"
   [hasBgImage]="true"
-  [class]="'pt-2'">
+  [class]="'pb-4'">
 </app-content-header>
 
-<div>
-  <!-- <div style=" padding: 0 16px; background-color: #3F50B4;">
-    <button mat-raised-button style="background: #ff4081; color: white;" (click)="openAddMessageDialog()" class="add-location-btn">
-      Add Location
-    </button>
-  </div> -->
-  <mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="space-between center">
-    <div fxLayout="row" fxLayoutAlign="center center">
-      <button mat-raised-button color="accent" (click)="openAddMessageDialog()" class="compose" fxShow="false" fxShow.gt-xs>Add Location</button>       
+<div fxLayout="column" class="p-2">
+  <div class="p-2">
+    <mat-toolbar class="toolbar" style="background-color: #283593;">
+      <button mat-raised-button color="accent" (click)="openAddMessageDialog()">
+        <mat-icon>add</mat-icon> Add Location
+      </button>
+    </mat-toolbar>
+
+    <div fxLayout="column" class="mat-elevation-z8">
+      <mat-form-field class="px-3 py-1">
+        <mat-label>Filter</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Type to filter all columns">
+      </mat-form-field>
     </div>
-  </mat-toolbar>
 
-  <div class="mat-elevation-z8" style="margin-bottom: 20px;">
-    <mat-form-field style="width: 100%; background: white;">
-      <input matInput (keyup)="applyFilter($event)" placeholder="Type to filter all columns">
-    </mat-form-field>
-
-    <mat-table #table [dataSource]="dataSource" matSort>
+    <mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
       <!-- S No. Column -->
       <ng-container matColumnDef="serial_number">
         <mat-header-cell *matHeaderCellDef mat-sort-header>S No.</mat-header-cell>
@@ -44,12 +42,12 @@
 
       <!-- Edit Column -->
       <ng-container matColumnDef="edit">
-        <mat-header-cell *matHeaderCellDef>Edit</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
         <mat-cell *matCellDef="let element">
-          <button mat-icon-button color="primary" (click)="openEditDialog(element)">
+          <button mat-icon-button color="primary" (click)="openEditDialog(element)" matTooltip="Edit">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-icon-button color="warn" (click)="OpenDelete(element.id)">
+          <button mat-icon-button color="warn" (click)="OpenDelete(element.id)" matTooltip="Delete">
             <mat-icon>delete</mat-icon>
           </button>
         </mat-cell>
@@ -59,7 +57,7 @@
       <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
     </mat-table>
 
-    <mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[15, 20, 30]" showFirstLastButtons></mat-paginator>
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" [pageSize]="10" showFirstLastButtons></mat-paginator>
   </div>
 </div>
 
