@@ -1,6 +1,6 @@
-<mat-toolbar color="primary" class="dialog-header">
+<mat-toolbar  class="dialog-header">
   <span>Edit Monument Tour</span>
-  <button mat-icon-button class="close-button" [mat-dialog-close]="true">
+  <button mat-icon-button class="close-button" [mat-dialog-close]="true" style="margin-left: auto">
     <mat-icon>close</mat-icon>
   </button>
 </mat-toolbar>
@@ -44,7 +44,7 @@
       </google-map>
     </div>
 
-    <div class="form-row upload-section">
+    <div class="form-row upload-section" style="margin-top: 20px;">
       <div class="upload-button">
         <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" multiple hidden>
         <button mat-raised-button color="primary" type="button" (click)="fileInput.click()">
