@@ -1,4 +1,4 @@
-<div id="main" cdkScrollable (scroll)="onPsScrollY($event)" class="h-100">
+<div id="main" cdkScrollable class="h-100">
 
     <header class="header" [class.over]="showInfoContent">
         <app-top-info-content [showInfoContent]="showInfoContent" (onCloseInfoContent)="closeInfoContent(showInfoContent)"></app-top-info-content>
@@ -63,9 +63,4 @@
         <mat-icon>settings</mat-icon>
     </div> -->
 
-    <div #backToTop fxLayout="row" fxLayoutAlign="center center" class="back-to-top" (click)="scrollToTop()">
-        <mat-icon>arrow_upward</mat-icon>
-    </div>
-
-   
 </div>

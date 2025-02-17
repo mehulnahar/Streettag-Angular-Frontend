@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, HostListener, ViewChildren, QueryList, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener, ViewChildren, QueryList } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { AppSettings } from '../app.settings';
@@ -15,7 +15,6 @@ import { MenuService } from '../theme/components/menu/menu.service';
 })
 export class PagesComponent implements OnInit { 
   @ViewChild('sidenav', { static: false }) sidenav:any;  
-  @ViewChild('backToTop', { static: true }) backToTop!: ElementRef;  
   @ViewChildren(CdkScrollable) scrollables!: QueryList<CdkScrollable>;
   
   public settings: Settings;
@@ -43,14 +42,12 @@ export class PagesComponent implements OnInit {
 
   ngAfterViewInit(){
     setTimeout(() => { this.settings.loadingSpinner = false }, 300); 
-    this.backToTop.nativeElement.style.display = 'none'; 
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        this.scrollToTop();
-      } 
-      if(window.innerWidth <= 960){
-        this.sidenav.close(); 
-      }                
+        if(window.innerWidth <= 768){
+          this.settings.sidenavIsOpened = false;
+        }
+      }
     });
   }
 
@@ -81,21 +78,8 @@ export class PagesComponent implements OnInit {
     }
   }
 
-  public onPsScrollY(event: Event){   
-    const target = event.target as HTMLElement;
-    this.backToTop.nativeElement.style.display = target.scrollTop > 300 ? 'flex' : 'none';
-  }
-
-  public scrollToTop() {
-    this.scrollables.forEach(scrollable => {
-      if(scrollable.getElementRef().nativeElement.id === 'main'){
-        scrollable.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-    });
-  }
-  
   public closeSubMenus(){
-    if(this.settings.menuType === "vertical"){
+    if(this.settings.menuType === 'vertical'){
       this.menuService.closeAllSubMenus();
     }      
   }

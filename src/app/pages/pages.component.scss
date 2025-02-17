@@ -199,24 +199,6 @@
     }
 }
 
-.back-to-top{
-    position: fixed;
-    width: 40px;
-    height: 40px;
-    cursor: pointer;
-    z-index: 999999;
-    right: 20px;
-    bottom: 20px;
-    opacity: .5;
-    color: #fff;
-    background-color: rgba(0,0,0,.75);
-    border-radius: 50%;
-    transition: 0.3s;    
-    &:hover{
-        opacity: 0.9;
-    }    
-}
-
 #main {
     height: 100vh;
     overflow: hidden;
