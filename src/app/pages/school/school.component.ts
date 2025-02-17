@@ -280,7 +280,8 @@ export class DialogAddSchool implements OnInit {
       const url = `${environment.baseUrl}addSchool`;
       const formData = {
         ...this.angForm.value,
-        gender: this.gender
+        gender: this.gender,
+        referral_code: this.angForm.value.referral_code === '' ? 'undefined' : this.angForm.value.referral_code || 'undefined'
       };
 
       this.ajaxService.post<ApiResponse<any>>(formData, url).subscribe({
@@ -418,8 +419,8 @@ export class DialogEditSchool implements OnInit {
         gender: this.gender,
         password: formData.password || '',
         postal_code: formData.postal_code || '',
-        referral_code: '',
-        tb_player_id: this.data.event.id,
+        referral_code: formData.referral_code === '' ? 'undefined' : formData.referral_code || 'undefined',
+        tb_player_id: this.data.event.tb_player_id || this.data.event.id,
         tb_team_id: this.data.event.tb_team_id || 0,
         team_name: formData.team_name,
         user_name: formData.user_name
