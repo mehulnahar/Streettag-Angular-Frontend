@@ -7,41 +7,35 @@
 ></app-content-header>
 
 <div class="main-container">
-  <form (ngSubmit)="onSubmit(searchForm.value)" #searchForm="ngForm" class="mb-4">
-    <div class="row g-3">
-      <div class="col-md-5">
-        <select
-          class="form-control form-select"
-          name="location_name"
-          [(ngModel)]="location_name"
-          (ngModelChange)="get_location_id($event)"
-        >
-          <option value="">World</option>
-          <option *ngFor="let location of dataSourceLocation" [value]="location.id">
-            {{ location.location_name }}
-          </option>
-        </select>
-      </div>
-      <div class="col-md-5">
-        <select
-          class="form-control form-select"
-          name="circuit_name"
-          [(ngModel)]="circuit_name"
-          ngModel
-        >
-          <option value="">World</option>
-          <option *ngFor="let circuit of dataSourceCircuit" [value]="circuit.id">
-            {{ circuit.circuit_name }}
-          </option>
-        </select>
-      </div>
-      <div class="col-md-2">
-        <button mat-raised-button color="primary" type="submit" class="w-100">
-          <mat-icon>search</mat-icon>
-          <span>SUBMIT</span>
-        </button>
-      </div>
-    </div>
+  <form (ngSubmit)="onSubmit(searchForm.value)" #searchForm="ngForm" class="search-form">
+    <select
+      class="form-select"
+      name="location_name"
+      [(ngModel)]="location_name"
+      (ngModelChange)="get_location_id($event)"
+    >
+      <option value="">World</option>
+      <option *ngFor="let location of dataSourceLocation" [value]="location.id">
+        {{ location.location_name }}
+      </option>
+    </select>
+
+    <select
+      class="form-select"
+      name="circuit_name"
+      [(ngModel)]="circuit_name"
+      ngModel
+    >
+      <option value="">World</option>
+      <option *ngFor="let circuit of dataSourceCircuit" [value]="circuit.id">
+        {{ circuit.circuit_name }}
+      </option>
+    </select>
+
+    <button mat-raised-button color="primary" type="submit">
+      <mat-icon>search</mat-icon>
+      <span>SUBMIT</span>
+    </button>
   </form>
 
   <div class="table-responsive">
