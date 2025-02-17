@@ -292,6 +292,18 @@ export class DialogAddSchool implements OnInit {
               verticalPosition: "top",
             });
             this.dialogRef.close();
+          } else if (response.status === "false1") {
+            this.snackBar.open("User Already Exists!", undefined, {
+              duration: 5000,
+              verticalPosition: "top",
+              panelClass: ['error-snackbar']
+            });
+          } else if (response.status === "false2") {
+            this.snackBar.open("School Name Already Exists!", undefined, {
+              duration: 5000,
+              verticalPosition: "top",
+              panelClass: ['error-snackbar']
+            });
           } else {
             this.snackBar.open(response.msg || "Error adding school", undefined, {
               duration: 3000,

@@ -20,3 +20,16 @@ mat-footer-row mat-footer-cell{
     justify-content: center;
     font-style: italic;
 }
+
+::ng-deep .error-snackbar {
+  background-color: #f44336;
+  color: white;
+  
+  .mat-simple-snackbar {
+    font-weight: 500;
+  }
+  
+  .mat-simple-snackbar-action {
+    color: white;
+  }
+}
