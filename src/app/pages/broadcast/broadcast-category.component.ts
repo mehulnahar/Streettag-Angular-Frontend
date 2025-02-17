@@ -366,7 +366,7 @@ export class DeleteConfirmationDialogComponent {
           <ng-container matColumnDef="edit">
             <mat-header-cell *matHeaderCellDef>Edit</mat-header-cell>
             <mat-cell *matCellDef="let element">
-              <button mat-icon-button (click)="openEditDialog(element)">
+              <button mat-icon-button color="primary" (click)="openEditDialog(element)">
                 <mat-icon matListIcon matTooltip="Edit Category">edit</mat-icon>
               </button>
             </mat-cell>
@@ -375,7 +375,7 @@ export class DeleteConfirmationDialogComponent {
           <ng-container matColumnDef="delete">
             <mat-header-cell *matHeaderCellDef>Delete</mat-header-cell>
             <mat-cell *matCellDef="let element">
-              <button mat-icon-button (click)="OpenConfirmBox(element)">
+              <button mat-icon-button color="warn" (click)="OpenConfirmBox(element)">
                 <mat-icon matListIcon matTooltip="Delete Category">delete</mat-icon>
               </button>
             </mat-cell>
