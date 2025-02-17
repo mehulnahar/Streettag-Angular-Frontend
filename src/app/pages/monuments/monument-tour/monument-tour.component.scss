@@ -87,11 +87,11 @@ mat-footer-row mat-footer-cell {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 24px;
+    padding: 4px 24px;
     // background: linear-gradient(45deg, #1976d2, #2196f3);
     color: black;
     border-radius: 4px 4px 0 0;
-
+   
     h2 {
       margin: 0;
       font-weight: 500;
@@ -182,9 +182,9 @@ mat-footer-row mat-footer-cell {
     gap: 12px;
     margin-top: 24px;
     padding: 16px;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    // background: white;
+    // border-radius: 8px;
+    // box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 
     button {
       min-width: 120px;
