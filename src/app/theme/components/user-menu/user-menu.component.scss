@@ -30,6 +30,13 @@
     .user-menu-trigger {
         margin-left: auto;
     }
+
+    .profile-icon {
+        font-size: 32px;
+        width: 32px;
+        height: 32px;
+        color: white;
+    }
 }
 
 .user-menu-items {
@@ -38,6 +45,16 @@
     .mat-menu-item {
         .mat-icon {
             margin-right: 12px;
+        }
+    }
+}
+
+::ng-deep .mat-menu-content {
+    min-width: 160px;
+
+    .mat-menu-item {
+        .mat-icon {
+            margin-right: 8px;
         }
     }
 }
