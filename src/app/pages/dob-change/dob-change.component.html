@@ -25,7 +25,7 @@
 							[formControl]="myControl3" 
 							[matAutocomplete]="auto3">
 						<mat-autocomplete #auto3="matAutocomplete">
-							<mat-option *ngFor="let option of filteredOptions3 | async" [value]="option.team_name">
+							<mat-option *ngFor="let option of filteredOptions3 | async" [value]="option.team_name | decode">
 								<span>{{option.team_name | decode}}</span>
 							</mat-option>
 						</mat-autocomplete>
@@ -44,8 +44,8 @@
 							[matAutocomplete]="auto1"
 							(focus)="onPlayerIdFocus()">
 						<mat-autocomplete #auto1="matAutocomplete" (optionSelected)="get_player_id($event.option.value)">
-							<mat-option *ngFor="let option of filteredOptions1 | async" [value]="option.player_idd">
-								<span>{{option.fullname | decode}} {{option.player_idd | decode}}</span>
+							<mat-option *ngFor="let option of filteredOptions1 | async" [value]="option.player_idd | decode">
+								<span>{{option.fullname ? (option.fullname | decode) : ''}} {{option.player_idd ? (option.player_idd | decode) : ''}}</span>
 							</mat-option>
 						</mat-autocomplete>
 					</mat-form-field>
@@ -61,8 +61,8 @@
 							[matAutocomplete]="auto2"
 							(focus)="onPlayerIdFocus()">
 						<mat-autocomplete #auto2="matAutocomplete" (optionSelected)="get_player_id($event.option.value)">
-							<mat-option *ngFor="let option of filteredOptions1 | async" [value]="option.player_idd">
-								<span>{{option.fullname | decode}} ({{option.player_idd | decode}})</span>
+							<mat-option *ngFor="let option of filteredOptions1 | async" [value]="option.player_idd | decode">
+								<span>{{option.fullname ? (option.fullname | decode) : ''}} ({{option.player_idd ? (option.player_idd | decode) : ''}})</span>
 							</mat-option>
 						</mat-autocomplete>
 					</mat-form-field>
@@ -77,25 +77,25 @@
 								<div class="col-md-3">
 									<div class="detail-item">
 										<label>Name</label>
-										<p>{{player_name | decode}}</p>
+										<p>{{player_name ? (player_name | decode) : ''}}</p>
 									</div>
 								</div>
 								<div class="col-md-3">
 									<div class="detail-item">
 										<label>Current DOB</label>
-										<p>{{player_dob}}</p>
+										<p>{{player_dob ? (player_dob | decode) : ''}}</p>
 									</div>
 								</div>
 								<div class="col-md-3">
 									<div class="detail-item">
 										<label>Email</label>
-										<p>{{player_email | decode}}</p>
+										<p>{{player_email ? (player_email | decode) : ''}}</p>
 									</div>
 								</div>
 								<div class="col-md-3">
 									<div class="detail-item">
 										<label>Team</label>
-										<p>{{player_team | decode}}</p>
+										<p>{{player_team ? (player_team | decode) : ''}}</p>
 									</div>
 								</div>
 							</div>

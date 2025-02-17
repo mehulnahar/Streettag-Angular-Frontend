@@ -311,15 +311,13 @@ export class DobChangeComponent implements OnInit {
     if (!res) return;
 
     const url = `${this.baseUrl}getPlayerDetailsAdmin`;
-    const data = { player_id: window.atob(res) };
+    const data = { player_id: res };
 
-    this.ajaxService.post(data, url).subscribe({
+    this.ajaxService.post<ApiResponse>(data, url).subscribe({
       next: (response) => {
         const data = this.handleApiResponse(response);
-        this.dataSourcePlayersDetails = data.response;
-        
-        if (this.dataSourcePlayersDetails.length > 0) {
-          const details = this.dataSourcePlayersDetails[0];
+        if (data.response && data.response.length > 0) {
+          const details = data.response[0];
           this.player_name = details.fullname;
           this.player_email = details.email;
           this.player_dob = details.date_of_birth;
@@ -329,71 +327,51 @@ export class DobChangeComponent implements OnInit {
           this.circuit_id = details.circuit_id;
           this.location_id = details.location_id;
           this.team_id = details.team_id;
-          this.player_id = window.atob(details.player_id);
-
-          this.searchForm.patchValue({
-            device_token: details.device_token,
-            device_type: details.device_type,
-            location_id: details.location_id,
-            circuit_id: details.circuit_id,
-            team_id: details.team_id,
-            player_email: details.email,
-            player_id: window.atob(details.player_id)
-          });
+          this.player_id = details.player_id;
         }
       },
-      error: () => {
-        this.snackBar.open("Failed to fetch player details", undefined, {
+      error: (error) => {
+        console.error('Failed to fetch player details:', error);
+        this.snackBar.open('Failed to fetch player details', undefined, {
           duration: 3000,
-          verticalPosition: "top",
-          panelClass: "red-snackbar",
+          verticalPosition: 'top',
+          panelClass: ['red-snackbar']
         });
       }
     });
   }
 
   get_team_id(res: string): void {
-    if (res === "0") {
-      this.resetPlayerData();
+    this.resetPlayerData();
+    
+    if (res === '0') {
       this.is_all = true;
       return;
     }
 
-    const selectedTeam = this.options3.find(team => team.team_name === res);
-    if (!selectedTeam) {
-      console.error('Team not found');
-      return;
-    }
-
     const url = `${this.baseUrl}getPlayerByTeamAdmin`;
-    const data = { team_id: selectedTeam.team_id };
+    const data = { team_id: res };
 
-    if (!data.team_id) return;
-
-    this.ajaxService.post(data, url).subscribe({
+    this.ajaxService.post<ApiResponse>(data, url).subscribe({
       next: (response) => {
         const data = this.handleApiResponse(response);
-        this.dataSourcePlayers = data.response;
-        this.player_namet = "";
-        this.options1 = this.dataSourcePlayers;
-
-        this.filteredOptions1 = this.myControl1.valueChanges.pipe(
-          startWith(''),
-          map((value) => {
-            if (value) {
-              this.get_player_id(value);
-            }
-            return this._filter(value || '');
-          })
-        );
-
-        this.is_all = false;
+        if (data.response) {
+          this.dataSourcePlayers = data.response;
+          this.options1 = this.dataSourcePlayers;
+          this.is_all = false;
+          
+          this.filteredOptions1 = this.myControl1.valueChanges.pipe(
+            startWith(''),
+            map(value => this._filter(value || ''))
+          );
+        }
       },
-      error: () => {
-        this.snackBar.open("Failed to fetch team players", undefined, {
+      error: (error) => {
+        console.error('Failed to fetch team players:', error);
+        this.snackBar.open('Failed to fetch team players', undefined, {
           duration: 3000,
-          verticalPosition: "top",
-          panelClass: "red-snackbar",
+          verticalPosition: 'top',
+          panelClass: ['red-snackbar']
         });
       }
     });
@@ -411,20 +389,20 @@ export class DobChangeComponent implements OnInit {
   }
 
   private _filter(value: string): PlayerDetails[] {
-    if (!value) return this.options1;
     const filterValue = value.toLowerCase();
-    return this.options1.filter(option => 
-      option.player_idd?.toLowerCase().includes(filterValue) ||
-      window.atob(option.fullname || '').toLowerCase().includes(filterValue)
-    );
+    return this.options1.filter(option => {
+      const playerIdMatch = option.player_idd ? window.atob(option.player_idd).toLowerCase().includes(filterValue) : false;
+      const nameMatch = option.fullname ? window.atob(option.fullname).toLowerCase().includes(filterValue) : false;
+      return playerIdMatch || nameMatch;
+    });
   }
 
   private _filterTeam(value: string): TeamDetails[] {
     const filterValue = value.toLowerCase();
-    return this.options3.filter(option => 
-      option.team_namee?.toLowerCase().includes(filterValue) ||
-      option.team_name?.toLowerCase().includes(filterValue)
-    );
+    return this.options3.filter(option => {
+      const teamName = option.team_name ? window.atob(option.team_name).toLowerCase() : '';
+      return teamName.includes(filterValue);
+    });
   }
 
   onSubmit(formValue: any): void {
