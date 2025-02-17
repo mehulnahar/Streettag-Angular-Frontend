@@ -54,6 +54,11 @@ mat-row:hover {
   color: white;
 }
 
+.px-15 {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
 // Dialog styles
 .dialog-content {
   min-width: 500px;
@@ -63,8 +68,8 @@ mat-row:hover {
   overflow: hidden;
 
   .dialog-header {
-    background: #3f51b5;
-    color: white;
+    // background: #3f51b5;
+    color: black;
     padding: 15px;
     font-size: 18px;
     text-align: center;
@@ -212,8 +217,6 @@ mat-row:hover {
     }
   }
 }
-
-
 
 .mat-cell {
   padding: 8px 16px;
