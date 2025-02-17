@@ -45,7 +45,7 @@ export const verticalMenuItems = [
     new Menu (40, 'Steps Support', '/admin/steps-support', null, 'directions_walk', null, false, 0),
     new Menu (34, 'DOB Change', '/admin/dob-change', null, 'date_range', null, false, 0),
     new Menu (35, 'Fruit Card', '/admin/demo', null, 'qr_code', null, false, 0),
-    new Menu (36, 'User Remove', '/admin/user-delete', null, 'person_remove', null, false, 0),
+    new Menu (60, 'User Remove', '/admin/user-delete', null, 'person_remove', null, false, 0),
     new Menu (37, 'User Report', '/admin/user-report', null, 'assessment', null, false, 0),
     
     // new Menu (383, 'Stage Support', '/admin/stage-support', null, 'support', null, false, 38),
