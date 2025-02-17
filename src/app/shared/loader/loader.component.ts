@@ -26,10 +26,8 @@ import { LoaderService } from '../services/loader.service';
     }
     .loader-container {
       text-align: center;
-      background: white;
       padding: 20px;
       border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
     .animated-logo {
       width: 80px;
@@ -38,7 +36,7 @@ import { LoaderService } from '../services/loader.service';
     }
     h4 {
       margin-top: 10px;
-      color: #333;
+      color: #fff;
     }
     @keyframes spin {
       0% { transform: rotate(0deg); }
