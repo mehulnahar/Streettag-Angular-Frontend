@@ -25,6 +25,10 @@ import { LoaderService } from '../services/loader.service';
       z-index: 9999;
     }
     .loader-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       text-align: center;
       padding: 20px;
       border-radius: 8px;
@@ -33,10 +37,13 @@ import { LoaderService } from '../services/loader.service';
       width: 80px;
       height: 80px;
       animation: spin 1s linear infinite;
+      margin: 0 auto;
+      display: block;
     }
     h4 {
       margin-top: 10px;
       color: #fff;
+      text-align: center;
     }
     @keyframes spin {
       0% { transform: rotate(0deg); }
