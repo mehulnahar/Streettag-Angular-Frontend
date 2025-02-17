@@ -385,12 +385,12 @@ export class RfRegistrationComponent implements OnInit {
     </form>
   `,
   styles: [`
-    .form-container { 
+    .form-container {
       display: grid;
       gap: 16px;
-    
+      padding: 20px 15px;
     }
-    mat-form-field { 
+    mat-form-field {
       width: 100%;
     }
     .radio-group {
@@ -399,21 +399,15 @@ export class RfRegistrationComponent implements OnInit {
       gap: 8px;
     }
     .radio-label {
-      font-size: 14px;
       color: rgba(0,0,0,0.6);
-      margin-bottom: 4px;
+      font-size: 14px;
+    }
+    ::ng-deep .mat-mdc-dialog-content {
+      padding: 0 !important;
     }
     mat-radio-group {
       display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    mat-radio-button {
-      margin: 5px;
-    }
-    mat-dialog-content {
-      max-height: 80vh;
-      overflow-y: auto;
+      gap: 16px;
     }
   `]
 })

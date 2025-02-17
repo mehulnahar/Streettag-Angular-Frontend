@@ -263,10 +263,13 @@ export class RfCircuitComponent implements OnInit {
     .form-container {
       display: grid;
       gap: 16px;
-      padding: 20px;
+      padding: 20px 15px;
     }
     mat-form-field {
       width: 100%;
+    }
+    ::ng-deep .mat-mdc-dialog-content {
+      padding: 0 !important;
     }
   `]
 })
