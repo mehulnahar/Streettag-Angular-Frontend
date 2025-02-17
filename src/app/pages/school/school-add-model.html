@@ -1,8 +1,8 @@
-<div style="width: 800px; height: 600px" perfectScrollbar>
-  <div style="width: 800px; height: 650px">
+<div class="modal-container" style="width: 800px; height: 600px" perfectScrollbar>
+  <div style="width: 770px; height: 650px">
     <h3>Add School</h3>
 
-    <div style="width: 99.4%; float: left; margin-bottom: 10px">
+    <div style="width: 100%; float: left; margin-bottom: 10px">
       <mat-form-field
         [formGroup]="angForm"
         novalidate
@@ -209,5 +209,10 @@
 
 .mat-form-field-invalid .mat-form-field-ripple {
   background-color: #f44336;
+}
+
+.modal-container {
+  padding: 0 15px;
+  box-sizing: border-box;
 }
 </style>
