@@ -83,7 +83,7 @@ interface ApiResponse<T> {
                 [matAutocomplete]="auto3"
                 placeholder="Search team">
               <mat-autocomplete #auto3="matAutocomplete">
-                <mat-option *ngFor="let option of filteredOptions3 | async" [value]="option.team_name">
+                <mat-option *ngFor="let option of filteredOptions3 | async" [value]="option.team_name | decode">
                   {{option.team_name | decode}}
                 </mat-option>
               </mat-autocomplete>
@@ -100,7 +100,7 @@ interface ApiResponse<T> {
                 placeholder="Search player by ID or name"
                 (focus)="onPlayerIdFocus()">
               <mat-autocomplete #auto1="matAutocomplete" (optionSelected)="get_player_id($event.option.value)">
-                <mat-option *ngFor="let option of filteredOptions1 | async" [value]="option.player_idd">
+                <mat-option *ngFor="let option of filteredOptions1 | async" [value]="option.player_idd ? (option.player_idd | decode) : ''">
                   {{option.fullname ? (option.fullname | decode) : ''}} ({{option.player_idd ? (option.player_idd | decode) : ''}})
                 </mat-option>
               </mat-autocomplete>
@@ -114,19 +114,19 @@ interface ApiResponse<T> {
                   <div class="details-grid">
                     <div class="detail-item">
                       <label>Name:</label>
-                      <p>{{player_name | decode}}</p>
+                      <p>{{player_name ? (player_name | decode) : ''}}</p>
                     </div>
                     <div class="detail-item">
                       <label>Email:</label>
-                      <p>{{player_email | decode}}</p>
+                      <p>{{player_email ? (player_email | decode) : ''}}</p>
                     </div>
                     <div class="detail-item">
                       <label>Score Points:</label>
-                      <p>{{player_points | decode}}</p>
+                      <p>{{player_points ? (player_points | decode) : ''}}</p>
                     </div>
                     <div class="detail-item">
                       <label>Team:</label>
-                      <p>{{player_team | decode}}</p>
+                      <p>{{player_team ? (player_team | decode) : ''}}</p>
                     </div>
                   </div>
                 </mat-card-content>
@@ -452,9 +452,8 @@ export class UserDeleteComponent implements OnInit {
     if (!res) return;
 
     const url = `${this.baseUrl}getPlayerDetailsAdmin`;
-    // Decode the player ID before sending
-    const decodedPlayerId = window.atob(res);
-    const data = { player_id: decodedPlayerId };
+    // No need to decode since we're already passing decoded value from template
+    const data = { player_id: res };
 
     this.ajaxService.post<ApiResponse<PlayerDetails>>(data, url).subscribe({
       next: (response) => {
