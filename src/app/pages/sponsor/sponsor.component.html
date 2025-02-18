@@ -1,107 +1,89 @@
-<app-content-header [title]="'Sponsor'" [icon]="'euro'" [hideBreadcrumb]="true" [hasBgImage]="true" [class]="'pt-3'">
+<app-content-header [title]="'Sponsor'" [icon]="'euro'" [hideBreadcrumb]="true" [hasBgImage]="true" [class]="'pt-2'">
 </app-content-header>
 
-<mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="space-between center">
-  <div fxLayout="row" fxLayoutAlign="center center">
-    <button mat-raised-button color="accent" (click)="openAddMessageDialog()" class="compose" fxShow="false" fxShow.gt-xs>
-      Add Sponsor
-    </button>
-  </div>
-</mat-toolbar>
+<div fxLayout="column" class="p-2">
+  <div class="p-2" style="margin-bottom: 30px;">
+    <mat-toolbar class="toolbar" style="background-color: #283593;">
+      <button mat-raised-button color="accent" (click)="openAddMessageDialog()">
+        <mat-icon>add</mat-icon> Add Sponsor
+      </button>
+    </mat-toolbar>
 
-<div class="sponsor-wrapper">
-    <div class="sponsor-content">
-        <!-- Search and Add Button Row -->
-        <div class="sponsor-header">
-            <mat-form-field appearance="outline" class="search-field">
-                <mat-label>Type to filter all columns</mat-label>
-                <input matInput #searchInput (keyup)="applyFilter(searchInput.value)" placeholder="Type to filter all columns">
-                <mat-icon matSuffix>search</mat-icon>
-            </mat-form-field>
-            
-           
-        </div>
-
-        <!-- Loading Spinner -->
-        <div class="loading-spinner" *ngIf="isLoading">
-            <mat-spinner [diameter]="40"></mat-spinner>
-        </div>
-
-        <!-- Table -->
-        <div class="mat-elevation-z8 sponsor-table-container" [class.loading]="isLoading">
-            <table mat-table [dataSource]="dataSource" matSort>
-                
-                <!-- Serial Number Column -->
-                <ng-container matColumnDef="serialNumber">
-                    <th mat-header-cell *matHeaderCellDef> S.No. </th>
-                    <td mat-cell *matCellDef="let row; let i = index"> {{i + 1}} </td>
-                </ng-container>
-
-                <!-- Sponsor Name Column -->
-                <ng-container matColumnDef="sponsor_name">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Sponsor Name </th>
-                    <td mat-cell *matCellDef="let row"> {{row.sponsor_name}} </td>
-                </ng-container>
-
-                <!-- Sponsor Image Column -->
-                <ng-container matColumnDef="sponsor_image">
-                    <th mat-header-cell *matHeaderCellDef> Sponsor Image Before
-                    </th>
-                    <td mat-cell *matCellDef="let row">
-                        <img [src]="row.tag_image || 'assets/images/placeholder.png'" 
-                             [alt]="row.sponsor_name + ' Before Image'" 
-                             class="sponsor-image"
-                             (error)="row.tag_image = 'assets/images/placeholder.png'">
-                    </td>
-                </ng-container>
-
-                <!-- Sponsor Image 2 Column -->
-                <ng-container matColumnDef="sponsor_image2">
-                    <th mat-header-cell *matHeaderCellDef> Sponsor Image After</th>
-                    <td mat-cell *matCellDef="let row">
-                        <img [src]="row.tag_image2 || 'assets/images/placeholder.png'"
-                             [alt]="row.sponsor_name + ' After Image'"
-                             class="sponsor-image"
-                             (error)="row.tag_image2 = 'assets/images/placeholder.png'">
-                    </td>
-                </ng-container>
-
-                <!-- Diameter Column -->
-                <ng-container matColumnDef="diameter">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Diameter </th>
-                    <td mat-cell *matCellDef="let row"> {{row.diameter}} </td>
-                </ng-container>
-
-                <!-- Edit Column -->
-                <ng-container matColumnDef="edit">
-                    <th mat-header-cell *matHeaderCellDef> Edit </th>
-                    <td mat-cell *matCellDef="let row">
-                        <button mat-icon-button color="primary" (click)="openEditDialog(row)">
-                            <mat-icon>edit</mat-icon>
-                        </button>
-                    </td>
-                </ng-container>
-
-                <!-- Delete Column -->
-                <ng-container matColumnDef="delete">
-                    <th mat-header-cell *matHeaderCellDef> Delete </th>
-                    <td mat-cell *matCellDef="let row">
-                        <button mat-icon-button color="warn" (click)="confirmDialog(row)">
-                            <mat-icon>delete</mat-icon>
-                        </button>
-                    </td>
-                </ng-container>
-
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            </table>
-
-            <!-- No Data Message -->
-            <div class="no-data-message" *ngIf="dataSource.data.length === 0 && !isLoading">
-                No sponsors found
-            </div>
-
-            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of sponsors"></mat-paginator>
-        </div>
+    <div fxLayout="column" class="mat-elevation-z8">
+      <mat-form-field class="px-3 py-1">
+        <mat-label>Filter</mat-label>
+        <input matInput #filterInput (keyup)="applyFilter(filterInput.value)" placeholder="Type to filter all columns">
+      </mat-form-field>
     </div>
+
+    <mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+      <!-- Serial Number Column -->
+      <ng-container matColumnDef="serialNumber">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>S No.</mat-header-cell>
+        <mat-cell *matCellDef="let element; let i = index">{{ i + 1 }}</mat-cell>
+      </ng-container>
+
+      <!-- Sponsor Name Column -->
+      <ng-container matColumnDef="sponsor_name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Sponsor Name</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.sponsor_name }}</mat-cell>
+      </ng-container>
+
+      <!-- Sponsor Image Column -->
+      <ng-container matColumnDef="sponsor_image">
+        <mat-header-cell *matHeaderCellDef>Sponsor Image Before</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <img [src]="element.tag_image || 'assets/images/placeholder.png'" 
+               [alt]="element.sponsor_name + ' Before Image'" 
+               class="sponsor-image"
+               (error)="element.tag_image = 'assets/images/placeholder.png'">
+        </mat-cell>
+      </ng-container>
+
+      <!-- Sponsor Image 2 Column -->
+      <ng-container matColumnDef="sponsor_image2">
+        <mat-header-cell *matHeaderCellDef>Sponsor Image After</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <img [src]="element.tag_image2 || 'assets/images/placeholder.png'"
+               [alt]="element.sponsor_name + ' After Image'"
+               class="sponsor-image"
+               (error)="element.tag_image2 = 'assets/images/placeholder.png'">
+        </mat-cell>
+      </ng-container>
+
+      <!-- Diameter Column -->
+      <ng-container matColumnDef="diameter">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Diameter</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.diameter }}</mat-cell>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="edit">
+        <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <button mat-icon-button color="primary" (click)="openEditDialog(element)" matTooltip="Edit">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="confirmDialog(element)" matTooltip="Delete">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    </mat-table>
+
+    <!-- No Data Message -->
+    <div class="no-data-message" *ngIf="dataSource.data.length === 0 && !isLoading">
+      No sponsors found
+    </div>
+
+    <!-- Loading Spinner -->
+    <div class="loading-spinner" *ngIf="isLoading">
+      <mat-spinner [diameter]="40"></mat-spinner>
+    </div>
+
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" [pageSize]="10" showFirstLastButtons></mat-paginator>
+  </div>
 </div>

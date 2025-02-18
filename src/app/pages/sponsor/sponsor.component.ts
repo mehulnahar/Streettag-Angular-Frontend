@@ -82,8 +82,7 @@ export class SponsorComponent implements OnInit {
     "sponsor_image",
     "sponsor_image2",
     "diameter",
-    "edit",
-    "delete",
+    "edit"
   ];
   public dataSource: MatTableDataSource<SponsorData> = new MatTableDataSource<SponsorData>([]);
 
