@@ -5,7 +5,7 @@
     <div fxLayout="column" fxLayoutGap="16px">
       <mat-form-field>
         <mat-label>Circuit Name</mat-label>
-        <input matInput formControlName="circuit_name" [(ngModel)]="circuit_name" required>
+        <input matInput formControlName="circuit_name" required>
         <mat-error *ngIf="angForm.get('circuit_name')?.errors?.['required']">
           Circuit name is required
         </mat-error>
@@ -13,7 +13,7 @@
 
       <mat-form-field>
         <mat-label>Location</mat-label>
-        <mat-select formControlName="location_name" [(ngModel)]="location_name" required>
+        <mat-select formControlName="location_name" required>
           <mat-option *ngFor="let location of dataSourceLocation" [value]="location.location_name">
             {{location.location_name}}
           </mat-option>
@@ -25,7 +25,7 @@
 
       <mat-form-field>
         <mat-label>Start Date</mat-label>
-        <input matInput [matDatepicker]="picker1" formControlName="start_date" [(ngModel)]="start_date" required>
+        <input matInput [matDatepicker]="picker1" formControlName="start_date" required>
         <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
         <mat-datepicker #picker1></mat-datepicker>
         <mat-error *ngIf="angForm.get('start_date')?.errors?.['required']">
@@ -35,7 +35,7 @@
 
       <mat-form-field>
         <mat-label>End Date</mat-label>
-        <input matInput [matDatepicker]="picker2" formControlName="end_date" [(ngModel)]="end_date" required>
+        <input matInput [matDatepicker]="picker2" formControlName="end_date" required>
         <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
         <mat-datepicker #picker2></mat-datepicker>
         <mat-error *ngIf="angForm.get('end_date')?.errors?.['required']">

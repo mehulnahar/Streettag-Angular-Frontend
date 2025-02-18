@@ -42,14 +42,19 @@ export class DialogOverviewMessageDialogCircuit {
     private ajaxService: AjaxService,
     public snackBar: MatSnackBar
   ) {
-    this.angForm = this.createForm();
-
     this.location_name = this.data.event.location_name;
     this.circuit_name = this.data.event.circuit_name;
     this.circuit_id = this.data.event.id;
     this.location_id = this.data.event.location_id;
     this.start_date = this.data.event.start_date;
     this.end_date = this.data.event.end_date;
+
+    this.angForm = this.fb.group({
+      circuit_name: [this.circuit_name, Validators.required],
+      location_name: [this.location_name, Validators.required],
+      start_date: [new Date(this.start_date), Validators.required],
+      end_date: [new Date(this.end_date), Validators.required]
+    });
 
     this.getallLocations();
   }
@@ -66,24 +71,16 @@ export class DialogOverviewMessageDialogCircuit {
     });
   }
 
-  private createForm(): FormGroup {
-    return this.fb.group({
-      circuit_name: ['', Validators.required],
-      location_name: ['', Validators.required],
-      start_date: ['', Validators.required],
-      end_date: ['', Validators.required],
-    });
-  }
-
   updateevent() {
     if (this.angForm.valid) {
+      const formValues = this.angForm.value;
       const url = `${this.baseUrl}editCircuit`;
       const data = {
         circuit_id: this.circuit_id,
-        circuit_name: this.circuit_name,
-        location_name: this.location_name,
-        start_date: new Date(this.start_date).toISOString(),
-        end_date: new Date(this.end_date).toISOString(),
+        circuit_name: formValues.circuit_name,
+        location_name: formValues.location_name,
+        start_date: formValues.start_date.toISOString(),
+        end_date: formValues.end_date.toISOString(),
       };
     
       this.ajaxService.post(data, url).subscribe((response: any) => {
