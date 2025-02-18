@@ -1,17 +1,105 @@
 .main-container {
-  padding: 20px 30px;
-  background-color: #f5f7ff;
-  min-height: calc(100vh - 200px);
+  margin: 0;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: white;
 }
 
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.headered {
+  display: grid;
+  grid-template-columns: 100px 1fr 200px;
+  padding: 0 20px;
+  margin-bottom: 15px;
+  font-weight: bold;
+  color: #000;
+}
+
+.score-header {
+  text-align: right;
+}
+
+.card {
+  display: grid;
+  grid-template-columns: 100px 1fr 200px;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 6px;
+  border-radius: 40px;
+  color: white;
+  min-height: 80px;
+
+  &.purple { background-color: #7E22CE; }
+  &.navy { background-color: #1E3A8A; }
+  &.green { background-color: #15803D; }
+  &.magenta { background-color: #86198F; }
+  &.teal { background-color: #0F766E; }
+  &.pink { background-color: #DB2777; }
+}
+
+.rank {
+  font-size: 15px;
+  font-weight: bold;
+  margin-left: 30px;
+  position: relative;
+  padding-left: 10px;
+}
+
+.trophy {
+  position: absolute;
+  font-size: 20px;
+  left: -15px;
+  top: -8px;
+}
+
+.team-info {
+  padding-left: 25px;
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+  margin-right: 20px;
+}
+
+.team-name {
+  font-size: 20px;
+  font-weight: 500;
+  margin-bottom: 5px;
+  line-height: 1.2;
+}
+
+.player-count {
+  font-size: 16px;
+  opacity: 0.8;
+}
+
+.score {
+  text-align: right;
+  padding-right: 10px;
+}
+
+.score-top {
+  font-size: 20px;
+  font-weight: 500;
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.score-bottom {
+  font-size: 16px;
+  opacity: 0.8;
+}
+
+// Search form styles
 .search-form {
   display: flex;
   align-items: center;
   gap: 10px;
-
   padding: 15px;
-  border-radius: 4px;
-
+  margin-bottom: 20px;
+  margin-left: 110px;
 }
 
 .form-select {
@@ -50,103 +138,39 @@
   }
 }
 
-.gap-3 {
-  gap: 1rem !important;
-}
-
-.table {
-  width: 100%;
-  background: white;
-  margin-top: 20px;
-  border-collapse: separate;
-  border-spacing: 0;
-
-  thead {
-    tr {
-      background-color: #f8f9fa;
-      th {
-        padding: 15px;
-        font-weight: 600;
-        font-size: 13px;
-        color: #333;
-        border-bottom: 1px solid #dee2e6;
-        text-align: left;
-      }
-    }
+@media (max-width: 600px) {
+  .card {
+    padding: 15px;
+    border-radius: 30px;
   }
-
-  tbody {
-    tr {
-      border-bottom: 1px solid #dee2e6;
-      
-      td {
-        padding: 15px;
-        font-size: 14px;
-        vertical-align: middle;
-      }
-
-      &:hover:not(.rank-1):not(.rank-2):not(.rank-3) {
-        background-color: #f8f9fa;
-      }
-    }
-
-    .rank-1 {
-      background-color: #303f9f;
-      color: white;
-    }
-
-    .rank-2 {
-      background-color: #7682d6;
-      color: white;
-    }
-
-    .rank-3 {
-      background-color: #c4caed;
-      color: white;
-    }
+  
+  .team-name {
+    font-size: 18px;
   }
-}
-
-.rank-icon {
-  margin-left: 8px;
-  font-size: 18px;
-  vertical-align: middle;
-}
-
-mat-spinner {
-  margin: 20px auto;
-}
-
-// Responsive adjustments
-@media (max-width: 768px) {
-  .main-container {
-    padding: 10px;
+  
+  .player-count, .score-bottom {
+    font-size: 14px;
+  }
+  
+  .rank {
+    font-size: 28px;
+  }
+  
+  .score-top {
+    font-size: 18px;
   }
 
   .search-form {
     flex-direction: column;
-    padding: 10px;
-  }
-
-  .form-select {
-    width: 100%;
-    margin-right: 0;
-    margin-bottom: 10px;
-  }
-
-  [mat-raised-button] {
-    width: 100%;
-  }
-  
-  .table {
-    thead th {
-      font-size: 12px;
-      padding: 10px;
-    }
     
-    tbody td {
-      font-size: 12px;
-      padding: 10px;
+    .form-select {
+      width: 100%;
+      margin-right: 0;
+      margin-bottom: 10px;
+    }
+
+    [mat-raised-button] {
+      width: 100%;
     }
   }
 } 

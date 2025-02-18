@@ -1,5 +1,5 @@
 <app-content-header
-  [title]="'Leaderboard New'"
+  [title]="'Avg Leaderboard'"
   [icon]="'leaderboard'"
   [hideBreadcrumb]="true"
   [hasBgImage]="true"
@@ -23,7 +23,7 @@
     <select
       class="form-select"
       name="circuit_name"
-      [(ngModel)]="circuit_name"
+      [(ngModel)]="circuit_id"
       ngModel
     >
       <option value="">World</option>
@@ -38,35 +38,30 @@
     </button>
   </form>
 
-  <div class="table-responsive">
-    <div align="center" *ngIf="spinner">
-      <mat-spinner></mat-spinner>
+  <div align="center" *ngIf="spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <div class="container">
+    <div class="headered">
+      <div class="rank-header">Rank</div>
+      <div class="team-header">Team</div>
+      <div class="score-header">Average/Score</div>
     </div>
 
-    <table class="table">
-      <thead>
-        <tr>
-          <th>RANK</th>
-          <th>TEAM NAME</th>
-          <th>TOTAL POINTS</th>
-          <th>NUMBER OF PLAYERS</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let res of dataSource2" [ngClass]="{
-          'rank-1': res.s_no === 1,
-          'rank-2': res.s_no === 2,
-          'rank-3': res.s_no === 3
-        }">
-          <td>
-            {{ res.s_no }}
-            <mat-icon *ngIf="res.s_no <= 3" class="rank-icon">accessibility_new</mat-icon>
-          </td>
-          <td>{{ res.team_name | decode }}</td>
-          <td>{{ res.totalpoints }}</td>
-          <td>{{ res.totalplayer }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="card" *ngFor="let entry of leaderboardData" [ngClass]="getCardColor(entry.rank)">
+      <div class="rank">
+        <span class="trophy" *ngIf="entry.rank <= 3">🏆</span>
+        {{entry.rank}}
+      </div>
+      <div class="team-info">
+        <div class="team-name">{{entry.teamName}}</div>
+        <div class="player-count">{{entry.playerCount}} players</div>
+      </div>
+      <div class="score">
+        <div class="score-top">{{entry.averageScore | number}}</div>
+        <div class="score-bottom">{{entry.totalScore | number}}</div>
+      </div>
+    </div>
   </div>
 </div> 

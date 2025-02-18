@@ -17,11 +17,12 @@ import { Router } from "@angular/router";
 import { MatSort } from "@angular/material/sort";
 import { environment } from "src/environments/environment";
 
-interface LeaderboardData {
-  s_no: number;
-  team_name: string;
-  totalpoints: number;
-  totalplayer: number;
+interface LeaderboardEntry {
+  rank: number;
+  teamName: string;
+  playerCount: number;
+  averageScore: number;
+  totalScore: number;
 }
 
 @Component({
@@ -59,8 +60,8 @@ export class LeaderboardNewComponent implements OnInit {
     "total_points",
     "number_of_players",
   ];
-  public dataSource: MatTableDataSource<LeaderboardData>;
-  public dataSource2: LeaderboardData[] = [];
+  public dataSource: MatTableDataSource<LeaderboardEntry>;
+  public dataSource2: LeaderboardEntry[] = [];
   public rank1: boolean = false;
   public rank2: boolean = false;
   public rank3: boolean = false;
@@ -82,6 +83,51 @@ export class LeaderboardNewComponent implements OnInit {
   public iframe: boolean = false;
   public iframeCode: string = "";
 
+  public leaderboardData: LeaderboardEntry[] = [
+    {
+      rank: 1,
+      teamName: 'Succulents W',
+      playerCount: 3,
+      averageScore: 1352283,
+      totalScore: 4056850
+    },
+    {
+      rank: 2,
+      teamName: 'St Christophers School Oxford',
+      playerCount: 1,
+      averageScore: 1295835,
+      totalScore: 1295835
+    },
+    {
+      rank: 3,
+      teamName: 'You and Me',
+      playerCount: 2,
+      averageScore: 1248190,
+      totalScore: 2496380
+    },
+    {
+      rank: 4,
+      teamName: 'All By Myself',
+      playerCount: 1,
+      averageScore: 837140,
+      totalScore: 837140
+    },
+    {
+      rank: 5,
+      teamName: 'JDteam',
+      playerCount: 1,
+      averageScore: 800145,
+      totalScore: 800145
+    },
+    {
+      rank: 6,
+      teamName: 'Chang',
+      playerCount: 1,
+      averageScore: 528790,
+      totalScore: 528790
+    }
+  ];
+
   constructor(
     public appSettings: AppSettings,
     public formBuilder: FormBuilder,
@@ -92,7 +138,7 @@ export class LeaderboardNewComponent implements OnInit {
   ) {
     this.settings = this.appSettings.settings;
     this.form = this.formBuilder.group({});
-    this.dataSource = new MatTableDataSource<LeaderboardData>([]);
+    this.dataSource = new MatTableDataSource<LeaderboardEntry>(this.leaderboardData);
     this.getallLocation();
   }
 
@@ -112,7 +158,7 @@ export class LeaderboardNewComponent implements OnInit {
   getallConsents() {
     const url = `${this.baseUrl}getConsents`;
     this.ajaxService.get(url).subscribe((data: any) => {
-      this.dataSource = new MatTableDataSource<LeaderboardData>(data["response"]);
+      this.dataSource = new MatTableDataSource<LeaderboardEntry>(data["response"]);
     });
   }
 
@@ -129,44 +175,70 @@ export class LeaderboardNewComponent implements OnInit {
       location_id: res,
     };
 
+    // Reset both circuit name and id
     this.circuit_id = "";
     this.circuit_name = "";
 
-    if (data1.location_id === "") {
+    if (!res) {
       return;
     }
 
     this.location_id = res;
 
     this.ajaxService.post(data1, url).subscribe((data: any) => {
-      this.dataSourceCircuit = data["response"];
-      this.dataSource2 = [];
+      if (data && data.response) {
+        this.dataSourceCircuit = data.response;
+        // If there's only one circuit, auto-select it
+        if (this.dataSourceCircuit.length === 1) {
+          this.circuit_id = this.dataSourceCircuit[0].id;
+          this.circuit_name = this.dataSourceCircuit[0].circuit_name;
+        }
+      }
     });
+  }
+
+  private mapApiResponseToLeaderboardEntry(apiResponse: any[]): LeaderboardEntry[] {
+    return apiResponse.map((item, index) => ({
+      rank: index + 1,
+      teamName: item.team_name,
+      playerCount: item.total_players,
+      averageScore: item.avg_points,
+      totalScore: item.total_points
+    }));
   }
 
   onSubmit(data: any) {
     this.spinner = true;
-    this.iframe = true;
 
-    const getUrl = window.location;
-    const frameUrl =
-      getUrl.protocol +
-      "//" +
-      getUrl.host +
-      "/#/dynamiclead?circuit_name=" +
-      data.circuit_name +
-      "&location_name=" +
-      data.location_name;
+    const url = `${this.baseUrl}getAvgLeaderboardData`;
+    const requestData = {
+      location_id: this.location_id,
+      circuit_id: this.circuit_id
+    };
 
-    this.iframeCode =
-      '<iframe src="' + frameUrl + '" height="500" width="700"></iframe>';
+    console.log('Request Data:', requestData);
 
-    const url = `${this.baseUrl}getLeaderboardData`;
-
-    this.ajaxService.post(data, url).subscribe((data: any) => {
-      this.dataSourceLeaderboard = data["response"];
+    this.ajaxService.post(requestData, url).subscribe((data: any) => {
       this.spinner = false;
-      this.dataSource2 = data["response"];
+      if (data && data.response) {
+        this.leaderboardData = this.mapApiResponseToLeaderboardEntry(data.response);
+      }
+    }, error => {
+      this.spinner = false;
+      console.error('Error fetching leaderboard data:', error);
     });
+  }
+
+  getCardColor(rank: number): string {
+    const position = (rank - 1) % 6;
+    switch (position) {
+      case 0: return 'purple';
+      case 1: return 'navy';
+      case 2: return 'green';
+      case 3: return 'magenta';
+      case 4: return 'teal';
+      case 5: return 'pink';
+      default: return 'purple';
+    }
   }
 } 
