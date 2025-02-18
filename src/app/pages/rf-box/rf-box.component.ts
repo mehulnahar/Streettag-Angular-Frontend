@@ -349,8 +349,8 @@ export class RfBoxAddDialog {
         
         // Update form values
         this.angForm.patchValue({
-          lat: this.lat,
-          lng: this.lng
+          lat: this.lat.toString(),
+          lng: this.lng.toString()
         });
 
         this.snackBar.open('Location set successfully', 'Close', {
@@ -368,6 +368,12 @@ export class RfBoxAddDialog {
     if (event.latLng) {
       this.lat = event.latLng.lat();
       this.lng = event.latLng.lng();
+      
+      // Update form values when map is clicked
+      this.angForm.patchValue({
+        lat: this.lat.toString(),
+        lng: this.lng.toString()
+      });
     }
   }
 
