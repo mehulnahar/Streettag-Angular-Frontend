@@ -70,25 +70,13 @@
                 </mat-cell>
             </ng-container>
 
-            <ng-container matColumnDef="loading">
-                <mat-footer-cell *matFooterCellDef colspan="6">
-                  Loading data...
-                </mat-footer-cell>
-              </ng-container>
-
             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
             <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-            <mat-footer-row *matFooterRowDef="['loading']" [ngClass]="{'hide': dataSource!=null}"></mat-footer-row>
             </mat-table>
 
             <!-- No data message -->
             <div class="no-data-message" *ngIf="dataSource?.data?.length === 0">
                 No records found
-            </div>
-
-            <!-- Loading spinner -->
-            <div class="loading-shade" *ngIf="isLoading">
-                <mat-spinner></mat-spinner>
             </div>
 
             <mat-paginator 

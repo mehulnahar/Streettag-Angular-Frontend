@@ -237,7 +237,6 @@ export class StreettagsComponent implements OnInit, AfterViewInit {
       limit: this.paginator?.pageSize ?? 5
     };
     
-    this.isLoading = true;
     this.ajaxService.getdata<PaginatedResponse>(params, url).subscribe(
       (response) => {
         if (response.status === "true") {
@@ -245,11 +244,9 @@ export class StreettagsComponent implements OnInit, AfterViewInit {
           this.totalItems = response.total;
           this.dataSource.sort = this.sort;
         }
-        this.isLoading = false;
       },
       (error) => {
         console.error('Error fetching data:', error);
-        this.isLoading = false;
       }
     );
   }
