@@ -138,7 +138,7 @@ export class RfBoxComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result: any) => {
-      if (result) {
+      if (result && result.success) {
         this.getallCircuits();
       }
     });
@@ -308,7 +308,7 @@ export class RfBoxAddDialog {
             panelClass: dynamicSnackColor,
           });
 
-          this.dialogRef.close();
+          this.dialogRef.close({ success: this.resData.status !== 'false' });
         });
       }
     } else {
@@ -326,7 +326,7 @@ export class RfBoxAddDialog {
             panelClass: dynamicSnackColor,
           });
 
-          this.dialogRef.close();
+          this.dialogRef.close({ success: this.resData.status !== 'false' });
         });
       }
     }
