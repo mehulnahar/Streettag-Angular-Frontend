@@ -3,13 +3,13 @@
 
 <div class="container">
 	<div class="form-card">
-		<form (ngSubmit)="onSubmit(searchForm.value)" #searchForm="ngForm" class="animated fadeIn">
-			<input type="hidden" name="device_token" [(ngModel)]="device_token">
-			<input type="hidden" name="device_type" [(ngModel)]="device_type">
-			<input type="hidden" name="location_id" [(ngModel)]="location_id">
-			<input type="hidden" name="circuit_id" [(ngModel)]="circuit_id">
-			<input type="hidden" name="team_id" [(ngModel)]="team_id">
-			<input type="hidden" name="player_email" [(ngModel)]="player_email">
+		<form [formGroup]="form" (ngSubmit)="onSubmit(form.value)" class="animated fadeIn">
+			<input type="hidden" formControlName="device_token">
+			<input type="hidden" formControlName="device_type">
+			<input type="hidden" formControlName="location_id">
+			<input type="hidden" formControlName="circuit_id">
+			<input type="hidden" formControlName="team_id">
+			<input type="hidden" formControlName="player_email">
 
 			<div class="form-section">
 				<div class="form-group">
@@ -17,8 +17,6 @@
 					<mat-form-field appearance="outline" class="w-100">
 						<input type="text" 
 							   placeholder="Search team name" 
-							   [(ngModel)]="team_namet" 
-							   name="team_name" 
 							   matInput 
 							   [formControl]="myControl3" 
 							   [matAutocomplete]="auto3">
@@ -37,8 +35,6 @@
 					<mat-form-field appearance="outline" class="w-100">
 						<input type="text" 
 							   placeholder="Search player ID" 
-							   [(ngModel)]="player_namet" 
-							   name="player_id" 
 							   matInput 
 							   [formControl]="myControl1" 
 							   [matAutocomplete]="auto1">
@@ -79,7 +75,7 @@
 				<div class="form-group">
 					<label class="form-label">Bonus Type</label>
 					<mat-form-field appearance="outline" class="w-100">
-						<mat-select name="bonus_type" [(ngModel)]="bonus_type">
+						<mat-select formControlName="bonus_type">
 							<mat-option value="1">Bonus Points</mat-option>
 							<mat-option value="2">Steps</mat-option>
 						</mat-select>
@@ -92,8 +88,7 @@
 					<mat-form-field appearance="outline" class="w-100">
 						<input matInput 
 							   type="text" 
-							   name="points" 
-							   [(ngModel)]="points" 
+							   formControlName="points" 
 							   placeholder="Enter points">
 						<mat-icon matSuffix>add_circle</mat-icon>
 					</mat-form-field>

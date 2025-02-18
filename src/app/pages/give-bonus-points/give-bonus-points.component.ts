@@ -128,8 +128,14 @@ export class GiveBonusPointsComponent implements OnInit {
     this.settings = this.appSettings.settings;
     
     this.form = this.formBuilder.group({
+      device_token: [''],
+      device_type: [''],
+      location_id: [''],
+      circuit_id: [''],
+      team_id: [''],
+      player_email: [''],
       points: [''],
-      reason: ['']
+      bonus_type: ['2'],
     });
 
     // Initialize Observables
@@ -226,11 +232,17 @@ export class GiveBonusPointsComponent implements OnInit {
         this.player_name = player.fullname;
         this.player_email = player.email;
         this.player_team = player.team_name;
-        this.device_token = player.device_token;
-        this.device_type = player.device_type;
-        this.circuit_id = player.circuit_id;
-        this.location_id = player.location_id;
-        this.team_id = player.team_id;
+        
+        // Update form controls with player data
+        this.form.patchValue({
+          device_token: player.device_token,
+          device_type: player.device_type,
+          circuit_id: player.circuit_id,
+          location_id: player.location_id,
+          team_id: player.team_id,
+          player_email: player.email
+        });
+
         this.player_id = player.player_id;
       }
     });
@@ -321,19 +333,16 @@ export class GiveBonusPointsComponent implements OnInit {
   }
 
   private resetForm(): void {
+    this.form.reset({
+      bonus_type: '2'
+    });
+    
     this.player_name = "";
     this.player_email = "";
     this.player_team = "";
-    this.device_token = "";
-    this.device_type = "";
-    this.circuit_id = "";
-    this.location_id = "";
-    this.team_id = "";
     this.team_name = "0";
     this.player_id = "";
     this.player_id2 = "";
-    this.points = "";
-    this.bonus_type = "2";
     this.is_all = true;
     this.team_namet = "";
     this.player_namet = "";
