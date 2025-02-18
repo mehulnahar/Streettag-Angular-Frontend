@@ -55,7 +55,7 @@
             <ng-container matColumnDef="edit">
                 <mat-header-cell *matHeaderCellDef>Edit</mat-header-cell>
                 <mat-cell *matCellDef="let element">
-                    <button mat-icon-button (click)="openEditDialog(element)">
+                    <button mat-icon-button color="primary" (click)="openEditDialog(element)">
                         <mat-icon>edit</mat-icon>
                     </button>
                 </mat-cell>
@@ -64,7 +64,7 @@
             <ng-container matColumnDef="delete">
                 <mat-header-cell *matHeaderCellDef>Delete</mat-header-cell>
                 <mat-cell *matCellDef="let element">
-                    <button mat-icon-button (click)="confirmDialog(element)">
+                    <button mat-icon-button color="warn" (click)="confirmDialog(element)">
                         <mat-icon>delete</mat-icon>
                     </button>
                 </mat-cell>
