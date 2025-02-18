@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { LoaderService } from '../services/loader.service';
 
 @Component({
@@ -54,7 +54,12 @@ import { LoaderService } from '../services/loader.service';
 export class LoaderComponent implements OnInit {
   loading$ = this.loaderService.loading$;
 
-  constructor(private loaderService: LoaderService) {}
+  constructor(
+    private loaderService: LoaderService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.loaderService.setCdr(this.cdr);
+  }
 } 

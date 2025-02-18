@@ -496,6 +496,23 @@ export class DialogEditSponsor extends DialogAddSponsor {
       lng: data.event.lng,
       diameter: data.event.diameter
     });
+
+    // Subscribe to form value changes
+    this.angForm.get('diameter')?.valueChanges.subscribe(value => {
+      this.tagDiameter = value.toString();
+    });
+
+    this.angForm.get('lat')?.valueChanges.subscribe(value => {
+      this.lat = value;
+      this.center = { ...this.center, lat: value };
+      this.markerPosition = { ...this.markerPosition, lat: value };
+    });
+
+    this.angForm.get('lng')?.valueChanges.subscribe(value => {
+      this.lng = value;
+      this.center = { ...this.center, lng: value };
+      this.markerPosition = { ...this.markerPosition, lng: value };
+    });
   }
 
   override addevent() {

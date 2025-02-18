@@ -65,7 +65,7 @@
                 <!-- Diameter Input -->
                 <mat-form-field class="w-100">
                     <mat-label>Diameter (in meters)</mat-label>
-                    <input matInput type="number" formControlName="diameter" [(ngModel)]="tagDiameter" placeholder="Enter diameter">
+                    <input matInput type="number" formControlName="diameter" placeholder="Enter diameter">
                     <mat-error *ngIf="angForm.get('diameter')?.hasError('required')">
                         Diameter is required
                     </mat-error>
@@ -75,12 +75,12 @@
                 <div class="coordinates-display">
                     <mat-form-field class="w-100">
                         <mat-label>Latitude</mat-label>
-                        <input matInput formControlName="lat" [(ngModel)]="lat" readonly>
+                        <input matInput formControlName="lat" readonly>
                     </mat-form-field>
 
                     <mat-form-field class="w-100">
                         <mat-label>Longitude</mat-label>
-                        <input matInput formControlName="lng" [(ngModel)]="lng" readonly>
+                        <input matInput formControlName="lng" readonly>
                     </mat-form-field>
                 </div>
             </form>
