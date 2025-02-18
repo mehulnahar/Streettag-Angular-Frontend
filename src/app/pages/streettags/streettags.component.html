@@ -46,33 +46,28 @@
             </ng-container>
 
             <ng-container matColumnDef="qr_img">
-                <mat-header-cell *matHeaderCellDef  mat-sort-header>QR</mat-header-cell>
-                <mat-cell *matCellDef="let element"><img *ngIf="element.scan_type == '1'" src={{element.qr_img}} style=" margin:10px; height:120px; width:120px;"></mat-cell>
+                <mat-header-cell *matHeaderCellDef>QR</mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <img [src]="element.qr_img" style="width: 50px; height: 50px;" *ngIf="element.qr_img">
+                </mat-cell>
             </ng-container>
-<!-- 
 
-            <ng-container matColumnDef="action">
-                <mat-header-cell *matHeaderCellDef> Action </mat-header-cell>
-                <mat-cell *matCellDef="let element"> <a (click)="openEditDialog(element)"><mat-icon matListIcon class="pointer" style="color: dimgrey;margin-right: 10px; cursor: pointer;">edit</mat-icon> </a> 
-                        
-                            <a (click)="confirmDialog(element.id)"><mat-icon matListIcon class="pointer" style="color: dimgrey;margin-right: 5px; cursor: pointer;">delete</mat-icon> </a> </mat-cell>
-            </ng-container>         -->
-            
-            <!-- Action Column -->
             <ng-container matColumnDef="edit">
-                <mat-header-cell *matHeaderCellDef > Edit </mat-header-cell>
-                <mat-cell *matCellDef="let element"> <button mat-icon-button matTooltip="Click to Edit" class="remove-border"
-                    color="primary" (click)="openEditDialog(element)">
-                    <mat-icon>edit</mat-icon>
-                </button> </mat-cell>
-           
+                <mat-header-cell *matHeaderCellDef>Edit</mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <button mat-icon-button (click)="openEditDialog(element)">
+                        <mat-icon>edit</mat-icon>
+                    </button>
+                </mat-cell>
             </ng-container>
+
             <ng-container matColumnDef="delete">
-                <mat-header-cell *matHeaderCellDef> Delete </mat-header-cell>
-                <mat-cell *matCellDef="let element"> <button mat-icon-button matTooltip="Click to Delete" class="remove-border"
-                    (click)="confirmDialog(element)" color="warn">
-                    <mat-icon>delete</mat-icon>
-                </button> </mat-cell>
+                <mat-header-cell *matHeaderCellDef>Delete</mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <button mat-icon-button (click)="confirmDialog(element)">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </mat-cell>
             </ng-container>
 
             <ng-container matColumnDef="loading">
@@ -81,14 +76,32 @@
                 </mat-footer-cell>
               </ng-container>
 
-
             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
             <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
             <mat-footer-row *matFooterRowDef="['loading']" [ngClass]="{'hide': dataSource!=null}"></mat-footer-row>
             </mat-table>
-        <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>        
-    </div>
-  </div>  
+
+            <!-- No data message -->
+            <div class="no-data-message" *ngIf="dataSource?.data?.length === 0">
+                No records found
+            </div>
+
+            <!-- Loading spinner -->
+            <div class="loading-shade" *ngIf="isLoading">
+                <mat-spinner></mat-spinner>
+            </div>
+
+            <mat-paginator 
+                #paginator 
+                [length]="totalItems"
+                [pageSize]="5"
+                [pageSizeOptions]="[5, 10, 25, 100]"
+                [showFirstLastButtons]="true"
+                [pageIndex]="0"
+                aria-label="Select page">
+            </mat-paginator>
+        </div>
+    </div>  
 
 <!-- <div fxLayout="column" class="p-2">
     <div class="p-2"> 

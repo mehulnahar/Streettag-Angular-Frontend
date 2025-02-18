@@ -66,6 +66,12 @@ interface MapResponse {
   viewportInfo: any;
 }
 
+interface PaginatedResponse {
+  response: StreetTag[];
+  status: string;
+  total: number;
+}
+
 @Component({
   selector: "app-event",
   templateUrl: "./streettags.component.html",
@@ -119,6 +125,9 @@ export class StreettagsComponent implements OnInit, AfterViewInit {
 
   private readonly GOOGLE_MAPS_API_KEY = environment.googleMapsApiKey;
 
+  public totalItems: number = 0;
+  public isLoading: boolean = false;
+
   constructor(
     public appSettings: AppSettings,
     public formBuilder: FormBuilder,
@@ -136,6 +145,18 @@ export class StreettagsComponent implements OnInit, AfterViewInit {
     if (this.dataSource) {
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
+    }
+
+    if (this.paginator) {
+      this.paginator.page.subscribe(() => {
+        this.getallCircuits();
+      });
+    }
+
+    if (this.sort) {
+      this.sort.sortChange.subscribe(() => {
+        this.getallCircuits();
+      });
     }
   }
 
@@ -211,11 +232,26 @@ export class StreettagsComponent implements OnInit, AfterViewInit {
   ///////////////get all event//////////////////
   getallCircuits() {
     const url = `${this.baseUrl}getStreetTags`;
-    this.ajaxService.get<ApiResponse<StreetTag[]>>(url).subscribe((response) => {
-      this.dataSource = new MatTableDataSource<StreetTag>(response.response);
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
-    });
+    const params = {
+      page: (this.paginator?.pageIndex ?? 0) + 1,
+      limit: this.paginator?.pageSize ?? 5
+    };
+    
+    this.isLoading = true;
+    this.ajaxService.getdata<PaginatedResponse>(params, url).subscribe(
+      (response) => {
+        if (response.status === "true") {
+          this.dataSource = new MatTableDataSource<StreetTag>(response.response);
+          this.totalItems = response.total;
+          this.dataSource.sort = this.sort;
+        }
+        this.isLoading = false;
+      },
+      (error) => {
+        console.error('Error fetching data:', error);
+        this.isLoading = false;
+      }
+    );
   }
 
   confirmDialog(data:any): void {
