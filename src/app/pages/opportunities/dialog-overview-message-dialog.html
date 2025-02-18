@@ -5,7 +5,7 @@
     <form [formGroup]="angForm" novalidate>
       <mat-form-field appearance="fill">
         <mat-label>Opportunity Text</mat-label>
-        <input matInput placeholder="Enter opportunity text" formControlName="opportunity_data" [(ngModel)]="opportunity_data">
+        <input matInput placeholder="Enter opportunity text" formControlName="opportunity_data">
         <mat-icon matSuffix>description</mat-icon>
         <mat-error *ngIf="angForm.get('opportunity_data')?.errors?.['required'] && angForm.get('opportunity_data')?.touched">
           Opportunity text required
@@ -14,7 +14,7 @@
 
       <mat-form-field appearance="fill">
         <mat-label>Opportunity Link</mat-label>
-        <input matInput placeholder="Enter opportunity link" formControlName="opportunity_link" [(ngModel)]="opportunity_link">
+        <input matInput placeholder="Enter opportunity link" formControlName="opportunity_link">
         <mat-icon matSuffix>link</mat-icon>
       </mat-form-field>
 
@@ -32,7 +32,7 @@
 
       <mat-form-field appearance="fill">
         <mat-label>Select Circuits</mat-label>
-        <mat-select formControlName="circuit_name" [(ngModel)]="circuit_name_arr" multiple>
+        <mat-select formControlName="circuit_name" multiple>
           <mat-option *ngFor="let circuit of dataSourceCircuit" [value]="circuit.circuit_name">
             {{circuit.circuit_name}}
           </mat-option>

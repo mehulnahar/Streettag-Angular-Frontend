@@ -153,7 +153,9 @@ export class OpportunitiesComponent implements OnInit {
   openEditDialog(event: OpportunityData): void {
     const dialogRef = this.dialog.open(DialogOverviewMessageDialogOpportunities, {
       data: { event },
-      width: '500px'
+      width: '500px',
+      autoFocus: false,
+      restoreFocus: true
     });
 
     dialogRef.afterClosed().subscribe({
@@ -166,7 +168,9 @@ export class OpportunitiesComponent implements OnInit {
   openAddMessageDialog(): void {
     const dialogRef = this.dialog.open(DialogOverviewAddMessageDialogOpportunities, {
       data: { groups: this.groupList },
-      width: '500px'
+      width: '500px',
+      autoFocus: false,
+      restoreFocus: true
     });
 
     dialogRef.afterClosed().subscribe({
@@ -256,9 +260,6 @@ export class DialogOverviewAddMessageDialogOpportunities {
   public dataSourceCircuit: any[] = [];
   public dataSourceLocation: any[] = [];
   public selectedValue: string = '';
-  public circuit_name: string = '';
-  public opportunity_data: string = '';
-  public opportunity_link: string = '';
   private readonly baseUrl = environment.baseUrl;
   public resData: any;
   public groups: any[] = [];
@@ -314,12 +315,13 @@ export class DialogOverviewAddMessageDialogOpportunities {
 
   addevent() {
     if (this.angForm.status === "VALID") {
+      const formValue = this.angForm.value;
       const circuit_id_arr: number[] = [];
       let circuit_id_str = "";
 
       this.dataSourceCircuit.forEach((item: any) => {
-        for (let i = 0; i < this.circuit_name.length; i++) {
-          if (this.circuit_name[i] === item.circuit_name) {
+        for (let i = 0; i < formValue.circuit_name.length; i++) {
+          if (formValue.circuit_name[i] === item.circuit_name) {
             circuit_id_arr[i] = item.id;
           }
         }
@@ -328,10 +330,10 @@ export class DialogOverviewAddMessageDialogOpportunities {
       circuit_id_str = circuit_id_arr.join();
 
       const data = {
-        circuits: this.circuit_name,
-        opportunity_data: this.opportunity_data,
+        circuits: formValue.circuit_name,
+        opportunity_data: formValue.opportunity_data,
         opportunity_image: this.imageSrc || '',
-        opportunity_link: this.opportunity_link || '',
+        opportunity_link: formValue.opportunity_link || '',
         circuit_ids: circuit_id_str,
       };
 
@@ -361,10 +363,7 @@ export class DialogOverviewMessageDialogOpportunities {
   angForm!: FormGroup;
   public selectedValue: string = '';
   public imageSrc: string = '';
-  public opportunity_data: string = '';
-  public opportunity_link: string = '';
   public opportunity_image: string = '';
-  public circuit_name_arr: string[] = [];
   public dataSourceCircuit: any[] = [];
   private readonly baseUrl = environment.baseUrl;
   private imageChanged: boolean = false;
@@ -390,11 +389,13 @@ export class DialogOverviewMessageDialogOpportunities {
   }
 
   loadData() {
-    if (this.data?.event) {
-      this.opportunity_data = this.data.event.opportunity_data;
-      this.opportunity_link = this.data.event.opportunity_link;
+    if (this.data.event) {
       this.opportunity_image = this.data.event.opportunity_image;
-      this.circuit_name_arr = this.data.event.circuits.split(",");
+      this.angForm.patchValue({
+        opportunity_data: this.data.event.opportunity_data,
+        opportunity_link: this.data.event.opportunity_link,
+        circuit_name: this.data.event.circuits.split(',')
+      });
     }
   }
 
@@ -425,12 +426,13 @@ export class DialogOverviewMessageDialogOpportunities {
 
   updateevent() {
     if (this.angForm.valid) {
+      const formValue = this.angForm.value;
       const data = {
         opportunity_id: this.data.event.id,
-        circuits: this.circuit_name_arr,
-        opportunity_data: this.opportunity_data,
+        circuits: formValue.circuit_name,
+        opportunity_data: formValue.opportunity_data,
         opportunity_image: this.imageChanged ? this.imageSrc : "not selected",
-        opportunity_link: this.opportunity_link,
+        opportunity_link: formValue.opportunity_link,
         circuit_ids: this.getCircuitIds()
       };
 
@@ -448,9 +450,10 @@ export class DialogOverviewMessageDialogOpportunities {
   }
 
   private getCircuitIds(): string {
+    const formValue = this.angForm.value;
     const circuit_id_arr: number[] = [];
     this.dataSourceCircuit.forEach((item: any) => {
-      if (this.circuit_name_arr.includes(item.circuit_name)) {
+      if (formValue.circuit_name.includes(item.circuit_name)) {
         circuit_id_arr.push(item.id);
       }
     });

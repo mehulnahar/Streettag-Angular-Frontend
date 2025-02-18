@@ -233,12 +233,6 @@ export class DialogOverviewAddFloor {
     public formBuilder: FormBuilder
   ) {
     this.createForm();
-
-    this.form = this.formBuilder.group({
-      message: ["", Validators.required],
-      group: ["", Validators.required],
-    });
-
     this.getallBuilding();
   }
   groups = this.data;
@@ -268,43 +262,36 @@ export class DialogOverviewAddFloor {
   }
 
   addevent() {
-    if (this.floor_name == "" || this.building_id == "") {
+    if (this.angForm.invalid) {
       this.snackBar.open("Please fill the details", undefined, {
         duration: 3000,
+        verticalPosition: "top"
+      });
+      return;
+    }
+
+    const formData = this.angForm.value;
+    var url = `${this.baseUrl}addFloors`;
+    var data1 = {
+      floor_name: formData.floor_name,
+      building_id: formData.building_id,
+    };
+
+    this.ajaxService.post(data1, url).subscribe((data1) => {
+      this.resData = data1;
+      this.getallFloors();
+      let dynamicSnackColor = "blue-snackbar";
+      if (this.resData.status == "false") {
+        dynamicSnackColor = "red-snackbar";
+      }
+      this.snackBar.open(this.resData.msg, undefined, {
+        duration: 3000,
         verticalPosition: "top",
+        panelClass: dynamicSnackColor,
       });
-    }
 
-    //console.log(this.angForm.status);
-
-    if (this.angForm.status == "VALID") {
-      //console.log(data);
-
-      var url = `${this.baseUrl}addFloors`;
-      var data1 = {
-        floor_name: this.floor_name,
-        building_id: this.building_id,
-      };
-      //console.log("request parameter is:")
-      //console.log(data1)
-
-      this.ajaxService.post(data1, url).subscribe((data1) => {
-        this.resData = data1;
-        //console.log(this.resData)
-        this.getallFloors();
-        let dynamicSnackColor = "blue-snackbar";
-        if (this.resData.status == "false") {
-          dynamicSnackColor = "red-snackbar";
-        }
-        this.snackBar.open(this.resData.msg, undefined, {
-          duration: 3000,
-          verticalPosition: "top",
-          panelClass: dynamicSnackColor,
-        });
-
-        this.dialogRef.close();
-      });
-    }
+      this.dialogRef.close();
+    });
   }
 }
 
@@ -314,24 +301,15 @@ export class DialogOverviewAddFloor {
 })
 export class DialogOverviewFloor {
   allLocations = [] as any;
-  form: FormGroup;
+  form!: FormGroup;
+  private readonly baseUrl = environment.baseUrl;
 
   public lat = "";
   public lng = "";
   public building_name = "";
   public id = "";
   public dataSourceBuilding!:Observable<any>;
-  public floor_name = "";
-  public building_id = "";
-
-  selectedValue!: string;
-
-  private readonly baseUrl = environment.baseUrl;
-
-  public zoom: number = 7;
-  public settings!: Settings;
   resData = [] as any;
-
   angForm!: FormGroup;
 
   constructor(
@@ -342,73 +320,59 @@ export class DialogOverviewFloor {
     public snackBar: MatSnackBar,
     public formBuilder: FormBuilder
   ) {
-    this.createForm();
-
-    this.floor_name = this.data.event.floor_name;
-    this.building_id = this.data.event.building_id;
-    this.id = this.data.event.id;
-
-    this.getallBuilding();
-
     this.form = this.formBuilder.group({
       message: ["", Validators.required],
       group: ["", Validators.required],
     });
-  }
-
-  ngOnInit() {}
-
-  onNoClick(): void {
-    this.dialogRef.close();
+    
+    this.createForm();
+    this.id = this.data.event.id;
+    this.getallBuilding();
   }
 
   createForm() {
     this.angForm = this.fb.group({
-      floor_name: ["", Validators.required],
-      building_id: ["", Validators.required],
+      floor_name: [this.data.event.floor_name, Validators.required],
+      building_id: [this.data.event.building_id, Validators.required],
     });
   }
 
   getallBuilding() {
-   const url = `${this.baseUrl}getBuilding`;
-   this.dataSourceBuilding = this.ajaxService.get(url).pipe(pluck("response"));
+    const url = `${this.baseUrl}getBuilding`;
+    this.dataSourceBuilding = this.ajaxService.get(url).pipe(pluck("response"));
   }
 
   updateevent() {
-    if (this.floor_name == "" || this.building_id == "") {
+    if (this.angForm.invalid) {
       this.snackBar.open("Please fill the details", undefined, {
         duration: 3000,
         verticalPosition: "top",
         panelClass: ["red-snackbar"],
       });
+      return;
     }
 
-    //console.log(this.angForm.status);
+    const formData = this.angForm.value;
+    const url = `${this.baseUrl}editFloors`;
+    const data1 = {
+      id: this.id,
+      floor_name: formData.floor_name,
+      building_id: formData.building_id,
+    };
 
-    if (this.angForm.status == "VALID") {
-      var url = `${this.baseUrl}editFloors`;
-      var data1 = {
-        id: this.id,
-        floor_name: this.floor_name,
-        building_id: this.building_id,
-      };
-      //console.log("request parameter isdfsdfsdfsd:")
-      //console.log(data1)
-
-      this.ajaxService.post(data1, url).subscribe((data1) => {
-        this.resData = data1;
-        //console.log(this.resData)
-
-        this.snackBar.open(this.resData.msg, undefined, {
-          duration: 3000,
-          verticalPosition: "top",
-          panelClass: ["blue-snackbar"],
-        
-        });
-
-        this.dialogRef.close();
+    this.ajaxService.post(data1, url).subscribe((data1) => {
+      this.resData = data1;
+      this.snackBar.open(this.resData.msg, undefined, {
+        duration: 3000,
+        verticalPosition: "top",
+        panelClass: ["blue-snackbar"],
       });
-    }
+      this.dialogRef.close();
+    });
+  }
+
+  onNoClick(): void {
+    this.dialogRef.close();
   }
 
   closeDialog(group: any) {

@@ -5,7 +5,7 @@
     <form [formGroup]="angForm" fxLayout="column" fxLayoutGap="20px">
       <mat-form-field appearance="fill" class="w-100">
         <mat-label>Floor Name</mat-label>
-        <input matInput placeholder="Enter floor name" [(ngModel)]="floor_name" formControlName="floor_name">
+        <input matInput placeholder="Enter floor name" formControlName="floor_name">
         <mat-error *ngIf="angForm.get('floor_name')?.errors?.['required']">
           Floor Name is required
         </mat-error>
@@ -13,7 +13,7 @@
 
       <mat-form-field appearance="fill" class="w-100">
         <mat-label>Select Building</mat-label>
-        <mat-select [(ngModel)]="building_id" formControlName="building_id">
+        <mat-select formControlName="building_id">
           <mat-option *ngFor="let building of dataSourceBuilding | async" [value]="building.id">
             {{building.building_name}}
           </mat-option>
