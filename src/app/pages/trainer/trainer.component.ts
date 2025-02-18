@@ -152,9 +152,6 @@ export class TrainerComponent implements OnInit {
 export class DialogBoxAddTrainer {
   clicked = false;
   form!: FormGroup;
-  name = "";
-  email = "";
-  phone = "";
   resData: any;
   angForm!: FormGroup;
   private readonly baseUrl = environment.baseUrl;
@@ -184,10 +181,11 @@ export class DialogBoxAddTrainer {
     if (this.angForm.status == "VALID") {
       this.clicked = true;
       const url = `${this.baseUrl}addTrainer`;
+      const formValues = this.angForm.value;
       var data = {
-        name: this.name,
-        phone: this.phone,
-        email: this.email,
+        name: formValues.name,
+        phone: formValues.phone,
+        email: formValues.email,
       };
       this.ajaxService.post(data, url).subscribe((data) => {
         this.resData = data;

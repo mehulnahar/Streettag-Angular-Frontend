@@ -130,6 +130,19 @@ import {
       this.settings = this.appSettings.settings;
       this.getAllTeams();
       this.getAllPlayers();
+
+      // Subscribe to form control value changes
+      this.myControl3.valueChanges.subscribe(value => {
+        if (value === "") {
+          this.getAllPlayers();
+        } else {
+          this.get_team_id(value);
+        }
+      });
+
+      this.myControl1.valueChanges.subscribe(value => {
+        this.get_player_id(value);
+      });
     }
   
 
