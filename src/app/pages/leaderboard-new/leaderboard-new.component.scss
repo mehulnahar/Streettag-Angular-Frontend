@@ -114,6 +114,7 @@
   tbody {
     tr {
       border-bottom: 1px solid #dee2e6;
+      border-radius: 8px;
       
       td {
         padding: 15px;
@@ -123,10 +124,6 @@
         &:nth-child(3), &:nth-child(4) {
           text-align: right;
         }
-      }
-
-      &:hover:not(.rank-1):not(.rank-2):not(.rank-3) {
-        background-color: #f8f9fa;
       }
     }
 
@@ -143,6 +140,40 @@
     .rank-3 {
       background-color: #c4caed;
       color: white;
+    }
+
+    tr:nth-child(6n+4) {
+      background-color: #8E44AD;
+      color: white;
+    }
+
+    tr:nth-child(6n+5) {
+      background-color: #1A5F7A;
+      color: white;
+    }
+
+    tr:nth-child(6n+6) {
+      background-color: #2E7D32;
+      color: white;
+    }
+
+    tr:nth-child(6n+7) {
+      background-color: #9C27B0;
+      color: white;
+    }
+
+    tr:nth-child(6n+8) {
+      background-color: #00796B;
+      color: white;
+    }
+
+    tr:nth-child(6n+9) {
+      background-color: #E91E63;
+      color: white;
+    }
+
+    &:hover:not(.rank-1):not(.rank-2):not(.rank-3) {
+      background-color: rgba(255, 255, 255, 0.1);
     }
   }
 }

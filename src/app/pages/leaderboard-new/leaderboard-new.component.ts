@@ -292,16 +292,5 @@ export class LeaderboardNewComponent implements OnInit {
     });
   }
 
-  getCardColor(rank: number): string {
-    const position = (rank - 1) % 6;
-    switch (position) {
-      case 0: return 'purple';
-      case 1: return 'navy';
-      case 2: return 'green';
-      case 3: return 'magenta';
-      case 4: return 'teal';
-      case 5: return 'pink';
-      default: return 'purple';
-    }
-  }
+ 
 } 
