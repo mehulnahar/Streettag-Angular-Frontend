@@ -33,38 +33,42 @@
     </select>
 
     <button mat-raised-button color="primary" type="submit">
-      <!-- <mat-icon>search</mat-icon> -->
+      <mat-icon>search</mat-icon>
       <span>SUBMIT</span>
     </button>
   </form>
 
-  <div align="center" *ngIf="spinner">
-    <mat-spinner></mat-spinner>
-  </div>
-
-  <div class="container">
-    <div class="headered">
-      <div class="rank-header">Rank</div>
-      <div class="team-header">Team</div>
-      <div class="score-header">Average/Score</div>
+  <div class="table-responsive">
+    <div align="center" *ngIf="spinner">
+      <mat-spinner></mat-spinner>
     </div>
 
-    <div class="card" *ngFor="let entry of leaderboardData" [ngClass]="getCardColor(entry.rank)">
-      <div class="rank">
-        <span class="trophy" *ngIf="entry.rank <= 3">
-          <i class="fa-regular fa-trophy"></i>
-          <span class="trophy-number">{{entry.rank}}</span>
-        </span>
-        <span *ngIf="entry.rank > 3">{{entry.rank}}</span>
-      </div>
-      <div class="team-info">
-        <div class="team-name">{{entry.teamName}}</div>
-        <div class="player-count">{{entry.playerCount}} players</div>
-      </div>
-      <div class="score">
-        <div class="score-top">{{entry.averageScore | number}}</div>
-        <div class="score-bottom">{{entry.totalScore | number}}</div>
-      </div>
-    </div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>RANK</th>
+          <th>TEAM NAME</th>
+          <th>AVERAGE SCORE</th>
+          <th>TOTAL SCORE</th>
+          <th>NUMBER OF PLAYERS</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let entry of leaderboardData" [ngClass]="{
+          'rank-1': entry.rank === 1,
+          'rank-2': entry.rank === 2,
+          'rank-3': entry.rank === 3
+        }">
+          <td>
+            {{ entry.rank }}
+            <mat-icon *ngIf="entry.rank <= 3" class="rank-icon">accessibility_new</mat-icon>
+          </td>
+          <td>{{ entry.teamName }}</td>
+          <td>{{ entry.averageScore | number }}</td>
+          <td>{{ entry.totalScore | number }}</td>
+          <td>{{ entry.playerCount }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div> 
