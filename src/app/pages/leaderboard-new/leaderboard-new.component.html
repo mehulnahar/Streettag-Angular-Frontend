@@ -48,8 +48,7 @@
         <tr>
           <th>RANK</th>
           <th>TEAM NAME</th>
-          <th>AVERAGE SCORE</th>
-          <th>TOTAL SCORE</th>
+          <th>AVERAGE/SCORE</th>
           <th>NUMBER OF PLAYERS</th>
         </tr>
       </thead>
@@ -64,8 +63,8 @@
             <mat-icon *ngIf="entry.rank <= 3" class="rank-icon">accessibility_new</mat-icon>
           </td>
           <td>{{ entry.teamName }}</td>
-          <td>{{ entry.averageScore | number }}</td>
-          <td>{{ entry.totalScore | number }}</td>
+          <td>{{ entry.averageScore | number }} / {{ entry.totalScore | number }}</td>
+         
           <td>{{ entry.playerCount }}</td>
         </tr>
       </tbody>
