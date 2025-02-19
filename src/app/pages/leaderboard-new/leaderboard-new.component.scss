@@ -36,12 +36,6 @@
   opacity: 1;
 }
 
-.main-container {
-  padding: 20px 30px;
-  background-color: #f5f7ff;
-  min-height: calc(100vh - 200px);
-}
-
 .search-form {
   display: flex;
   align-items: center;
@@ -190,10 +184,6 @@ mat-spinner {
 
 // Responsive adjustments
 @media (max-width: 768px) {
-  .main-container {
-    padding: 10px;
-  }
-
   .search-form {
     flex-direction: column;
     padding: 10px;

@@ -23,6 +23,7 @@ interface LeaderboardEntry {
   playerCount: number;
   averageScore: number;
   totalScore: number;
+  totalplayer: number;
 }
 
 @Component({
@@ -89,105 +90,120 @@ export class LeaderboardNewComponent implements OnInit {
       teamName: 'Succulents W',
       playerCount: 3,
       averageScore: 1352283,
-      totalScore: 4056850
+      totalScore: 4056850,
+      totalplayer: 0
     },
     {
       rank: 2,
       teamName: 'St Christophers School Oxford',
       playerCount: 1,
       averageScore: 1295835,
-      totalScore: 1295835
+      totalScore: 1295835,
+      totalplayer: 0
     },
     {
       rank: 3,
       teamName: 'You and Me',
       playerCount: 2,
       averageScore: 1248190,
-      totalScore: 2496380
+      totalScore: 2496380,
+      totalplayer: 0
     },
     {
       rank: 4,
       teamName: 'All By Myself',
       playerCount: 1,
       averageScore: 837140,
-      totalScore: 837140
+      totalScore: 837140,
+      totalplayer: 0
     },
     {
       rank: 5,
       teamName: 'JDteam',
       playerCount: 1,
       averageScore: 800145,
-      totalScore: 800145
+      totalScore: 800145,
+      totalplayer: 0
     },
     {
       rank: 6,
       teamName: 'Chang',
       playerCount: 1,
       averageScore: 528790,
-      totalScore: 528790
+      totalScore: 528790,
+      totalplayer: 0
     },
     {
       rank: 7,
       teamName: 'Fast & Curious',
       playerCount: 4,
       averageScore: 498320,
-      totalScore: 1993280
+      totalScore: 1993280,
+      totalplayer: 0
     },
     {
       rank: 8,
       teamName: 'Code Breakers',
       playerCount: 2,
       averageScore: 473500,
-      totalScore: 947000
+      totalScore: 947000,
+      totalplayer: 0
     },
     {
       rank: 9,
       teamName: 'Byte Warriors',
       playerCount: 3,
       averageScore: 450120,
-      totalScore: 1350360
+      totalScore: 1350360,
+      totalplayer: 0
     },
     {
       rank: 10,
       teamName: 'Alpha Squad',
       playerCount: 5,
       averageScore: 400500,
-      totalScore: 2002500
+      totalScore: 2002500,
+      totalplayer: 0
     },
     {
       rank: 11,
       teamName: 'The Debuggers',
       playerCount: 2,
       averageScore: 378600,
-      totalScore: 757200
+      totalScore: 757200,
+      totalplayer: 0
     },
     {
       rank: 12,
       teamName: 'The Mavericks',
       playerCount: 3,
       averageScore: 350200,
-      totalScore: 1050600
+      totalScore: 1050600,
+      totalplayer: 0
     },
     {
       rank: 13,
       teamName: 'Dream Chasers',
       playerCount: 4,
       averageScore: 320000,
-      totalScore: 1280000
+      totalScore: 1280000,
+      totalplayer: 0
     },
     {
       rank: 14,
       teamName: 'Quantum Coders',
       playerCount: 2,
       averageScore: 295700,
-      totalScore: 591400
+      totalScore: 591400,
+      totalplayer: 0
     },
     {
       rank: 15,
       teamName: 'Lone Wolf',
       playerCount: 1,
       averageScore: 250000,
-      totalScore: 250000
+      totalScore: 250000,
+      totalplayer: 0
     }
 ];
 
@@ -266,29 +282,35 @@ export class LeaderboardNewComponent implements OnInit {
       teamName: item.team_name,
       playerCount: item.total_players,
       averageScore: item.avg_points,
-      totalScore: item.total_points
+      totalScore: item.total_points,
+      totalplayer: item.totalplayer
     }));
   }
 
   onSubmit(data: any) {
     this.spinner = true;
+    const getUrl = window.location;
+    const frameUrl =
+      getUrl.protocol +
+      "//" +
+      getUrl.host +
+      "/#/dynamiclead?circuit_name=" +
+      data.circuit_name +
+      "&location_name=" +
+      data.location_name;
 
-    const url = `${this.baseUrl}getAvgLeaderboardData`;
-    const requestData = {
-      location_id: this.location_id,
-      circuit_id: this.circuit_id
-    };
+    this.iframeCode =
+      '<iframe src="' + frameUrl + '" height="500" width="700"></iframe>';
 
-    console.log('Request Data:', requestData);
+    const url = `${this.baseUrl}getLeaderboardData`;
 
-    this.ajaxService.post(requestData, url).subscribe((data: any) => {
+    this.ajaxService.post(data, url).subscribe((data: any) => {
+      this.dataSourceLeaderboard = data["response"];
       this.spinner = false;
-      if (data && data.response) {
-        this.leaderboardData = this.mapApiResponseToLeaderboardEntry(data.response);
-      }
-    }, error => {
-      this.spinner = false;
-      console.error('Error fetching leaderboard data:', error);
+      this.dataSource2 = this.mapApiResponseToLeaderboardEntry(data["response"]);
+      this.dataSource = new MatTableDataSource<LeaderboardEntry>(this.dataSource2);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
     });
   }
 
