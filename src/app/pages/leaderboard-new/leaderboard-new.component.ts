@@ -125,8 +125,71 @@ export class LeaderboardNewComponent implements OnInit {
       playerCount: 1,
       averageScore: 528790,
       totalScore: 528790
+    },
+    {
+      rank: 7,
+      teamName: 'Fast & Curious',
+      playerCount: 4,
+      averageScore: 498320,
+      totalScore: 1993280
+    },
+    {
+      rank: 8,
+      teamName: 'Code Breakers',
+      playerCount: 2,
+      averageScore: 473500,
+      totalScore: 947000
+    },
+    {
+      rank: 9,
+      teamName: 'Byte Warriors',
+      playerCount: 3,
+      averageScore: 450120,
+      totalScore: 1350360
+    },
+    {
+      rank: 10,
+      teamName: 'Alpha Squad',
+      playerCount: 5,
+      averageScore: 400500,
+      totalScore: 2002500
+    },
+    {
+      rank: 11,
+      teamName: 'The Debuggers',
+      playerCount: 2,
+      averageScore: 378600,
+      totalScore: 757200
+    },
+    {
+      rank: 12,
+      teamName: 'The Mavericks',
+      playerCount: 3,
+      averageScore: 350200,
+      totalScore: 1050600
+    },
+    {
+      rank: 13,
+      teamName: 'Dream Chasers',
+      playerCount: 4,
+      averageScore: 320000,
+      totalScore: 1280000
+    },
+    {
+      rank: 14,
+      teamName: 'Quantum Coders',
+      playerCount: 2,
+      averageScore: 295700,
+      totalScore: 591400
+    },
+    {
+      rank: 15,
+      teamName: 'Lone Wolf',
+      playerCount: 1,
+      averageScore: 250000,
+      totalScore: 250000
     }
-  ];
+];
 
   constructor(
     public appSettings: AppSettings,
