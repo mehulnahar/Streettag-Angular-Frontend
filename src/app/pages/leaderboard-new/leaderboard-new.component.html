@@ -51,8 +51,11 @@
 
     <div class="card" *ngFor="let entry of leaderboardData" [ngClass]="getCardColor(entry.rank)">
       <div class="rank">
-        <span class="trophy" *ngIf="entry.rank <= 3">🏆</span>
-        {{entry.rank}}
+        <span class="trophy" *ngIf="entry.rank <= 3">
+          <i class="fa-regular fa-trophy"></i>
+          <span class="trophy-number">{{entry.rank}}</span>
+        </span>
+        <span *ngIf="entry.rank > 3">{{entry.rank}}</span>
       </div>
       <div class="team-info">
         <div class="team-name">{{entry.teamName}}</div>
