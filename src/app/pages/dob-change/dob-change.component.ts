@@ -428,7 +428,7 @@ export class DobChangeComponent implements OnInit {
       device_type: this.device_type,
       location_id: this.location_id,
       player_email: this.player_email,
-      player_id: window.btoa(this.player_id),
+      player_id: this.player_id,
       team_id: this.team_id
     };
 
