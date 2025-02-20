@@ -312,7 +312,7 @@ export class DialogOverviewAddMessageDialogCircuit {
       <h2 mat-dialog-title>Add Fruit Card</h2>
       <form [formGroup]="fruitForm" (ngSubmit)="onSubmit()">
         <mat-dialog-content>
-          <mat-form-field appearance="outline" class="w-100 mb-3">
+          <mat-form-field appearance="fill" class="w-100 mb-3">
             <mat-label>Select Fruit</mat-label>
             <mat-select formControlName="fruit_id">
               <mat-option *ngFor="let fruit of availableFruits" [value]="fruit.id">
@@ -324,7 +324,7 @@ export class DialogOverviewAddMessageDialogCircuit {
             </mat-error>
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="w-100">
+          <mat-form-field appearance="fill" class="w-100">
             <mat-label>Card Name</mat-label>
             <input matInput formControlName="card_name" placeholder="Enter card name">
             <mat-error *ngIf="fruitForm.get('card_name')?.hasError('required')">
