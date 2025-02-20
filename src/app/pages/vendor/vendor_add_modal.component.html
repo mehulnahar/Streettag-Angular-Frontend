@@ -9,7 +9,7 @@
     <mat-dialog-content>
         <form [formGroup]="angForm" novalidate class="edit-form">
             <!-- Vendor Name -->
-            <mat-form-field appearance="outline" class="full-width">
+            <mat-form-field appearance="fill" class="full-width">
                 <mat-label>Vendor Name</mat-label>
                 <input matInput formControlName="vendor_name" placeholder="Enter vendor's business name">
                 <mat-icon matPrefix>business</mat-icon>
@@ -42,7 +42,7 @@
 
             <!-- Points and Discount Section -->
             <div class="form-row">
-                <mat-form-field appearance="outline">
+                <mat-form-field appearance="fill">
                     <mat-label>Bonus Points</mat-label>
                     <input type="number" matInput formControlName="bonus_points" 
                            placeholder="Enter points value" min="0">
@@ -56,7 +56,7 @@
                     </mat-error>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline">
+                <mat-form-field appearance="fill">
                     <mat-label>Discount Percentage</mat-label>
                     <input type="number" matInput formControlName="discount" 
                            placeholder="Enter discount %" min="0" max="100">
@@ -73,7 +73,7 @@
 
             <!-- Location Section -->
             <div class="location-section">
-                <mat-form-field appearance="outline" class="full-width">
+                <mat-form-field appearance="fill" class="full-width">
                     <mat-label>Vendor Location</mat-label>
                     <input matInput #location placeholder="Vendor Location">
                     <mat-icon matPrefix>search</mat-icon>
@@ -107,13 +107,13 @@
 
             <!-- Coordinates -->
             <div class="form-row">
-                <mat-form-field appearance="outline">
+                <mat-form-field appearance="fill">
                     <mat-label>Latitude</mat-label>
                     <input matInput formControlName="lat" readonly>
                     <mat-icon matPrefix>explore</mat-icon>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline">
+                <mat-form-field appearance="fill">
                     <mat-label>Longitude</mat-label>
                     <input matInput formControlName="lng" readonly>
                     <mat-icon matPrefix>explore</mat-icon>
@@ -121,7 +121,7 @@
             </div>
 
             <!-- Address Section -->
-            <mat-form-field appearance="outline" class="full-width">
+            <mat-form-field appearance="fill" class="full-width">
                 <mat-label>Vendor Address</mat-label>
                 <textarea matInput formControlName="vendor_address" 
                           rows="3" placeholder="Enter complete business address"></textarea>
