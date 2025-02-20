@@ -25,13 +25,13 @@ export const verticalMenuItems = [
     new Menu (22, 'Trainer', '/admin/trainer', null, 'event', null, false, 0), 
     new Menu (23, 'Pecode', '/admin/pecode', null, 'qr_code', null, false, 0),	
     new Menu (24, 'Charity', '/admin/charity', null, 'groups', null, false, 0), 
-    new Menu (38, 'Auto Stats for LA', '/admin/auto-states', null, 'autorenew', null, false, 0),
-  
+    
     new Menu (25, 'Broadcast', null, null, 'format_list_bulleted', null, true, 0), 
     new Menu (26, 'Broadcast Management', '/admin/broadcast', null, 'wifi_tethering', null, false, 25), 
     new Menu (27, 'Broadcast Category', '/admin/broadcast/broadcast-category', null, 'category', null, false, 25), 
    
     new Menu (28, 'Reports', null, null, 'format_list_bulleted', null, true, 0), 
+    new Menu (38, 'Auto Stats for LA', '/admin/auto-states', null, 'autorenew', null, false, 28),
     new Menu (39, 'Monitoring Report', '/admin/report/monitoring-report', null, 'library_books', null, false, 28), 
     new Menu (30, 'Heat Map', '/admin/report/heat-map', null, 'map', null, false, 28),
     new Menu (31, 'Graphical Analytics', '/admin/report/chart-report', null, 'multiline_chart', null, false, 28),
