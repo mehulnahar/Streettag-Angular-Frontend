@@ -34,17 +34,6 @@
                         <mat-error *ngIf="form.get('score')?.hasError('pattern')">Score must be a number</mat-error>
                     </mat-form-field>
 
-                    <mat-form-field>
-                        <textarea matInput placeholder="Event Location" formControlName="location" (change)="changeEvent($event)"></textarea>
-                        <mat-error *ngIf="form.get('location')?.hasError('required')">Location is required</mat-error>
-                    </mat-form-field>
-
-                    <div class="text-center mb-3">
-                        <button mat-raised-button color="accent" (click)="setLocation()">
-                            Set Location
-                        </button>
-                    </div>
-
                     <div class="map-container" style="height: 400px; margin: 16px 0;">
                         <google-map [center]="center" [zoom]="zoom" height="100%" width="100%" (mapClick)="markerDragEnd($event)">
                             <map-marker

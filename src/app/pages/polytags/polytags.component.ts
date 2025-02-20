@@ -269,7 +269,6 @@ export class DialogOverviewAddMessageDialogPolytags implements OnInit {
       asset_id: ['', Validators.required],
       title: ['', Validators.required],
       score: ['', [Validators.required, Validators.pattern(/^[0-9]*$/)]],
-      location: ['', Validators.required],
       lat: [this.markerPosition.lat, Validators.required],
       lng: [this.markerPosition.lng, Validators.required]
     });
@@ -312,31 +311,30 @@ export class DialogOverviewAddMessageDialogPolytags implements OnInit {
     );
   }
 
+  markerDragEnd(event: any) {
+    const position = event.latLng;
+    this.markerPosition = {
+      lat: position.lat(),
+      lng: position.lng()
+    };
+    this.form.patchValue({
+      lat: this.markerPosition.lat,
+      lng: this.markerPosition.lng
+    });
+    this.getNearByTags();
+  }
+
   getNearByTags() {
     const url = `${this.baseUrl}getNearByTags`;
-    const data1 = {
+    const data = {
       diameter: "1000",
       lat: this.markerPosition.lat,
       lng: this.markerPosition.lng,
     };
 
-    this.ajaxService.post<ApiResponse<any>>(data1, url).subscribe((data: ApiResponse<any>) => {
+    this.ajaxService.post<ApiResponse<any>>(data, url).subscribe((data: ApiResponse<any>) => {
       this.nearByLatLng = data.response;
     });
-  }
-
-  markerDragEnd(event: google.maps.MapMouseEvent) {
-    if (event.latLng) {
-      this.markerPosition = {
-        lat: event.latLng.lat(),
-        lng: event.latLng.lng()
-      };
-      this.form.patchValue({
-        lat: this.markerPosition.lat,
-        lng: this.markerPosition.lng
-      });
-      this.getNearByTags();
-    }
   }
 
   onNoClick(): void {
@@ -349,41 +347,16 @@ export class DialogOverviewAddMessageDialogPolytags implements OnInit {
     this.form.patchValue({ location });
   }
 
-  setLocation() {
-    const location = this.form.get('location')?.value;
-    if (location) {
-      // Use Google Geocoding service to get coordinates
-      const geocoder = new google.maps.Geocoder();
-      geocoder.geocode({ address: location }, (results, status) => {
-        if (status === 'OK' && results && results[0]) {
-          const position = results[0].geometry.location;
-          this.markerPosition = {
-            lat: position.lat(),
-            lng: position.lng()
-          };
-          this.center = this.markerPosition;
-          this.zoom = 15;
-          this.form.patchValue({
-            lat: this.markerPosition.lat,
-            lng: this.markerPosition.lng
-          });
-          this.getNearByTags();
-        }
-      });
-    }
-  }
-
   addevent() {
     if (this.form.valid) {
       const url = `${this.baseUrl}addPolyTag`;
       const data = {
+        asset_id: this.form.get('asset_id')?.value,
+        category_id: this.form.get('category_id')?.value,
         title: this.form.get('title')?.value,
         score: this.form.get('score')?.value,
-        location: this.form.get('location')?.value,
         lat: this.form.get('lat')?.value,
-        lng: this.form.get('lng')?.value,
-        category_id: this.form.get('category_id')?.value,
-        asset_id: this.form.get('asset_id')?.value
+        lng: this.form.get('lng')?.value
       };
 
       this.ajaxService.post<ApiResponse<any>>(data, url).subscribe({
