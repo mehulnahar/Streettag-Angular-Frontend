@@ -11,7 +11,7 @@
 
         <div class="form-group">
             <div class="team-name-label">Team Name</div>
-            <mat-form-field appearance="outline" class="w-100">
+            <mat-form-field appearance="fill" class="w-100">
                 <input type="text" 
                        placeholder="Search team name" 
                        [(ngModel)]="team_namet" 
@@ -30,7 +30,7 @@
 
         <div class="form-group mt-3">
             <div class="player-id-label">Player ID</div>
-            <mat-form-field appearance="outline" class="w-100">
+            <mat-form-field appearance="fill" class="w-100">
                 <input type="text" 
                        placeholder="Search player ID" 
                        [(ngModel)]="player_namet" 
@@ -62,7 +62,7 @@
         </div>
 
         <div class="form-group mt-3">
-            <mat-form-field appearance="outline" class="w-100">
+            <mat-form-field appearance="fill" class="w-100">
                 <mat-select name="gift_id" [(ngModel)]="gift_id" placeholder="Select amount">
                     <mat-option [value]="1">100</mat-option>
                     <mat-option [value]="2">200</mat-option>
