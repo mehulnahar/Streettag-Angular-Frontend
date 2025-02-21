@@ -6,6 +6,20 @@
     height: $top-toolbar-height;
     z-index: 1;
     background-color: #283593;
+
+    ::ng-deep {
+        .mat-mdc-icon-button .mat-mdc-button-persistent-ripple::before {
+            opacity: 0;
+        }
+        .mat-mdc-icon-button .mat-mdc-button-ripple {
+            opacity: 0;
+        }
+        .mat-mdc-button-ripple, 
+        .mat-ripple-element,
+        .mdc-icon-button__ripple {
+            display: none !important;
+        }
+    }
 }
 
 .pin{
