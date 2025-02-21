@@ -19,7 +19,7 @@ export const verticalMenuItems = [
     new Menu (16, 'Send Gift', '/admin/sendgift', null, 'card_giftcard', null, false, 0),
     new Menu (17, 'Questionnaires', '/admin/questionnaires', null, 'question_answer', null, false, 0),
     new Menu (18, 'Vendors', '/admin/vendor', null, 'store', null, false, 0),
-    new Menu (19, 'Generate School QR', '/admin/schoolQr', null, 'qr_code', null, false, 0),
+    new Menu (19, 'Generate School QR', '/admin/schoolQr', null, 'school', null, false, 0),
     new Menu (20, 'PolyTag Management', '/admin/polytags', null, 'room', null, false, 0),
     new Menu (21, 'Withdrawal Request', '/admin/withdraw-approval', null, 'account_balance_wallet', null, false, 0), 
     new Menu (22, 'Trainer', '/admin/trainer', null, 'event', null, false, 0), 
@@ -42,7 +42,7 @@ export const verticalMenuItems = [
     new Menu (36, 'NFC Management', null, null, 'format_list_bulleted', null, true, 0), 
     new Menu (37, 'NFC Registration', '/admin/nfc/nfc-registration', null, 'nfc', null, false, 36), 
     new Menu (39, 'Child Registration', '/admin/nfc/child-registration', null, 'nfc', null, false, 36), 
-    new Menu (40, 'Steps Support', '/admin/steps-support', null, 'directions_walk', null, false, 0),
+    new Menu (40, 'Steps Support', '/admin/steps-support', null, 'support_agent', null, false, 0),
     new Menu (34, 'DOB Change', '/admin/dob-change', null, 'date_range', null, false, 0),
     new Menu (35, 'Fruit Card', '/admin/demo', null, 'qr_code', null, false, 0),
     new Menu (60, 'User Remove', '/admin/user-delete', null, 'person_remove', null, false, 0),
@@ -53,11 +53,11 @@ export const verticalMenuItems = [
     
 
     // RF Management
-    new Menu (41, 'RF Management', null, null, 'settings_remote', null, true, 0),
-    new Menu (42, 'RF Registration', '/admin/rf-registration', null, 'add_box', null, false, 41),
-    new Menu (43, 'RF Circuit', '/admin/rf-circuit', null, 'track_changes', null, false, 41),
-    new Menu (44, 'RF Box', '/admin/rf-box', null, 'inbox', null, false, 41),
-    new Menu (45, 'RF Box Time', '/admin/rf-device-time', null, 'access_time', null, false, 41)
+    new Menu (41, 'RF Management', null, null, 'format_list_bulleted', null, true, 0),
+    new Menu (42, 'RF Registration', '/admin/rf-registration', null, 'sd_card', null, false, 41),
+    new Menu (43, 'RF Circuit', '/admin/rf-circuit', null, 'sd_card', null, false, 41),
+    new Menu (44, 'RF Box', '/admin/rf-box', null, 'sd_card', null, false, 41),
+    new Menu (45, 'RF Box Time', '/admin/rf-device-time', null, 'sd_card', null, false, 41)
 ]
 
 export const horizontalMenuItems = [ 
