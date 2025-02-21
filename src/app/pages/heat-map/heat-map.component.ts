@@ -123,6 +123,7 @@ export class HeatMapComponent implements OnInit, OnDestroy {
     this.markers = [];
     if (this.angForm.status === "VALID") {
       this.spinner = true;
+      this.ref.detectChanges();
       const url = `${this.baseUrl}getHeatMapData`;
       const data = {
         duration: this.angForm.value.duration,
@@ -147,20 +148,23 @@ export class HeatMapComponent implements OnInit, OnDestroy {
             
             this.spinner = false;
             this.downloadButton = false;
+            this.ref.detectChanges();
           } else {
             this.markers = [];
             this.spinner = false;
+            this.downloadButton = true;
+            this.ref.detectChanges();
             this.snackBar.open("No Data Found.", undefined, {
               duration: 2000,
               verticalPosition: "top",
               panelClass: ["red-snackbar"],
             });
-            this.downloadButton = true;
           }
         },
         error: () => {
           this.spinner = false;
           this.downloadButton = true;
+          this.ref.detectChanges();
           this.snackBar.open("Failed to load!", undefined, {
             duration: 3000,
             verticalPosition: "top",
@@ -169,7 +173,6 @@ export class HeatMapComponent implements OnInit, OnDestroy {
         }
       });
     }
-    this.ref.markForCheck();
   }
 
   updateMarkers() {
