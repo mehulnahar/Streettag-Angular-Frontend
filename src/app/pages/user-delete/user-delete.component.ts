@@ -161,9 +161,9 @@ interface ApiResponse<T> {
       padding: 16px;
     }
     .player-details-card {
-      background: #f5f5f5;
+     
       border-radius: 8px;
-      padding: 16px;
+      padding: 2px;
     }
     .details-grid {
       display: grid;
