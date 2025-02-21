@@ -7,7 +7,7 @@ import { Subject } from "rxjs";
 import { debounceTime } from "rxjs/operators";
 import { GoogleMap } from "@angular/google-maps";
 import html2canvas from 'html2canvas';
-import { saveAs } from 'file-saver';
+import * as FileSaver from 'file-saver';
 
 interface MarkerPosition {
   lat: number;
@@ -106,7 +106,7 @@ export class HeatMapComponent implements OnInit, OnDestroy {
       
       canvas.toBlob((blob) => {
         if (blob) {
-          saveAs(blob, `heat-map(${temp}).png`);
+          FileSaver.saveAs(blob, `heat-map(${temp}).png`);
         }
       }, 'image/png');
     } catch (error) {
