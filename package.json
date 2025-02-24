@@ -82,6 +82,16 @@
   "overrides": {
     "glob": "^10.3.10",
     "rimraf": "^5.0.5",
-    "esbuild": "^0.19.12"
+    "esbuild": "^0.19.12",
+    "critters": "npm:beasties@^0.1.0",
+    "lodash.isequal": "npm:@types/node@^22.13.0",
+    "fstream": "npm:make-dir@^4.0.0"
+  },
+  "resolutions": {
+    "glob": "^10.3.10",
+    "rimraf": "^5.0.5",
+    "critters": "npm:beasties@^0.1.0",
+    "lodash.isequal": "npm:@types/node@^22.13.0",
+    "fstream": "npm:make-dir@^4.0.0"
   }
 }
