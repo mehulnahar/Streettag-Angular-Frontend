@@ -46,7 +46,16 @@
               "buffer",
               "stream-browserify",
               "events",
-              "process"
+              "process",
+              "lodash/debounce",
+              "lodash/throttle",
+              "file-saver",
+              "html2canvas",
+              "moment",
+              "pdfmake/build/pdfmake",
+              "pdfmake/build/vfs_fonts",
+              "simplebar-core",
+              "lodash"
             ]
           },
           "configurations": {
