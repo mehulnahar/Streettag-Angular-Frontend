@@ -95,10 +95,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "streetTag:build:production"
+              "buildTarget": "streetTag:build:production"
             },
             "development": {
-              "browserTarget": "streetTag:build:development"
+              "buildTarget": "streetTag:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -106,7 +106,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "streetTag:build"
+            "buildTarget": "streetTag:build"
           }
         },
         "test": {
