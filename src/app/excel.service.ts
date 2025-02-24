@@ -1,16 +1,9 @@
 import { Injectable } from "@angular/core";
 import * as FileSaver from "file-saver";
-import * as XLSX from "xlsx";
-import { WorkSheet, WorkBook, JSON2SheetOpts } from "xlsx";
-import { Workbook as ExcelWorkbook, Cell } from "exceljs";
-import moment from "moment";
-import { Buffer } from 'buffer';
-import * as ExcelJS from 'exceljs';
+import { Workbook, Cell } from "exceljs";
 import { format } from 'date-fns';
 
-
-const EXCEL_TYPE =
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+const EXCEL_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
 const EXCEL_EXTENSION = ".xlsx";
 
 @Injectable()
@@ -18,7 +11,7 @@ export class ExcelService {
   constructor() {}
 
   public exportAsExcelFile(json: any[], excelFileName: string): void {
-    const workbook = new ExcelJS.Workbook();
+    const workbook = new Workbook();
     const worksheet = workbook.addWorksheet('Report');
 
     // Add headers
@@ -66,30 +59,62 @@ export class ExcelService {
 
     // Generate Excel file
     workbook.xlsx.writeBuffer().then((data) => {
-      const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      FileSaver.saveAs(blob, excelFileName + '.xlsx');
+      const blob = new Blob([data], { type: EXCEL_TYPE });
+      FileSaver.saveAs(blob, excelFileName + EXCEL_EXTENSION);
     });
   }
 
   public exportPecodeAsExcel(json: any[], excelFileName: string): void {
-    let options: JSON2SheetOpts = {
-      header: ["serial_number", "trainer_name", "pecode", "created_at"],
-    };
-    const worksheet: WorkSheet = XLSX.utils.json_to_sheet(json, options);
-    const workbook: WorkBook = {
-      Sheets: { data: worksheet },
-      SheetNames: ["data"],
-    };
-    const excelBuffer: any = XLSX.write(workbook, {
-      bookType: "xlsx",
-      type: "array",
+    const workbook = new Workbook();
+    const worksheet = workbook.addWorksheet('Data');
+
+    // Add headers
+    const headers = ["Serial Number", "Trainer Name", "Pecode", "Created At"];
+    const headerRow = worksheet.addRow(headers);
+
+    // Style headers
+    headerRow.eachCell((cell) => {
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFFFFF00' }
+      };
+      cell.border = {
+        top: { style: 'thin' },
+        left: { style: 'thin' },
+        bottom: { style: 'thin' },
+        right: { style: 'thin' }
+      };
+      cell.alignment = {
+        vertical: 'middle',
+        horizontal: 'center'
+      };
     });
-    const data: Blob = new Blob([excelBuffer], { type: EXCEL_TYPE });
-    this.saveAsExcelFile(excelBuffer, excelFileName);
+
+    // Add data
+    json.forEach(item => {
+      worksheet.addRow([
+        item.serial_number,
+        item.trainer_name,
+        item.pecode,
+        item.created_at
+      ]);
+    });
+
+    // Auto-fit columns
+    worksheet.columns.forEach(column => {
+      column.width = 15;
+    });
+
+    // Generate Excel file
+    workbook.xlsx.writeBuffer().then((buffer) => {
+      const blob = new Blob([buffer], { type: EXCEL_TYPE });
+      FileSaver.saveAs(blob, excelFileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
+    });
   }
 
   public exportMoinitoringAsExcel(data: any, circuitName: string, month: string, year: string): void {
-    const workbook = new ExcelJS.Workbook();
+    const workbook = new Workbook();
     const worksheet = workbook.addWorksheet('Report');
 
     // Title and Date
@@ -99,21 +124,18 @@ export class ExcelService {
     const dateRow = worksheet.addRow(['', `Date : ${month} ${year} (Monthly Report)`]);
     dateRow.getCell(2).font = { size: 12 };
     
-    // Add empty row for spacing
     worksheet.addRow([]);
 
-    // Set column widths
     worksheet.columns = [
-      { width: 15 }, // A - Month
-      { width: 30 }, // B - Number of new Individuals
-      { width: 20 }, // C - Number of Teams
-      { width: 15 }, // D - Tags Scanned
-      { width: 20 }, // E - Total Steps
-      { width: 20 }, // F - Total Points
-      { width: 15 }, // G - Total Miles
+      { width: 15 },
+      { width: 30 },
+      { width: 20 },
+      { width: 15 },
+      { width: 20 },
+      { width: 20 },
+      { width: 15 },
     ];
 
-    // Headers
     const headers = [
       'Month',
       'Number of new\nIndividuals Registered',
@@ -124,16 +146,14 @@ export class ExcelService {
       'Total Miles'
     ];
 
-    // Add header row
     const headerRow = worksheet.addRow(headers);
     headerRow.height = 40;
 
-    // Style header row
     headerRow.eachCell((cell) => {
       cell.fill = {
         type: 'pattern',
         pattern: 'solid',
-        fgColor: { argb: 'FFFF00' } // Yellow background
+        fgColor: { argb: 'FFFF00' }
       };
       cell.font = { 
         bold: true,
@@ -152,7 +172,6 @@ export class ExcelService {
       };
     });
 
-    // Add data row
     const dataRow = worksheet.addRow([
       month,
       data.registration,
@@ -163,7 +182,6 @@ export class ExcelService {
       data.distance
     ]);
 
-    // Style data row
     dataRow.height = 25;
     dataRow.eachCell((cell) => {
       cell.alignment = {
@@ -176,75 +194,125 @@ export class ExcelService {
         bottom: { style: 'thin' },
         right: { style: 'thin' }
       };
-      // Set numeric format for number cells
       if (Number(cell.col) > 1) {
         cell.numFmt = '0';
       }
     });
 
-    // Generate Excel file
     workbook.xlsx.writeBuffer().then((buffer) => {
-      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const blob = new Blob([buffer], { type: EXCEL_TYPE });
       FileSaver.saveAs(blob, `monitoring_report_${month}_${year}.xlsx`);
     });
   }
 
-  private async saveAsExcelFile(buffer: any, fileName: string) {
-    const data: Blob = new Blob([buffer], {
-      type: EXCEL_TYPE,
+  public async exportquesExcel(json: any[], objData: { circuit_id: string; startDate: string; endDate: string }): Promise<void> {
+    const workbook = new Workbook();
+    const worksheet = workbook.addWorksheet('Data');
+
+    // Add headers based on the first object's keys
+    if (json.length > 0) {
+      const headers = Object.keys(json[0]);
+      worksheet.addRow(headers);
+    }
+
+    // Add data
+    json.forEach(item => {
+      worksheet.addRow(Object.values(item));
     });
-  await FileSaver.saveAs(
-      data,
-      fileName + "_export_" + new Date().getTime() + EXCEL_EXTENSION
-    );
+
+    // Style the worksheet
+    worksheet.eachRow((row, rowNumber) => {
+      row.eachCell((cell) => {
+        cell.border = {
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' }
+        };
+        cell.alignment = {
+          vertical: 'middle',
+          horizontal: 'center'
+        };
+      });
+      
+      if (rowNumber === 1) {
+        row.eachCell((cell) => {
+          cell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FFFFFF00' }
+          };
+          cell.font = { bold: true };
+        });
+      }
+    });
+
+    // Auto-fit columns
+    worksheet.columns.forEach(column => {
+      column.width = 15;
+    });
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    const filename = `${objData.circuit_id} (${objData.startDate} To ${objData.endDate})`;
+    const blob = new Blob([buffer], { type: EXCEL_TYPE });
+    FileSaver.saveAs(blob, filename + EXCEL_EXTENSION);
   }
 
-  public async exportquesExcel(json: any[], objData: { circuit_id: string; startDate: string; endDate: string }): Promise<void> {
-    let options: JSON2SheetOpts = {
-      // header: ["serial_number", "trainer_name", "pecode", "created_at"],
-    };
-    const worksheet: WorkSheet = XLSX.utils.json_to_sheet(json, options);
-    const workbook: WorkBook = {
-      Sheets: { data: worksheet },
-      SheetNames: ["data"],
-    };
-    const excelBuffer: any = await XLSX.write(workbook, {
-      bookType: "xlsx",
-      type: "array",
+  public exportAsExcelFileN(json: any[], excelFileName: string): void {
+    const workbook = new Workbook();
+    const worksheet = workbook.addWorksheet('Data');
+
+    // Add headers based on the first object's keys
+    if (json.length > 0) {
+      const headers = Object.keys(json[0]);
+      worksheet.addRow(headers);
+    }
+
+    // Add data
+    json.forEach(item => {
+      worksheet.addRow(Object.values(item));
     });
-    const filename = `${objData.circuit_id} (${objData.startDate} To ${objData.endDate})`;
-   await this.saveAsExcelFile(excelBuffer, filename);
-}
 
+    // Style the worksheet
+    worksheet.eachRow((row, rowNumber) => {
+      row.eachCell((cell) => {
+        cell.border = {
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' }
+        };
+        cell.alignment = {
+          vertical: 'middle',
+          horizontal: 'center'
+        };
+      });
+      
+      if (rowNumber === 1) {
+        row.eachCell((cell) => {
+          cell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FFFFFF00' }
+          };
+          cell.font = { bold: true };
+        });
+      }
+    });
 
+    // Auto-fit columns
+    worksheet.columns.forEach(column => {
+      column.width = 15;
+    });
 
+    workbook.xlsx.writeBuffer().then((buffer) => {
+      const blob = new Blob([buffer], { type: EXCEL_TYPE });
+      FileSaver.saveAs(blob, excelFileName + new Date().getTime() + EXCEL_EXTENSION);
+    });
+  }
 
-public exportAsExcelFileN(json: any[], excelFileName: string): void {
-  const worksheet: WorkSheet = XLSX.utils.json_to_sheet(json);
-  const workbook: WorkBook = {
-    Sheets: { data: worksheet },
-    SheetNames: ["data"],
-  };
-  const excelBuffer: any = XLSX.write(workbook, {
-    bookType: "xlsx",
-    type: "array",
-  });
-  this.saveAsExcelFileN(excelBuffer, excelFileName);
-}
-
-
-private async saveAsExcelFileN(buffer: any, fileName: string) {
-  const data: Blob = new Blob([buffer], {
-    type: EXCEL_TYPE,
-  });
-await FileSaver.saveAs(
-    data,
-    fileName + new Date().getTime() + EXCEL_EXTENSION
-  );
-}
-
-public exportConsentData(json: any[], excelFileName: string): void {
-    const workbook = new ExcelJS.Workbook();
+  public exportConsentData(json: any[], excelFileName: string): void {
+    const workbook = new Workbook();
     const worksheet = workbook.addWorksheet('Consent Data');
 
     // Define headers exactly as shown in the image
@@ -324,6 +392,5 @@ public exportConsentData(json: any[], excelFileName: string): void {
         const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         FileSaver.saveAs(blob, excelFileName + '.xlsx');
     });
-}
-
+  }
 }
