@@ -41,3 +41,50 @@
 .p-3 {
     padding: 1rem;
 }
+
+:host {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+}
+
+.p-2 {
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    padding: 1.5rem;
+}
+
+.mat-card {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 2rem;
+}
+
+div[fxLayout] {
+    width: 100%;
+    margin: 2rem 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+// Select dropdowns section
+mat-form-field {
+    display: block;
+    margin: 2rem 0;
+}
+
+// Miles cards section
+div[fxLayout="row wrap"] {
+    margin-top: 3rem;
+}
+
+// Remove extra margins from first and last sections
+div[fxLayout]:first-of-type {
+    margin-top: 0;
+}
+
+div[fxLayout]:last-of-type {
+    margin-bottom: 0;
+}
