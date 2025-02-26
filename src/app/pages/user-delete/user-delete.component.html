@@ -48,7 +48,7 @@
 				<b>Email:</b><br>{{player_email ? (player_email | decode) : ''}}
 			</div>
 			<div class="col-md-3">
-				<b>Score Points:</b><br>{{player_points ? (player_points | decode) : ''}}
+				<b>Score Points:</b><br>{{player_points || '0'}}
 			</div>	            
 			<div class="col-md-3"> <!-- align="center" -->
 				<b>Team:</b><br>{{player_team ? (player_team | decode) : ''}}

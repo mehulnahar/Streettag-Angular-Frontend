@@ -122,7 +122,7 @@ interface ApiResponse<T> {
                     </div>
                     <div class="detail-item">
                       <label>Score Points:</label>
-                      <p>{{player_points ? (player_points | decode) : ''}}</p>
+                      <p>{{player_points ? (player_points) : ''}}</p>
                     </div>
                     <div class="detail-item">
                       <label>Team:</label>
@@ -452,7 +452,6 @@ export class UserDeleteComponent implements OnInit {
     if (!res) return;
 
     const url = `${this.baseUrl}getPlayerDetailsAdmin`;
-    // No need to decode since we're already passing decoded value from template
     const data = { player_id: res };
 
     this.ajaxService.post<ApiResponse<PlayerDetails>>(data, url).subscribe({
@@ -462,7 +461,12 @@ export class UserDeleteComponent implements OnInit {
           this.player_name = details.fullname;
           this.player_email = details.email;
           this.player_dob = details.date_of_birth;
-          this.player_points = details.score_points;
+          // Convert score_points to number and handle base64 decoding if needed
+          this.player_points = details.score_points ? 
+            (typeof details.score_points === 'string' && details.score_points.includes('=') ? 
+              window.atob(details.score_points) : 
+              details.score_points.toString()) : 
+            '0';
           this.player_team = details.team_name;
           this.device_token = details.device_token;
           this.device_type = details.device_type;
