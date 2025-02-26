@@ -374,9 +374,13 @@ import {
     }
 
     dwStepsReport(data: any, report: any, player: any){
-
-      // let buff = new Buffer(player, 'base64');  
-      // player = buff.toString('ascii');      
+      if (!data || !Array.isArray(data) || data.length === 0) {
+        this.snackBar.open('No data available to download', 'Close', {
+          duration: 3000,
+          verticalPosition: 'top'
+        });
+        return;
+      }
 
       this.excelService.exportAsExcelFileN(data, player+" "+report+" report ");
     }      
@@ -458,6 +462,13 @@ import {
 
       this.ajaxService.post<ApiResponse<PlayerDetails[]>>(data1, url).subscribe({
         next: (data) => {
+          if (!data.response || data.response.length === 0) {
+            this.snackBar.open('No pecode data found for this player', 'Close', {
+              duration: 3000,
+              verticalPosition: 'top'
+            });
+            return;
+          }
           this.dataSourcePlayersDetails = data.response;
           console.log(data.response, '------------------x---------------');
           this.dwStepsReport(this.dataSourcePlayersDetails, 'pecode', this.player_id);
