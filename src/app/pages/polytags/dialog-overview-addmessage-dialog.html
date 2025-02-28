@@ -41,11 +41,6 @@
                                 [options]="markerOptions"
                                 (mapDragend)="markerDragEnd($event)">
                             </map-marker>
-                            <map-circle
-                                [center]="markerPosition"
-                                [radius]="82"
-                                [options]="{ fillColor: '#4CAF50', strokeColor: '#4CAF50', fillOpacity: 0.3 }">
-                            </map-circle>
 
                             <map-marker
                                 *ngFor="let polytag of nearByLatLng"
