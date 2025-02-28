@@ -29,5 +29,7 @@ export class VerticalMenuComponent implements OnInit {
   onClick(menuId: number): void {
     this.menuService.toggleMenuItem(menuId);
     this.menuService.closeOtherSubMenus(this.menuItems, menuId);
+    // Update the parent menu items to reflect changes
+    this.parentMenu = this.menuItems.filter(item => item.parentId === this.menuParentId);
   }
 }

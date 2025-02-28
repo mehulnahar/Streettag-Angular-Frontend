@@ -5,6 +5,7 @@ import { SharedModule } from '../shared/shared.module';
 import { FlexLayoutModule } from '@ngbracket/ngx-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SimplebarAngularModule } from 'simplebar-angular';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 import { TopInfoContentComponent } from './components/top-info-content/top-info-content.component';
 import { FullScreenComponent } from './components/fullscreen/fullscreen.component';
@@ -29,7 +30,8 @@ import { VerticalMenuComponent } from './components/menu/vertical-menu/vertical-
     FlexLayoutModule,
     FormsModule,
     ReactiveFormsModule,
-    SimplebarAngularModule
+    SimplebarAngularModule,
+    MatExpansionModule
   ],
   exports: [
     TopInfoContentComponent,

@@ -1,28 +1,33 @@
-<div *ngFor="let menu of parentMenu" class="menu-item">
-    <a *ngIf="menu.routerLink && !menu.hasSubMenu" mat-button 
-        [routerLink]="[menu.routerLink]" 
-        routerLinkActive="active-link" 
-        [routerLinkActiveOptions]="{exact:true}"
-        (click)="onClick(menu.id)" 
-        [id]="'menu-item-'+menu.id">
-        <div class="menu-item-content">
-            <mat-icon class="menu-icon">{{menu.icon}}</mat-icon>
-            <span class="menu-title">{{menu.title}}</span>
-        </div>
-    </a>
+<mat-accordion multi="false" displayMode="flat">
+    <div *ngFor="let menu of parentMenu" class="menu-item">
+        <a *ngIf="menu.routerLink && !menu.hasSubMenu" mat-button 
+            [routerLink]="[menu.routerLink]" 
+            routerLinkActive="active-link" 
+            [routerLinkActiveOptions]="{exact:true}"
+            [id]="'menu-item-'+menu.id">
+            <div class="menu-item-content">
+                <mat-icon class="menu-icon">{{menu.icon}}</mat-icon>
+                <span class="menu-title">{{menu.title}}</span>
+            </div>
+        </a>
 
-    <a *ngIf="menu.hasSubMenu" mat-button 
-        (click)="onClick(menu.id)" 
-        [id]="'menu-item-'+menu.id"
-        [class.expanded]="menu.expanded">
-        <div class="menu-item-content">
-            <mat-icon class="menu-icon">{{menu.icon}}</mat-icon>
-            <span class="menu-title">{{menu.title}}</span>
-            <mat-icon class="menu-expand-icon transition">keyboard_arrow_down</mat-icon>
-        </div>
-    </a>
-
-    <div *ngIf="menu.hasSubMenu" class="sub-menu" [id]="'sub-menu-'+menu.id">
-        <app-vertical-menu [menuItems]="menuItems" [menuParentId]="menu.id"></app-vertical-menu>
+        <mat-expansion-panel *ngIf="menu.hasSubMenu" 
+            [expanded]="menu.expanded"
+            (opened)="onClick(menu.id)"
+            (closed)="onClick(menu.id)"
+            class="mat-elevation-z0">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    <div class="menu-item-content">
+                        <mat-icon class="menu-icon">{{menu.icon}}</mat-icon>
+                        <span class="menu-title">{{menu.title}}</span>
+                    </div>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            
+            <div class="sub-menu">
+                <app-vertical-menu [menuItems]="menuItems" [menuParentId]="menu.id"></app-vertical-menu>
+            </div>
+        </mat-expansion-panel>
     </div>
-</div>
+</mat-accordion>
