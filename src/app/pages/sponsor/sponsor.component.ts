@@ -306,6 +306,11 @@ export class DialogAddSponsor implements OnInit {
       lng: ["", Validators.required],
       diameter: ["500", Validators.required]
     });
+
+    // Subscribe to form value changes
+    this.angForm.get('diameter')?.valueChanges.subscribe(value => {
+      this.tagDiameter = value.toString();
+    });
   }
 
   ngOnInit() {
