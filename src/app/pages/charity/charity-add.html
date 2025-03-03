@@ -4,7 +4,7 @@
         
         <mat-dialog-content>
             <form [formGroup]="angForm" novalidate class="charity-form">
-                <mat-form-field appearance="outline" class="w-100">
+                <mat-form-field appearance="fill" class="w-100">
                     <mat-label>Title</mat-label>
                     <input matInput placeholder="Enter charity title" formControlName="title">
                     <mat-error *ngIf="angForm.get('title')?.errors?.['required']">
@@ -12,7 +12,7 @@
                     </mat-error>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="w-100">
+                <mat-form-field appearance="fill" class="w-100">
                     <mat-label>Description</mat-label>
                     <textarea matInput formControlName="description" rows="4" 
                         placeholder="Enter charity description"></textarea>
