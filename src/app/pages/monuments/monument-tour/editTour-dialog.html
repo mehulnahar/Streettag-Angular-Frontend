@@ -8,7 +8,7 @@
 <form [formGroup]="angForm" (ngSubmit)="onSubmit()" class="dialog-form">
   <mat-dialog-content class="dialog-content">
     <div class="form-row">
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="fill">
         <mat-label>Tour Name</mat-label>
         <input matInput formControlName="tourName" #inputTitle maxlength="50">
         <mat-hint align="end">{{inputTitle.value.length || 0}}/50</mat-hint>
@@ -19,7 +19,7 @@
     </div>
 
     <div class="form-row">
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="fill">
         <mat-label>Description</mat-label>
         <textarea matInput formControlName="description" #input maxlength="150" cdkTextareaAutosize></textarea>
         <mat-hint align="end">{{input.value.length || 0}}/150</mat-hint>
@@ -34,7 +34,7 @@
         <!-- Monument Dropdowns -->
         <div class="monument-dropdowns" formArrayName="location">
           <div *ngFor="let control of location.controls; let i = index" class="monument-dropdown-item">
-            <mat-form-field appearance="outline" class="monument-dropdown">
+            <mat-form-field appearance="fill" class="monument-dropdown">
               <mat-label>Select Monument {{i + 1}}</mat-label>
               <mat-select [formControlName]="i" (selectionChange)="onMonumentSelect($event.value, i)">
                 <mat-option *ngFor="let monument of Monumentdata" [value]="monument.id" [disabled]="monument.disable">
