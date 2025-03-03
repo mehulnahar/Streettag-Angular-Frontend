@@ -29,6 +29,20 @@
       </mat-form-field>
     </div>
 
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Select Monument</mat-label>
+        <mat-select formControlName="monument_id">
+          <mat-option *ngFor="let monument of Monumentdata" [value]="monument.id" [disabled]="monument.disable">
+            {{monument.name}}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="angForm.get('monument_id')?.errors?.['required'] && angForm.get('monument_id')?.touched">
+          Please select a monument
+        </mat-error>
+      </mat-form-field>
+    </div>
+
     <div class="map-container">
       <google-map
         [center]="center"
@@ -44,29 +58,17 @@
       </google-map>
     </div>
 
-    <div class="form-row upload-section" style="margin-top: 20px;">
-      <div class="upload-button">
-        <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" multiple hidden>
-        <button mat-raised-button color="primary" type="button" (click)="fileInput.click()">
-          <mat-icon>cloud_upload</mat-icon>
-          Upload Images
-        </button>
-      </div>
-
-      <div class="preview-grid" *ngIf="selectedFiles.length > 0">
-        <div class="preview-item" *ngFor="let file of selectedFiles; let i = index">
-          <img [src]="file.preview" alt="Preview">
-          <button mat-mini-fab color="warn" class="remove-button" (click)="removeFile(i)">
-            <mat-icon>delete</mat-icon>
-          </button>
+    <div class="form-row upload-section">
+      <div class="image-upload-container">
+        <h3>Tour Image</h3>
+        <div class="image-preview" *ngIf="angForm.get('tour_image')?.value">
+          <img [src]="angForm.get('tour_image')?.value" alt="Tour preview" (click)="OpenImageViewerBox(angForm.get('tour_image')?.value)">
         </div>
-      </div>
-
-      <div class="preview-grid" *ngIf="existingImages.length > 0">
-        <div class="preview-item" *ngFor="let image of existingImages; let i = index">
-          <img [src]="image" alt="Existing image" (click)="OpenImageViewerBox(image)">
-          <button mat-mini-fab color="warn" class="remove-button" (click)="removeExistingImage(i)">
-            <mat-icon>delete</mat-icon>
+        <div class="upload-button">
+          <input type="file" #takeInput (change)="handleInputChange($event)" accept="image/jpeg,image/jpg,image/png" style="display: none;">
+          <button mat-raised-button color="primary" type="button" (click)="takeInput.click()">
+            <mat-icon>cloud_upload</mat-icon>
+            Choose Image
           </button>
         </div>
       </div>

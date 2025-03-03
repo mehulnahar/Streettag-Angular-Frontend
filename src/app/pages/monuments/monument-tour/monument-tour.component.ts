@@ -561,7 +561,7 @@ export class EditTourDialog implements OnDestroy {
   resData: any;
   angForm!: FormGroup;
   public dataSource1: any;
-  public Monumentdata: MonumentTour[] = [];
+  public Monumentdata: Monument[] = [];
   public tourdata: any;
   public disabledLocation: number | null = null;
   public spinner: Boolean = true;
@@ -605,9 +605,12 @@ export class EditTourDialog implements OnDestroy {
       tourName: [this.data.data.tour_name, [Validators.required]],
       location: this.fb.array([]),
       tour_id: this.data.data.id,
-      description: [this.data.data.discription ,[Validators.required]],
+      description: [this.data.data.discription, [Validators.required]],
+      lat: [this.data.data.lat, [Validators.required]],
+      lng: [this.data.data.lng, [Validators.required]],
       tour_image: [this.data.data.tour_image, [Validators.required]],
-      imageChanged: false,
+      imageChanged: [false],
+      monument_id: ['', [Validators.required]]
     });
   }
 
@@ -672,6 +675,12 @@ export class EditTourDialog implements OnDestroy {
       .subscribe(async (data: any) => {
         this.Monumentdata = await data["response"];
         await this.tourDetail();
+        // Set the initial monument selection
+        if (this.tourdata && this.tourdata.length > 0) {
+          this.angForm.patchValue({
+            monument_id: this.tourdata[0].monument_id
+          });
+        }
       });
   }
 
@@ -703,69 +712,72 @@ export class EditTourDialog implements OnDestroy {
     });
   }
 
-  handleInputChange(e:any) {
-    if(e.target.files[0].type == 'image/jpg' || e.target.files[0].type == 'image/jpeg' || e.target.files[0].type == 'image/png'){
-      this.angForm.get("imageChanged")?.setValue(true);
-      var file = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0];
-      var reader = new FileReader();
-      reader.onload = this._handleReaderLoaded.bind(this);
-      reader.readAsDataURL(file);
-    }else{
-      this.snackBar.open('Only Images are allowed ( JPG | PNG | JPEG )', undefined, {
-        duration: 2500,
-        verticalPosition: "top",
-        panelClass: "red-snackbar",
-      });
-      this.InputVar.nativeElement.value = ""; 
+  handleInputChange(e: any) {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      if (file.type === 'image/jpg' || file.type === 'image/jpeg' || file.type === 'image/png') {
+        this.angForm.get("imageChanged")?.setValue(true);
+        const reader = new FileReader();
+        reader.onload = this._handleReaderLoaded.bind(this);
+        reader.readAsDataURL(file);
+      } else {
+        this.snackBar.open('Only Images are allowed (JPG | PNG | JPEG)', undefined, {
+          duration: 2500,
+          verticalPosition: "top",
+          panelClass: "red-snackbar",
+        });
+        this.InputVar.nativeElement.value = "";
+      }
     }
   }
 
-  _handleReaderLoaded(e: { target: any }) {
-    let reader = e.target;
+  _handleReaderLoaded(e: any) {
+    const reader = e.target;
     this.angForm.get("tour_image")?.setValue(reader.result);
   }
 
   editevent() {
-    if (this.angForm.status == "VALID") {
-        this.clicked = true;
-        const url = `${this.baseUrl}editMonumentTour`;
-        
-        let reqObj = {
-            tourName: this.angForm.get('tourName')?.value.replaceAll("'","`").replaceAll('"','``'),
-            location: this.angForm.get('location')?.value,
-            description: this.angForm.get('description')?.value.replaceAll("'","`").replaceAll('"','``'),
-            tour_id: this.angForm.get('tour_id')?.value,
-            imageChanged: this.angForm.get('imageChanged')?.value,
-            tour_image: this.angForm.get('tour_image')?.value,
-        }
-        this.edit$ = this.ajaxService.post(reqObj, url).subscribe(
-            (data) => {
-                this.resData = data;
-                this.snackBar.open(this.resData.msg, undefined, {
-                    duration: 3000,
-                    verticalPosition: "top",
-                    panelClass: ["blue-snackbar"],
-                });
-                // Close dialog with true to indicate successful edit
-                this.dialogRef.close(true);
-            },
-            (error) => {
-                this.snackBar.open(error.error.msg || "Something went wrong, please try again.", undefined, {
-                    duration: 2500,
-                    verticalPosition: "top",
-                    panelClass: ["red-snackbar"],
-                });
-                // Close dialog with false to indicate failure
-                this.dialogRef.close(false);
-            }
-        );
-    } else {
-        var errormsg = "Please pass Valid Information.";
-        this.snackBar.open(errormsg, undefined, {
+    if (this.angForm.valid) {
+      this.clicked = true;
+      const url = `${this.baseUrl}editMonumentTour`;
+      
+      const reqObj = {
+        tourName: this.angForm.get('tourName')?.value.replaceAll("'","`").replaceAll('"','``'),
+        location: this.angForm.get('location')?.value,
+        description: this.angForm.get('description')?.value.replaceAll("'","`").replaceAll('"','``'),
+        tour_id: this.angForm.get('tour_id')?.value,
+        lat: this.angForm.get('lat')?.value,
+        lng: this.angForm.get('lng')?.value,
+        imageChanged: this.angForm.get('imageChanged')?.value,
+        tour_image: this.angForm.get('tour_image')?.value,
+        monument_id: this.angForm.get('monument_id')?.value
+      };
+
+      this.edit$ = this.ajaxService.post(reqObj, url).subscribe(
+        (data) => {
+          this.resData = data;
+          this.snackBar.open(this.resData.msg, undefined, {
+            duration: 3000,
+            verticalPosition: "top",
+            panelClass: ["blue-snackbar"],
+          });
+          this.dialogRef.close(true);
+        },
+        (error) => {
+          this.snackBar.open(error.error.msg || "Something went wrong, please try again.", undefined, {
             duration: 2500,
             verticalPosition: "top",
-            panelClass: "red-snackbar",
-        });
+            panelClass: ["red-snackbar"],
+          });
+          this.dialogRef.close(false);
+        }
+      );
+    } else {
+      this.snackBar.open("Please provide valid information.", undefined, {
+        duration: 2500,
+        verticalPosition: "top",
+        panelClass: "red-snackbar",
+      });
     }
   }
 
@@ -800,17 +812,16 @@ export class EditTourDialog implements OnDestroy {
     this.existingImages.splice(index, 1);
   }
 
-  OpenImageViewerBox(imageUrl:any){
-    const message = `Image viewer`;
-    const dialogData = new ImageViewergModel("Image Viewer", '' ,imageUrl);
-    const dialogRef = this.dialog.open(ImageViewerComponent,  {
-      minWidth : "50%",
+  OpenImageViewerBox(imageUrl: string) {
+    const dialogData = new ImageViewergModel("Image Viewer", '', imageUrl);
+    this.dialog.open(ImageViewerComponent, {
+      minWidth: "50%",
       minHeight: 'calc(100vh - 90px)',
-      height : 'auto',
+      height: 'auto',
       data: dialogData,
-      disableClose:true,
+      disableClose: true,
     });
-}
+  }
 
   ngOnDestroy() {
     if(this.edit$)this.edit$.unsubscribe();

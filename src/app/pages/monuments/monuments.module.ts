@@ -15,6 +15,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
@@ -57,6 +58,7 @@ export const routes: Routes = [
     MatPaginatorModule,
     MatProgressBarModule,
     MatRadioModule,
+    MatSelectModule,
     MatSnackBarModule,
     MatSortModule,
     MatTableModule,
