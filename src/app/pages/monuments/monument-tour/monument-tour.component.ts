@@ -603,75 +603,41 @@ export class EditTourDialog implements OnDestroy {
   createForm() {
     this.angForm = this.fb.group({
       tourName: [this.data.data.tour_name, [Validators.required]],
-      location: this.fb.array([]),
-      tour_id: this.data.data.id,
+      location: this.fb.array([], [Validators.required]),
+      tour_id: [this.data.data.id],
       description: [this.data.data.discription, [Validators.required]],
       lat: [this.data.data.lat, [Validators.required]],
       lng: [this.data.data.lng, [Validators.required]],
       tour_image: [this.data.data.tour_image, [Validators.required]],
-      imageChanged: [false],
-      monument_id: [this.data.data.monument_id || '', [Validators.required]]
+      imageChanged: [false]
     });
 
-    // Subscribe to monument_id changes
-    this.angForm.get('monument_id')?.valueChanges.subscribe(monumentId => {
-      if (monumentId) {
-        this.onMonumentSelect(monumentId);
-      }
-    });
+    // Initialize with first control
+    this.addMoreLocation();
   }
 
   get location() {
-    return this.angForm.get("location") as FormArray;
-  }
-
-  addMarker(event: google.maps.MapMouseEvent) {
-    if (event.latLng) {
-      this.markers = [{
-        position: {
-          lat: event.latLng.lat(),
-          lng: event.latLng.lng()
-        },
-        options: {
-          draggable: true,
-          animation: google.maps.Animation.DROP
-        }
-      }];
-      this.markerDragEnd(event);
-    }
-  }
-
-  markerDragEnd(event: google.maps.MapMouseEvent) {
-    if (event.latLng) {
-      const lat = event.latLng.lat();
-      const lng = event.latLng.lng();
-      this.markers[0].position = { lat, lng };
-      this.center = { lat, lng };
-    }
-  }
-
-  moveMarker(event: google.maps.MapMouseEvent) {
-    if (event.latLng) {
-      this.markerDragEnd(event);
-    }
+    return this.angForm.get('location') as FormArray;
   }
 
   addMoreLocation() {
-    this.location.push(this.fb.control("", Validators.required));
-    this.Monumentdata.map((item:any) => {
-      if (item.id == this.disabledLocation) item.disable = true;
-    });
-    this.disabledLocation = null;
+    if (this.location.length < 2) {
+      this.location.push(this.fb.control(null, Validators.required));
+    }
   }
 
   RemoveLocation() {
-    let id = this.location.at(this.location.length - 1).value;
-    if (this.location.length != 1) {
+    if (this.location.length > 1) {
+      const removedValue = this.location.at(this.location.length - 1).value;
       this.location.removeAt(this.location.length - 1);
-      this.Monumentdata.map((item:any) => {
-        if (item.id == id) item.disable = false;
-      });
-      this.disabledLocation = null;
+      
+      // Re-enable the removed monument in the dropdown
+      if (removedValue) {
+        this.Monumentdata = this.Monumentdata.map(monument => ({
+          ...monument,
+          disable: monument.id === removedValue ? false : monument.disable
+        }));
+      }
     }
   }
 
@@ -696,29 +662,28 @@ export class EditTourDialog implements OnDestroy {
     this.tour$ = this.ajaxService.post(data, url).subscribe((data: any) => {
       this.tourdata = data["response"];
       
-      if (this.tourdata && this.tourdata.length > 0) {
-        // Set the monument_id in the form
-        this.angForm.patchValue({
-          monument_id: this.tourdata[0].monument_id
-        });
-
-        // Clear the location array first
-        const locationArray = this.angForm.get('location') as FormArray;
-        locationArray.clear();
-
-        // Update location array
-        this.tourdata.forEach((value: any) => {
-          this.location.push(
-            this.fb.control(value.monument_id, Validators.required)
-          );
-        
-          // Update monument disable state
-          const monument = this.Monumentdata.find(m => m.id === value.monument_id);
-          if (monument) {
-            monument.disable = true;
-          }
-        });
+      // Clear existing controls
+      while (this.location.length) {
+        this.location.removeAt(0);
       }
+
+      // Add controls for each tour location
+      if (this.tourdata && this.tourdata.length > 0) {
+        this.tourdata.forEach((value: any) => {
+          this.location.push(this.fb.control(value.monument_id, Validators.required));
+          
+          // Update monument disable state
+          this.Monumentdata = this.Monumentdata.map(monument => ({
+            ...monument,
+            disable: monument.id === value.monument_id || 
+                    this.location.value.includes(monument.id)
+          }));
+        });
+      } else {
+        // Add at least one empty control
+        this.addMoreLocation();
+      }
+      
       this.spinner = false;
     });
   }
@@ -833,35 +798,37 @@ export class EditTourDialog implements OnDestroy {
     });
   }
 
-  onMonumentSelect(monumentId: number) {
+  onMonumentSelect(monumentId: number, index: number) {
     // Find the selected monument
     const selectedMonument = this.Monumentdata.find(m => m.id === monumentId);
     if (selectedMonument) {
-      // Update the form with monument details
-      this.angForm.patchValue({
-        lat: selectedMonument.lat,
-        lng: selectedMonument.lng
-      });
+      // If this is the first monument, update the form coordinates
+      if (index === 0) {
+        this.angForm.patchValue({
+          lat: selectedMonument.lat,
+          lng: selectedMonument.lng
+        });
 
-      // Update map marker and center
-      const lat = parseFloat(selectedMonument.lat);
-      const lng = parseFloat(selectedMonument.lng);
-      
-      this.center = { lat, lng };
-      this.markers = [{
-        position: { lat, lng },
-        options: {
-          draggable: true,
-          animation: google.maps.Animation.DROP
-        }
-      }];
+        // Update map marker and center
+        const lat = parseFloat(selectedMonument.lat);
+        const lng = parseFloat(selectedMonument.lng);
+        
+        this.center = { lat, lng };
+        this.markers = [{
+          position: { lat, lng },
+          options: {
+            draggable: true,
+            animation: google.maps.Animation.DROP
+          }
+        }];
+      }
 
-      // Update location array
-      const locationArray = this.angForm.get('location') as FormArray;
-      locationArray.clear();
-      locationArray.push(this.fb.control(monumentId, Validators.required));
-
-      // Removed automatic save
+      // Mark the selected monument as disabled for other dropdowns
+      this.Monumentdata = this.Monumentdata.map(monument => ({
+        ...monument,
+        disable: monument.id === monumentId || 
+                this.location.value.includes(monument.id)
+      }));
     }
   }
 

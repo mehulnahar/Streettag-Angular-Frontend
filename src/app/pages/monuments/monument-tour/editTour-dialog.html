@@ -30,20 +30,38 @@
     </div>
 
     <div class="form-row">
-      <mat-form-field appearance="outline">
-        <mat-label>Select Monument</mat-label>
-        <mat-select formControlName="monument_id" (selectionChange)="onMonumentSelect($event.value)">
-          <mat-option *ngFor="let monument of Monumentdata" [value]="monument.id">
-            {{monument.name}}
-          </mat-option>
-        </mat-select>
-        <mat-error *ngIf="angForm.get('monument_id')?.errors?.['required'] && angForm.get('monument_id')?.touched">
-          Please select a monument
-        </mat-error>
-      </mat-form-field>
+      <div class="monument-selection-container">
+        <!-- Monument Dropdowns -->
+        <div class="monument-dropdowns" formArrayName="location">
+          <div *ngFor="let control of location.controls; let i = index" class="monument-dropdown-item">
+            <mat-form-field appearance="outline" class="monument-dropdown">
+              <mat-label>Select Monument {{i + 1}}</mat-label>
+              <mat-select [formControlName]="i" (selectionChange)="onMonumentSelect($event.value, i)">
+                <mat-option *ngFor="let monument of Monumentdata" [value]="monument.id" [disabled]="monument.disable">
+                  {{monument.name}}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="location.at(i).errors?.['required'] && location.at(i).touched">
+                Please select a monument
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        
+        <div class="monument-controls">
+          <button mat-mini-fab color="primary" type="button" 
+                  (click)="addMoreLocation()" 
+                  [disabled]="location.length >= 2">
+            <mat-icon>add</mat-icon>
+          </button>
+          <button mat-mini-fab color="warn" type="button" 
+                  (click)="RemoveLocation()" 
+                  [disabled]="location.length <= 1">
+            <mat-icon>remove</mat-icon>
+          </button>
+        </div>
+      </div>
     </div>
-
-   
 
     <div class="form-row upload-section">
       <div class="image-upload-container">
