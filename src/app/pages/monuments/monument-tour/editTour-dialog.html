@@ -62,7 +62,7 @@
       <div class="image-upload-container">
         <h3>Tour Image</h3>
         <div class="image-preview" *ngIf="angForm.get('tour_image')?.value">
-          <img [src]="angForm.get('tour_image')?.value" alt="Tour preview" (click)="OpenImageViewerBox(angForm.get('tour_image')?.value)">
+          <img [src]="angForm.get('tour_image')?.value" alt="Tour preview" style="width: 500px; height: 500px; object-fit: cover;" (click)="OpenImageViewerBox(angForm.get('tour_image')?.value)">
         </div>
         <div class="upload-button">
           <input type="file" #takeInput (change)="handleInputChange($event)" accept="image/jpeg,image/jpg,image/png" style="display: none;">
