@@ -100,7 +100,7 @@
         <!-- Monument Name -->
         <div class="form-field-container">
           <h3 class="section-title">Monument Name</h3>
-          <mat-form-field appearance="outline" class="full-width">
+          <mat-form-field appearance="fill" class="full-width">
             <mat-label>Monument Name</mat-label>
             <input matInput #inputTitle formControlName="name" maxlength="50" placeholder="Enter monument name">
             <mat-hint align="end">{{inputTitle.value.length || 0}}/50</mat-hint>
@@ -115,7 +115,7 @@
           <h3 class="section-title">Description</h3>
           <div formArrayName="description" class="description-container">
             <div *ngFor="let item of description.controls; let i = index" class="description-item">
-              <mat-form-field appearance="outline" class="full-width">
+              <mat-form-field appearance="fill" class="full-width">
                 <mat-label>Description {{i + 1}}</mat-label>
                 <textarea matInput #inputDesc [formControlName]="i" maxlength="400" 
                         cdkTextareaAutosize cdkAutosizeMinRows="3" cdkAutosizeMaxRows="5"
@@ -137,7 +137,7 @@
         <!-- Website Link -->
         <div class="form-field-container">
           <h3 class="section-title"> Link</h3>
-          <mat-form-field appearance="outline" class="full-width">
+          <mat-form-field appearance="fill" class="full-width">
             <mat-label> Link</mat-label>
             <input matInput formControlName="link" placeholder="https://example.com">
             <mat-icon matPrefix>link</mat-icon>
@@ -214,7 +214,7 @@
         <div class="form-field-container">
           <h3 class="section-title">Location</h3>
           <div class="location-search">
-            <mat-form-field appearance="outline" class="full-width">
+            <mat-form-field appearance="fill" class="full-width">
               <mat-label>Search Location</mat-label>
               <input matInput [(ngModel)]="location" [ngModelOptions]="{standalone: true}" 
                      placeholder="Enter location to search">
