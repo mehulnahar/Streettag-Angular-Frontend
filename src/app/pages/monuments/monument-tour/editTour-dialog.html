@@ -32,8 +32,8 @@
     <div class="form-row">
       <mat-form-field appearance="outline">
         <mat-label>Select Monument</mat-label>
-        <mat-select formControlName="monument_id">
-          <mat-option *ngFor="let monument of Monumentdata" [value]="monument.id" [disabled]="monument.disable">
+        <mat-select formControlName="monument_id" (selectionChange)="onMonumentSelect($event.value)">
+          <mat-option *ngFor="let monument of Monumentdata" [value]="monument.id">
             {{monument.name}}
           </mat-option>
         </mat-select>
@@ -77,7 +77,7 @@
 
   <mat-dialog-actions align="end">
     <button mat-button mat-dialog-close type="button">Cancel</button>
-    <button mat-raised-button color="primary" type="submit" [disabled]="!angForm.valid || isSubmitting">
+    <button mat-raised-button color="primary" type="submit" [disabled]="(!angForm.valid && !angForm.get('imageChanged')?.value) || isSubmitting">
       <mat-icon>save</mat-icon>
       Save Changes
     </button>

@@ -612,6 +612,13 @@ export class EditTourDialog implements OnDestroy {
       imageChanged: [false],
       monument_id: ['', [Validators.required]]
     });
+
+    // Subscribe to monument_id changes
+    this.angForm.get('monument_id')?.valueChanges.subscribe(monumentId => {
+      if (monumentId) {
+        this.onMonumentSelect(monumentId);
+      }
+    });
   }
 
   get location() {
@@ -716,9 +723,13 @@ export class EditTourDialog implements OnDestroy {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       if (file.type === 'image/jpg' || file.type === 'image/jpeg' || file.type === 'image/png') {
-        this.angForm.get("imageChanged")?.setValue(true);
         const reader = new FileReader();
-        reader.onload = this._handleReaderLoaded.bind(this);
+        reader.onload = (e: any) => {
+          this.angForm.patchValue({
+            tour_image: e.target.result,
+            imageChanged: true  // Set imageChanged to true when new image is loaded
+          });
+        };
         reader.readAsDataURL(file);
       } else {
         this.snackBar.open('Only Images are allowed (JPG | PNG | JPEG)', undefined, {
@@ -731,13 +742,9 @@ export class EditTourDialog implements OnDestroy {
     }
   }
 
-  _handleReaderLoaded(e: any) {
-    const reader = e.target;
-    this.angForm.get("tour_image")?.setValue(reader.result);
-  }
-
   editevent() {
-    if (this.angForm.valid) {
+    // Allow submission if form is valid OR if image has been changed
+    if (this.angForm.valid || this.angForm.get('imageChanged')?.value) {
       this.clicked = true;
       const url = `${this.baseUrl}editMonumentTour`;
       
@@ -821,6 +828,39 @@ export class EditTourDialog implements OnDestroy {
       data: dialogData,
       disableClose: true,
     });
+  }
+
+  onMonumentSelect(monumentId: number) {
+    // Find the selected monument
+    const selectedMonument = this.Monumentdata.find(m => m.id === monumentId);
+    if (selectedMonument) {
+      // Update the form with monument details
+      this.angForm.patchValue({
+        lat: selectedMonument.lat,
+        lng: selectedMonument.lng
+      });
+
+      // Update map marker and center
+      const lat = parseFloat(selectedMonument.lat);
+      const lng = parseFloat(selectedMonument.lng);
+      
+      this.center = { lat, lng };
+      this.markers = [{
+        position: { lat, lng },
+        options: {
+          draggable: true,
+          animation: google.maps.Animation.DROP
+        }
+      }];
+
+      // Update location array
+      const locationArray = this.angForm.get('location') as FormArray;
+      locationArray.clear();
+      locationArray.push(this.fb.control(monumentId, Validators.required));
+
+      // Save changes immediately
+      this.editevent();
+    }
   }
 
   ngOnDestroy() {
