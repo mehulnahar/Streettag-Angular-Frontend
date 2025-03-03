@@ -1,61 +1,153 @@
-<div class="p-4" style="width:100%; height:420px;" perfectScrollbar>
-    <div style="width:100%;height:350px;">
-        <div style="width:90%; margin: 0 auto;">
-            <h3 class="mb-4">Edit Charity</h3>
-            <div style="width:100%;">
-                <form [formGroup]="angForm" novalidate style="display: flex; flex-direction: column; width: 100%;">
-                    <mat-form-field style="width:100% !important;" class="w-100">
-                        <input matInput placeholder="Title" formControlName="title">
-                    </mat-form-field>
+<div class="charity-edit-dialog">
+    <div class="dialog-content">
+        <h2 mat-dialog-title class="dialog-title">Edit Charity</h2>
+        
+        <mat-dialog-content>
+            <form [formGroup]="angForm" novalidate class="charity-form">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Title</mat-label>
+                    <input matInput placeholder="Enter charity title" formControlName="title">
+                    <mat-error *ngIf="angForm.get('title')?.errors?.['required']">
+                        Please enter title
+                    </mat-error>
+                </mat-form-field>
 
-                    <div style="width: 100%;" *ngIf="angForm.get('title')?.invalid && (angForm.get('title')?.dirty || angForm.get('title')?.touched)"
-                        class="alert alert-danger">
-                        <div *ngIf="angForm.get('title')?.errors?.['required']">
-                            Please Enter Title
-                        </div>
-                    </div>
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Description</mat-label>
+                    <textarea matInput formControlName="description" rows="4" 
+                        placeholder="Enter charity description"></textarea>
+                    <mat-error *ngIf="angForm.get('description')?.errors?.['required']">
+                        Description is required
+                    </mat-error>
+                </mat-form-field>
 
-                    <mat-form-field style="width:100% !important;" class="w-100">
-                        <mat-label>Description</mat-label>
-                        <textarea matInput formControlName="description" rows="3"></textarea>
-                    </mat-form-field>
+                <div class="match-fund-section">
+                    <label class="match-fund-label">Match Fund</label>
+                    <mat-radio-group [(ngModel)]="Fund" [ngModelOptions]="{standalone: true}" class="match-fund-options">
+                        <mat-radio-button color="primary" [value]="'1'">Yes</mat-radio-button>
+                        <mat-radio-button color="primary" [value]="'0'">No</mat-radio-button>
+                    </mat-radio-group>
+                </div>
 
-                    <div style="width: 100%;" *ngIf="angForm.get('description')?.invalid && (angForm.get('description')?.dirty || angForm.get('description')?.touched)"
-                        class="alert alert-danger">
-                        <div *ngIf="angForm.get('description')?.invalid">
-                            Description is required.
-                        </div>
-                    </div>
+                <div class="image-upload-section">
+                    <label class="upload-label">Update Charity Image</label>
+                    <input type="file" class="file-input" (change)="handleInputChange($event)" 
+                        accept="image/gif,image/jpeg,image/png,image/jpg">
+                </div>
 
-                    <div class="my-3" style="width:100%;">
-                        <label class="mb-2">Match Fund: </label>
-                        <mat-radio-group [(ngModel)]="Fund" [ngModelOptions]="{standalone: true}" class="ml-3" style="display: inline-flex;">
-                            <mat-radio-button style="margin-right: 20px; margin-left: 10px;" [value]="'1'">Yes</mat-radio-button>
-                            <mat-radio-button [value]="'0'">No</mat-radio-button>
-                        </mat-radio-group>
-                    </div>
+                <div class="current-image-section" *ngIf="charity_image">
+                    <label class="image-label">Current Image</label>
+                    <img [src]="charity_image" class="preview-image" alt="Charity Image">
+                </div>
+            </form>
+        </mat-dialog-content>
 
-                    <div class="my-3" style="width:100%;">
-                        <label class="mb-2 d-block">Update Charity Image:</label>
-                        <input type="file" (change)="handleInputChange($event)" 
-                            accept="image/gif,image/jpeg,image/png,image/jpg" style="width:100% !important;">
-                    </div>
-
-                    <div class="my-3" style="width:100%; margin-top: 10px !important;">
-                        <label class="mb-2 d-block">Current Image:</label>
-                        <img [src]="charity_image" style="height:120px; width:120px;" alt="Charity Image">
-                    </div>
-
-                    <div class="text-center mt-4" style="width:100%;">
-                        <button mat-raised-button color="primary" 
-                            [disabled]="!angForm.valid || clicked"
-                            (click)="editCharityData()"
-                            style="min-width: 120px; border-radius: 20px; margin-top: 19px !important;">
-                            Update Charity
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
+        <mat-dialog-actions align="end">
+            <button mat-button mat-dialog-close>Cancel</button>
+            <button mat-raised-button color="primary" 
+                [disabled]="!angForm.valid || clicked"
+                (click)="editCharityData()">
+                Update Charity
+            </button>
+        </mat-dialog-actions>
     </div>
 </div>
+
+<style>
+.charity-edit-dialog {
+    min-width: 500px;
+    max-width: 800px;
+    width: 90vw;
+}
+
+.dialog-content {
+    padding: 24px;
+}
+
+.dialog-title {
+    margin: 0 0 24px 0;
+    color: #1976d2;
+    font-weight: 500;
+}
+
+.charity-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.match-fund-section {
+    margin: 8px 0;
+}
+
+.match-fund-label {
+    display: block;
+    margin-bottom: 12px;
+    color: rgba(0, 0, 0, 0.87);
+    font-size: 14px;
+}
+
+.match-fund-options {
+    display: flex;
+    gap: 24px;
+}
+
+.image-upload-section {
+    margin: 16px 0;
+}
+
+.upload-label {
+    display: block;
+    margin-bottom: 12px;
+    color: rgba(0, 0, 0, 0.87);
+    font-size: 14px;
+}
+
+.file-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.current-image-section {
+    margin: 16px 0;
+}
+
+.image-label {
+    display: block;
+    margin-bottom: 12px;
+    color: rgba(0, 0, 0, 0.87);
+    font-size: 14px;
+}
+
+.preview-image {
+    height: 120px;
+    width: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+mat-form-field {
+    width: 100%;
+}
+
+mat-dialog-actions {
+    margin: 24px -24px -24px;
+    padding: 16px 24px;
+    border-top: 1px solid #ddd;
+}
+
+::ng-deep .mat-radio-button.mat-accent .mat-radio-ripple .mat-ripple-element {
+    background-color: #1976d2 !important;
+}
+
+::ng-deep .mat-radio-button.mat-accent .mat-radio-inner-circle {
+    background-color: #1976d2 !important;
+}
+
+::ng-deep .mat-radio-button.mat-accent.mat-radio-checked .mat-radio-outer-circle {
+    border-color: #1976d2 !important;
+}
+</style>
