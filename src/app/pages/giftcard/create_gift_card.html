@@ -1,16 +1,16 @@
-<div style="width:800px; height:350px;" perfectScrollbar>
-    <div style="width:800px;height:250px;">
+<div style="width: 100%; max-width: 800px; margin: 0 auto; padding: 20px; box-sizing: border-box;" perfectScrollbar>
+    <div style="background: #FCFCFC; padding: 10px; margin-bottom: 20px;">
 
-        <h3 style="background:#283593; text-align: center; color: #fff; padding: 10px; margin-bottom: 60px;">Create Gift Card</h3>
+        <h3 style="background: linear-gradient(135deg, #283593 0%, #1a237e 100%); text-align: center; color: #fff; padding: 15px; margin: -25px -25px 30px -25px; border-radius: 0 0 0 0; font-weight: 500; letter-spacing: 0.5px;">Create Gift Card</h3>
 
-        <div style="width:99.4%;float: left;margin-bottom:10px;">
-            <form [formGroup]="angForm">
-                <mat-form-field class="w-100" style="margin-top:5px;">
-                    <input matInput placeholder="Amount" formControlName="amount" type="number">
+        <div style="width: 100%; margin-bottom: 20px;">
+            <form [formGroup]="angForm" style="display: flex; flex-direction: column; gap: 10px;">
+                <mat-form-field class="w-100" style="margin-top: 5px; width: 100%;">
+                    <input matInput placeholder="Amount" formControlName="amount" type="number" style="font-size: 16px; padding: 8px 0;">
                 </mat-form-field>
                 
                 <div *ngIf="angForm.get('amount')?.invalid && (angForm.get('amount')?.dirty || angForm.get('amount')?.touched)"
-                    class="alert alert-danger">
+                    style="color: #f44336; font-size: 12px; margin-top: -15px; padding: 5px 0;">
                     <div *ngIf="angForm.get('amount')?.errors?.['required']">
                         Amount is required.
                     </div>
@@ -19,16 +19,18 @@
                     </div>
                 </div>
 
-                <div style="position: unset;margin:auto;">
-                    <button style="align-content: center;border-radius: 40px; position: unset;margin:auto;
-                        display:block; text-align: center;" 
+                <div style="margin-top: 20px;">
+                    <button style="width: 100%; max-width: 250px; border-radius: 25px; padding: 12px 30px; font-size: 16px; font-weight: 500; text-transform: uppercase; background: linear-gradient(135deg, #283593 0%, #1a237e 100%); color: white; border: none; cursor: pointer; transition: all 0.3s ease; display: block; margin: 0 auto; box-shadow: 0 4px 15px rgba(40, 53, 147, 0.3);" 
                         mat-raised-button 
                         color="primary" 
                         (click)="addevent($event)" 
-                        [disabled]="!angForm.valid">
+                        [disabled]="!angForm.valid"
+                        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(40, 53, 147, 0.4)'"
+                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(40, 53, 147, 0.3)'">
                         Create Gift Card
                     </button>
                 </div>
             </form>
         </div>
-        <br><br><br>
+    </div>
+</div>
