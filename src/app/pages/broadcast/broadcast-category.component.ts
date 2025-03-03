@@ -22,7 +22,7 @@ interface Category {
     <h2 mat-dialog-title>Add Category</h2>
     <mat-dialog-content>
       <form [formGroup]="categoryForm">
-        <mat-form-field appearance="outline" style="width: 100%">
+        <mat-form-field appearance="fill" style="width: 100%">
           <mat-label>Category</mat-label>
           <input matInput formControlName="category" placeholder="Enter category name">
           <mat-error *ngIf="categoryForm.get('category')?.hasError('required')">
@@ -138,7 +138,7 @@ export class AddCategoryDialogComponent {
     <h2 mat-dialog-title>Edit Category</h2>
     <mat-dialog-content>
       <form [formGroup]="categoryForm">
-        <mat-form-field appearance="outline" style="width: 100%">
+        <mat-form-field appearance="fill" style="width: 100%">
           <mat-label>Category</mat-label>
           <input matInput formControlName="category" placeholder="Enter category name">
           <mat-error *ngIf="categoryForm.get('category')?.hasError('required')">
