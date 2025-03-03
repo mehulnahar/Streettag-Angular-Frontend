@@ -702,6 +702,10 @@ export class EditTourDialog implements OnDestroy {
           monument_id: this.tourdata[0].monument_id
         });
 
+        // Clear the location array first
+        const locationArray = this.angForm.get('location') as FormArray;
+        locationArray.clear();
+
         // Update location array
         this.tourdata.forEach((value: any) => {
           this.location.push(
