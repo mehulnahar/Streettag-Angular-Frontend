@@ -743,8 +743,7 @@ export class EditTourDialog implements OnDestroy {
   }
 
   editevent() {
-    // Allow submission if form is valid OR if image has been changed
-    if (this.angForm.valid || this.angForm.get('imageChanged')?.value) {
+    if (this.angForm.valid) {  // Changed back to only check form validity
       this.clicked = true;
       const url = `${this.baseUrl}editMonumentTour`;
       
@@ -858,8 +857,7 @@ export class EditTourDialog implements OnDestroy {
       locationArray.clear();
       locationArray.push(this.fb.control(monumentId, Validators.required));
 
-      // Save changes immediately
-      this.editevent();
+      // Removed automatic save
     }
   }
 
