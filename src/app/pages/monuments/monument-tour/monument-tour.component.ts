@@ -610,7 +610,7 @@ export class EditTourDialog implements OnDestroy {
       lng: [this.data.data.lng, [Validators.required]],
       tour_image: [this.data.data.tour_image, [Validators.required]],
       imageChanged: [false],
-      monument_id: ['', [Validators.required]]
+      monument_id: [this.data.data.monument_id || '', [Validators.required]]
     });
 
     // Subscribe to monument_id changes
@@ -682,12 +682,6 @@ export class EditTourDialog implements OnDestroy {
       .subscribe(async (data: any) => {
         this.Monumentdata = await data["response"];
         await this.tourDetail();
-        // Set the initial monument selection
-        if (this.tourdata && this.tourdata.length > 0) {
-          this.angForm.patchValue({
-            monument_id: this.tourdata[0].monument_id
-          });
-        }
       });
   }
 
@@ -702,19 +696,25 @@ export class EditTourDialog implements OnDestroy {
     this.tour$ = this.ajaxService.post(data, url).subscribe((data: any) => {
       this.tourdata = data["response"];
       
-      //push controler into FormArray for displaying selected monument data
-      this.tourdata.forEach((value: any, key: any) => {
-        this.location.push(
-          this.fb.control(value.monument_id, Validators.required)
-        );
-      
-        for (let i = 0; i < this.Monumentdata.length; i++) {
-          if (this.Monumentdata[i].id == value.monument_id) {
-            this.Monumentdata[i].disable = true;
-            break;
+      if (this.tourdata && this.tourdata.length > 0) {
+        // Set the monument_id in the form
+        this.angForm.patchValue({
+          monument_id: this.tourdata[0].monument_id
+        });
+
+        // Update location array
+        this.tourdata.forEach((value: any) => {
+          this.location.push(
+            this.fb.control(value.monument_id, Validators.required)
+          );
+        
+          // Update monument disable state
+          const monument = this.Monumentdata.find(m => m.id === value.monument_id);
+          if (monument) {
+            monument.disable = true;
           }
-        }
-      });
+        });
+      }
       this.spinner = false;
     });
   }
