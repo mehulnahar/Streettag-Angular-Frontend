@@ -120,8 +120,8 @@ export class MonumentComponent implements OnInit, OnDestroy {
 
   addMonument(): void {
     let dialogRef = this.dialog.open(AddMonumentDialog, {
-      minWidth: "75%",
-      minHeight: 'calc(100vh - 90px)',
+      width: "60%",
+      minHeight: 'calc(100vh - 120px)',
       height: 'auto',
       disableClose: true
     });
@@ -143,8 +143,8 @@ export class MonumentComponent implements OnInit, OnDestroy {
   editMonument(data: Monument): void {
     let dialogRef = this.dialog.open(EditMonumentDialog, {
       data: { data },
-      minWidth: "75%",
-      minHeight: 'calc(100vh - 90px)',
+      width: "60%",
+      minHeight: 'calc(100vh - 120px)',
       height: 'auto',
       disableClose: true
     });
