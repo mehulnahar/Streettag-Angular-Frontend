@@ -155,8 +155,8 @@ export class MonumentTourComponent implements OnInit, OnDestroy {
 
   openAddMessageDialog(): void {
     const dialogRef = this.dialog.open(AddTourDialog, {
-      minWidth: "75%",
-      minHeight: 'calc(100vh - 90px)',
+      width: "60%",
+      minHeight: 'calc(100vh - 120px)',
       height: 'auto',
       disableClose: true
     });
@@ -171,8 +171,8 @@ export class MonumentTourComponent implements OnInit, OnDestroy {
   openEditDialog(data: MonumentTour): void {
     const dialogRef = this.dialog.open(EditTourDialog, {
       data: { data },
-      minWidth: "75%",
-      minHeight: 'calc(100vh - 90px)',
+      width: "60%",
+      minHeight: 'calc(100vh - 120px)',
       height: 'auto',
       disableClose: true
     });
@@ -187,9 +187,9 @@ export class MonumentTourComponent implements OnInit, OnDestroy {
   openDetailDialog(data: MonumentTour): void {
     this.dialog.open(DetailDialog, {
         data,
-        width: "50%",
+        width: "40%",
         height: 'auto',
-        maxHeight: '80vh',
+        maxHeight: '70vh',
         disableClose: false,
         position: { top: '50px' },
         autoFocus: true,
