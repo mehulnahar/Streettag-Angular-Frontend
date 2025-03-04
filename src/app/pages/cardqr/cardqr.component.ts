@@ -200,6 +200,11 @@ export class DialogCardqr implements OnInit {
               verticalPosition: "top"
             });
             this.dialogRef.close();
+          } else if (response.status === "false1") {
+            this.snackBar.open("User already exists!", undefined, {
+              duration: 3000,
+              verticalPosition: "top"
+            });
           } else {
             this.snackBar.open(response.msg || "Error adding school", undefined, {
               duration: 3000,
