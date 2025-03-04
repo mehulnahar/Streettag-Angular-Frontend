@@ -2,10 +2,10 @@
     width: 100%;
     background: transparent !important;
     
-    .mat-header-row {
-        background: #f5f5f5;
-        border-radius: 4px;
-    }
+    // .mat-header-row {
+    //     background: #f5f5f5;
+    //     border-radius: 4px;
+    // }
     
     .mat-row {
         min-height: 48px;
@@ -24,44 +24,44 @@
     font-size: 14px;
 }
 
-.mat-header-cell {
-    color: rgba(0, 0, 0, 0.54);
-    font-size: 14px;
-    font-weight: 500;
-}
+// .mat-header-cell {
+//     color: rgba(0, 0, 0, 0.54);
+//     font-size: 14px;
+//     font-weight: 500;
+// }
 
-.mat-column-actions {
-    flex: 0 0 140px;
-}
+// .mat-column-actions {
+//     flex: 0 0 140px;
+// }
 
-.mat-column-serial_number {
-    flex: 0 0 80px;
-}
+// .mat-column-serial_number {
+//     flex: 0 0 80px;
+// }
 
-.status-chip {
-    padding: 4px 12px;
-    border-radius: 16px;
-    font-size: 12px;
-    line-height: 16px;
-    text-align: center;
-    width: fit-content;
-    font-weight: 500;
+// .status-chip {
+//     padding: 4px 12px;
+//     border-radius: 16px;
+//     font-size: 12px;
+//     line-height: 16px;
+//     text-align: center;
+//     width: fit-content;
+//     font-weight: 500;
 
-    &.active {
-        background-color: #4CAF50;
-        color: white;
-    }
+//     &.active {
+//         background-color: #4CAF50;
+//         color: white;
+//     }
 
-    &.inactive {
-        background-color: #F44336;
-        color: white;
-    }
-}
+//     &.inactive {
+//         background-color: #F44336;
+//         color: white;
+//     }
+// }
 
-.mat-toolbar {
-    margin-bottom: 16px;
-    border-radius: 4px;
-}
+// .mat-toolbar {
+//     margin-bottom: 16px;
+//     border-radius: 4px;
+// }
 
 .questionnaire-container {
   padding: 24px;
@@ -76,7 +76,7 @@
     gap: 16px;
     margin-bottom: 32px;
     padding: 16px;
-    background-color: #f8f9fa;
+    // background-color: #f8f9fa;
     border-radius: 8px;
     
     .input-group {
@@ -142,7 +142,7 @@
       
       .questions {
         .question-item {
-          background: #f8f9fa;
+          // background: #f8f9fa;
           border-radius: 8px;
           padding: 20px;
           margin-bottom: 16px;
@@ -232,10 +232,10 @@
     width: 100%;
     background: transparent !important;
     
-    .mat-header-row {
-      background: #f5f5f5;
-      border-radius: 4px;
-    }
+    // .mat-header-row {
+    //   background: #f5f5f5;
+    //   border-radius: 4px;
+    // }
     
     .mat-row {
       min-height: 48px;
@@ -254,11 +254,11 @@
     font-size: 14px;
   }
   
-  .mat-header-cell {
-    color: rgba(0, 0, 0, 0.54);
-    font-size: 14px;
-    font-weight: 500;
-  }
+  // .mat-header-cell {
+  //   color: rgba(0, 0, 0, 0.54);
+  //   font-size: 14px;
+  //   font-weight: 500;
+  // }
   
   .mat-column-actions {
     flex: 0 0 140px;
