@@ -31,11 +31,12 @@ export const verticalMenuItems = [
     new Menu (27, 'Broadcast Category', '/admin/broadcast/broadcast-category', null, 'category', null, false, 25), 
    
     new Menu (28, 'Reports', null, null, 'format_list_bulleted', null, true, 0), 
-    new Menu (38, 'Auto Stats for LA', '/admin/auto-states', null, 'autorenew', null, false, 28),
+   
     new Menu (39, 'Monitoring Report', '/admin/report/monitoring-report', null, 'library_books', null, false, 28), 
     new Menu (30, 'Heat Map', '/admin/report/heat-map', null, 'map', null, false, 28),
     new Menu (31, 'Graphical Analytics', '/admin/report/chart-report', null, 'multiline_chart', null, false, 28),
     new Menu (32, 'Questionnaires Generator', '/admin/report/ques-report', null, 'question_answer', null, false, 28), 
+    new Menu (38, 'Auto Stats for LA', '/admin/auto-states', null, 'autorenew', null, false, 28),
     new Menu (33, 'Monument', null, null, 'format_list_bulleted', null, true, 0), 
     new Menu (34, 'Monument Management', '/admin/monument/details', null, 'account_balance', null, false, 33), 
     new Menu (35, 'Monument Tour', '/admin/monument/tour', null, 'tour', null, false, 33), 
