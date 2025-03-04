@@ -188,7 +188,7 @@ export class DialogCardqr implements OnInit {
         date_of_birth: this.angForm.get('date_of_birth')?.value || "",
         password: `Street@Tag${Math.floor(Math.random() * 90000) + 10000}`,
         referral_code: "",
-        location_id: this.dataSourceSchools.find((school: any) => school.id === this.angForm.get('circuit_name')?.value)?.location_id
+        location_id: 27,
       };
 
       this.ajaxService.post(formData, url).subscribe({
