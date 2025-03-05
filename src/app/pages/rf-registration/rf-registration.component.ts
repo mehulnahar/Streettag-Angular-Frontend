@@ -568,13 +568,10 @@ export class RfidAddDialog {
           <strong>Date of Birth:</strong> {{data.date_of_birth || 'N/A'}}
         </div>
         <div class="detail-row">
-          <strong>Gender:</strong> {{data.gender || 'N/A'}}
-        </div>
-        <div class="detail-row">
           <strong>Postal Code:</strong> {{data.postal_code || 'N/A'}}
         </div>
         <div class="detail-row">
-          <strong>Circuit:</strong> {{data.circuit_id}}
+          <strong>Gender:</strong> {{data.gender || 'N/A'}}
         </div>
       </div>
     </mat-dialog-content>
