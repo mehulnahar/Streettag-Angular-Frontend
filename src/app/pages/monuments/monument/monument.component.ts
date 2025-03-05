@@ -262,6 +262,9 @@ export class AddMonumentDialog implements OnInit, OnDestroy {
   delete$?: Subscription;
   private nearbyMarkers: google.maps.Marker[] = [];
 
+  // Add circle property
+  private radiusCircle: google.maps.Circle | null = null;
+
   constructor(
     public dialogRef: MatDialogRef<AddMonumentDialog>,
     private fb: FormBuilder,
@@ -289,6 +292,15 @@ export class AddMonumentDialog implements OnInit, OnDestroy {
         }
         link?.updateValueAndValidity();
       });
+
+    // Initialize marker position and get nearby tags
+    this.markerPosition = {
+      lat: this.default_lat,
+      lng: this.default_lng
+    };
+    setTimeout(() => {
+      this.getNearByTags();
+    }, 500); // Wait for map to be ready
   }
 
   createForm() {
@@ -407,42 +419,83 @@ export class AddMonumentDialog implements OnInit, OnDestroy {
     });
   }
 
+  private clearNearbyMarkers() {
+    this.nearbyMarkers.forEach(marker => marker.setMap(null));
+    this.nearbyMarkers = [];
+    // Clear the circle if it exists
+    if (this.radiusCircle) {
+      this.radiusCircle.setMap(null);
+      this.radiusCircle = null;
+    }
+  }
+
+  private updateRadiusCircle() {
+    // Clear existing circle
+    if (this.radiusCircle) {
+      this.radiusCircle.setMap(null);
+    }
+
+    // Create new circle if we have a marker position
+    if (this.markerPosition) {
+      this.radiusCircle = new google.maps.Circle({
+        strokeColor: '#00FF00',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#00FF00',
+        fillOpacity: 0.15,
+        map: this.googleMap?.googleMap,
+        center: this.markerPosition,
+        radius: 500 // 500 meters
+      });
+    }
+  }
+
   getNearByTags() {
     // Clear existing markers first
     this.clearNearbyMarkers();
     
     const url = `${this.baseUrl}getNearByTags`;
     const data1 = {
-      diameter: "1000",
+      diameter: "500",
       lat: this.markerPosition?.lat || 0,
       lng: this.markerPosition?.lng || 0,
     };
-    this.nearByLatLng = this.ajaxService.post(data1, url).pipe(
-      pluck("response"),
-      map(response => {
-        // Add markers for nearby tags
-        if (Array.isArray(response)) {
-          response.forEach(tag => {
-            const marker = new google.maps.Marker({
-              position: { lat: parseFloat(tag.lat), lng: parseFloat(tag.lng) },
-              map: this.googleMap?.googleMap,
-              icon: {
-                url: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
-                scaledSize: new google.maps.Size(32, 32)
-              },
-              title: tag.name
-            });
-            this.nearbyMarkers.push(marker);
+
+    // Create the radius circle
+    this.updateRadiusCircle();
+
+    // Subscribe to get the response
+    this.SetLocation$ = this.ajaxService.post(data1, url).subscribe(
+      (response: any) => {
+        if (response && response.response && Array.isArray(response.response)) {
+          response.response.forEach((tag: any) => {
+            if (tag.lat && tag.lng) {
+              const marker = new google.maps.Marker({
+                position: { 
+                  lat: parseFloat(tag.lat), 
+                  lng: parseFloat(tag.lng) 
+                },
+                map: this.googleMap?.googleMap,
+                icon: {
+                  url: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
+                  scaledSize: new google.maps.Size(32, 32)
+                },
+                title: tag.name || 'Nearby Tag'
+              });
+              this.nearbyMarkers.push(marker);
+            }
           });
         }
-        return response;
-      })
+      },
+      (error) => {
+        console.error('Error fetching nearby tags:', error);
+        this.snackBar.open('Error loading nearby tags', undefined, {
+          duration: 3000,
+          verticalPosition: "top",
+          panelClass: ["red-snackbar"]
+        });
+      }
     );
-  }
-
-  private clearNearbyMarkers() {
-    this.nearbyMarkers.forEach(marker => marker.setMap(null));
-    this.nearbyMarkers = [];
   }
 
   addevent() {
@@ -615,7 +668,7 @@ export class AddMonumentDialog implements OnInit, OnDestroy {
     if (this.add$) this.add$.unsubscribe();
     if (this.SetLocation$) this.SetLocation$.unsubscribe();
     if (this.delete$) this.delete$.unsubscribe();
-    this.clearNearbyMarkers();
+    this.clearNearbyMarkers(); // This will also clear the circle
   }
 }
 
