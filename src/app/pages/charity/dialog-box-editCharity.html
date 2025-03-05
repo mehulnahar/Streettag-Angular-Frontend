@@ -24,8 +24,8 @@
                 <div class="match-fund-section">
                     <label class="match-fund-label">Match Fund</label>
                     <mat-radio-group [(ngModel)]="Fund" [ngModelOptions]="{standalone: true}" class="match-fund-options">
-                        <mat-radio-button color="primary" [value]="'1'">Yes</mat-radio-button>
-                        <mat-radio-button color="primary" [value]="'0'">No</mat-radio-button>
+                        <mat-radio-button color="primary" [checked]="Fund === 1" [value]="1">Yes</mat-radio-button>
+                        <mat-radio-button color="primary" [checked]="Fund === 0" [value]="0">No</mat-radio-button>
                     </mat-radio-group>
                 </div>
 

@@ -295,7 +295,7 @@ export class DialogBoxAddCharity {
   selector: "edit-trainer",
   templateUrl: "./dialog-box-editCharity.html",
 })
-export class EditCharityPopUp {
+export class EditCharityPopUp implements OnInit {
   clicked: Boolean = false;
   form!: FormGroup;
   resData: any;
@@ -303,6 +303,7 @@ export class EditCharityPopUp {
   imageSrc: any;
   charity_image!: string;
   selectedFileName: string = '';
+  Fund: number = 0;
   private readonly baseUrl = environment.baseUrl;
 
   constructor(
@@ -314,10 +315,16 @@ export class EditCharityPopUp {
     public formBuilder: FormBuilder,
     private router: Router
   ) {
+    console.log('Initial fund value:', this.data.event.fund);
+    this.Fund = Number(this.data.event.fund);
+    console.log('Set fund value:', this.Fund);
     this.createForm();
   }
 
-  public Fund = String(this.data.event.fund);
+  ngOnInit() {
+    console.log('Fund value in ngOnInit:', this.Fund);
+  }
+
   createForm() {
     this.charity_image = this.data.event.charity_image;
     this.angForm = this.fb.group({
