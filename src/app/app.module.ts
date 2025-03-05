@@ -12,6 +12,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { PagesComponent } from './pages/pages.component';
 import { LoginComponent } from './pages/login/login.component';
+import { NotFoundComponent } from './pages/not-found/not-found.component';
 
 // Material Modules
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -40,7 +41,8 @@ import { LoaderInterceptor } from './shared/interceptors/loader.interceptor';
   declarations: [
     AppComponent,
     PagesComponent,
-    LoginComponent
+    LoginComponent,
+    NotFoundComponent
   ],
   imports: [
     BrowserModule,
