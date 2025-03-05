@@ -196,6 +196,7 @@ export class DialogBoxAddCharity {
   title = "";
   description = "";
   imageSrc: any;
+  selectedFileName: string = '';
   resData: any;
   angForm!: FormGroup;
   Fund: string = "0";
@@ -278,6 +279,7 @@ export class DialogBoxAddCharity {
 
   handleInputChange(e: any) {
     var file = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0];
+    this.selectedFileName = file.name;
     var reader = new FileReader();
     reader.onload = this._handleReaderLoaded.bind(this);
     reader.readAsDataURL(file);
@@ -300,6 +302,7 @@ export class EditCharityPopUp {
   angForm!: FormGroup;
   imageSrc: any;
   charity_image!: string;
+  selectedFileName: string = '';
   private readonly baseUrl = environment.baseUrl;
 
   constructor(
@@ -379,6 +382,7 @@ export class EditCharityPopUp {
 
   handleInputChange(e: any) {
     var file = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0];
+    this.selectedFileName = file.name;
     var reader = new FileReader();
     reader.onload = this._handleReaderLoaded.bind(this);
     reader.readAsDataURL(file);

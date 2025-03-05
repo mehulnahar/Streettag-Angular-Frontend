@@ -31,9 +31,17 @@
 
                 <div class="image-upload-section">
                     <label class="upload-label">Charity Image</label>
-                    <input type="file" class="file-input" formControlName="requiredfile" 
-                        (change)="handleInputChange($event)"
-                        accept="image/gif,image/jpeg,image/png,image/jpg">
+                    <div class="file-upload-wrapper">
+                        <button type="button" class="upload-btn" (click)="fileInput.click()">
+                            <mat-icon>cloud_upload</mat-icon>
+                            Choose File
+                        </button>
+                        <span class="file-name" *ngIf="selectedFileName">{{selectedFileName}}</span>
+                        <span class="file-name" *ngIf="!selectedFileName">No file chosen</span>
+                        <input #fileInput type="file" class="file-input" formControlName="requiredfile" 
+                            (change)="handleInputChange($event)"
+                            accept="image/gif,image/jpeg,image/png,image/jpg">
+                    </div>
                     <mat-error *ngIf="angForm.get('requiredfile')?.errors?.['required']" class="file-error">
                         Please select an image
                     </mat-error>
@@ -99,14 +107,49 @@
     font-size: 13px;
 }
 
-.file-input {
-    padding: 6px;
-}
-
 .file-error {
     color: #f44336;
     font-size: 12px;
     margin-top: 4px;
+}
+
+.file-upload-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.file-input {
+    display: none;
+}
+
+.upload-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background-color: #1976d2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.upload-btn:hover {
+    background-color: #1565c0;
+}
+
+.upload-btn mat-icon {
+    font-size: 20px;
+    height: 20px;
+    width: 20px;
+}
+
+.file-name {
+    color: #666;
+    font-size: 14px;
 }
 
 mat-form-field {
