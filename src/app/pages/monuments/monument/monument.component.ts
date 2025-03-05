@@ -445,7 +445,7 @@ export class AddMonumentDialog implements OnInit, OnDestroy {
         fillOpacity: 0.15,
         map: this.googleMap?.googleMap,
         center: this.markerPosition,
-        radius: 500 // 500 meters
+        radius: 1000 // 1000 meters
       });
     }
   }
@@ -456,7 +456,7 @@ export class AddMonumentDialog implements OnInit, OnDestroy {
     
     const url = `${this.baseUrl}getNearByTags`;
     const data1 = {
-      diameter: "500",
+      diameter: "1000",
       lat: this.markerPosition?.lat || 0,
       lng: this.markerPosition?.lng || 0,
     };
