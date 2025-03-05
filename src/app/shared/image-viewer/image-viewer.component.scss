@@ -2,32 +2,84 @@
     flex: 1 1 auto;
   }
   
+  .mat-toolbar {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 10;
+  }
+  
   .btn-dialog-close {
-    width: 45px;
-    min-width: 0px !important;
-    height: 40px;
-    padding: 0px !important;
+    min-width: 80px !important;
+    height: 36px;
+    padding: 0 16px !important;
+    border-radius: 18px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 1px solid rgba(244, 67, 54, 0.5);
+    color: #F44336;
+    
+    &:hover {
+      background-color: #F44336;
+      color: #fff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(244, 67, 54, 0.2);
+    }
+  }
+
+  .imageBox {
+    // background: rgba(0, 0, 0, 0.03);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      // background: rgba(0, 0, 0, 0.05);
+      transform: scale(1.01);
+    }
   }
 
   img {
-    max-height: 570px;
-    min-width: 350px;
-    min-height: 30px;
+    max-width: 100%;
+    max-height: calc(100vh - 160px);
+    width: auto;
+    height: auto;
     display: block;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: auto;
-    margin-bottom: auto;
- }
-
-
- .btn-dialog-close {
-  width: 45px;
-  min-width: 0px !important;
-  height: 40px;
-  padding: 0px !important;
-  &:hover{
-    background-color:#F44336;
-    color: #fff;
+    margin: 0 auto;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    &:hover {
+      transform: scale(1.02);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+    }
   }
-}
+
+  :host {
+    display: block;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  mat-dialog-content {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: linear-gradient(to bottom, #f8f9fa, #ffffff);
+    
+    p {
+      text-align: center;
+      color: rgba(0, 0, 0, 0.6);
+      font-size: 14px;
+      margin: 12px 0;
+      font-weight: 500;
+    }
+  }
