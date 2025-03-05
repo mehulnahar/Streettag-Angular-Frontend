@@ -46,6 +46,7 @@ interface Monument {
   audio?: string[];
   video?: string;  // For backward compatibility
   image?: string;  // For backward compatibility
+  add_basket?: number;  // Adding this property to match API response
 }
 
 @Component({
@@ -454,7 +455,12 @@ export class AddMonumentDialog implements OnInit, OnDestroy {
 
       // Add fields in exact order to match required format
       fd.append("name", (this.angForm.get("name")?.value || '').toString().trim());
-      fd.append("description", JSON.stringify([this.angForm.get("description")?.value[0] || '']));
+      
+      // Get all descriptions from form array and filter out empty ones
+      const descriptions = this.angForm.get("description")?.value
+        .filter((desc: string) => desc.trim() !== '')
+        .map((desc: string) => desc.trim());
+      fd.append("description", JSON.stringify(descriptions));
       
       if (this.markerPosition) {
         fd.append("lat", this.markerPosition.lat.toString());
@@ -678,7 +684,7 @@ export class EditMonumentDialog implements OnInit, OnDestroy {
 
   createForm() {
     // Convert basketFlag to string since radio buttons work with strings
-    const basketFlagValue = this.data.data.basketFlag ? '1' : '0';
+    const basketFlagValue = this.data.data.add_basket ? '1' : '0';
     
     this.angForm = this.fb.group({
       name: [this.data.data.name, [Validators.required]],
