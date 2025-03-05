@@ -372,6 +372,7 @@ export class RfRegistrationComponent implements OnInit {
             <mat-radio-group formControlName="gender">
               <mat-radio-button value="male">Male</mat-radio-button>
               <mat-radio-button value="female">Female</mat-radio-button>
+              <mat-radio-button value="other">Other</mat-radio-button>
             </mat-radio-group>
           </div>
         </div>
