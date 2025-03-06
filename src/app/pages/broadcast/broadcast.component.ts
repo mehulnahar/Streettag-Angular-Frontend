@@ -339,6 +339,10 @@ export class DialogAddBroadcastLocation implements OnInit {
     this.getGeoLocation(this.data.data);
   }
 
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
   ngOnInit() {}
 
   createForm(): FormGroup {
