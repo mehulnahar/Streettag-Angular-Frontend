@@ -50,7 +50,8 @@
                         #marker="mapMarker"
                         [position]="markerPosition"
                         [options]="markerOptions"
-                        (dragend)="onMarkerPositionChanged(marker.getPosition())">
+                        (mapDragend)="onMarkerPositionChanged(marker.getPosition())"
+                        (position_changed)="onMarkerPositionChanged(marker.getPosition())">
                     </map-marker>
                 </google-map>
             </div>

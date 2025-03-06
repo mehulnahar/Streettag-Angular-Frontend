@@ -68,7 +68,9 @@ export class DialogOverviewAddMessageDialogStreettags implements OnInit {
     mapTypeId: 'roadmap'
   };
   public markerOptions: google.maps.MarkerOptions = {
-    draggable: true
+    draggable: true,
+    title: 'Drag me!',
+    animation: google.maps.Animation.DROP
   };
 
   constructor(
@@ -102,16 +104,24 @@ export class DialogOverviewAddMessageDialogStreettags implements OnInit {
     }
   }
 
-  onMarkerDragEnd(event: google.maps.MapMouseEvent) {
-    if (event.latLng) {
-      this.lat = event.latLng.lat();
-      this.lng = event.latLng.lng();
-      this.markerPosition = { lat: this.lat, lng: this.lng };
+  onMarkerPositionChanged(position: google.maps.LatLng | null) {
+    console.log('Marker position changed:', position);
+    if (position) {
+      const newLat = position.lat();
+      const newLng = position.lng();
+      
+      this.lat = newLat;
+      this.lng = newLng;
+      
+      this.markerPosition = { lat: newLat, lng: newLng };
       this.center = this.markerPosition;
+      
       this.angForm.patchValue({
-        lat: this.lat,
-        lng: this.lng
-      });
+        lat: newLat,
+        lng: newLng
+      }, { emitEvent: false });
+      
+      console.log('Updated values:', { lat: newLat, lng: newLng });
     }
   }
 
@@ -195,8 +205,8 @@ export class DialogOverviewAddMessageDialogStreettags implements OnInit {
       street_name: ['', Validators.required],
       score: ['', [Validators.required, Validators.pattern(/^\d+$/)]],
       location: [''],
-      lat: ['', Validators.required],
-      lng: ['', Validators.required],
+      lat: [this.lat, Validators.required],
+      lng: [this.lng, Validators.required],
       start_date: ['', Validators.required],
       end_date: ['', Validators.required],
       scan_type: [2],
@@ -205,6 +215,14 @@ export class DialogOverviewAddMessageDialogStreettags implements OnInit {
       building_id: [''],
       floor_id: ['']
     });
+
+    // Subscribe to form value changes to update the class properties
+    this.angForm.get('street_name')?.valueChanges.subscribe(val => this.street_name = val);
+    this.angForm.get('score')?.valueChanges.subscribe(val => this.score = val);
+    this.angForm.get('lat')?.valueChanges.subscribe(val => this.lat = val);
+    this.angForm.get('lng')?.valueChanges.subscribe(val => this.lng = val);
+    this.angForm.get('start_date')?.valueChanges.subscribe(val => this.start_date = val);
+    this.angForm.get('end_date')?.valueChanges.subscribe(val => this.end_date = val);
   }
 
   checkScanType(res: any) {
