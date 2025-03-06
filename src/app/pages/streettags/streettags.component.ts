@@ -198,7 +198,7 @@ export class StreettagsComponent implements OnInit, AfterViewInit {
     let dialogRef = this.dialog.open(DialogOverviewMessageDialogStreettags, {
       width: '600px',
       maxWidth: '90vw',
-      panelClass: 'modern-dialog',
+      // panelClass: 'modern-dialog',
       data: { event },
     });
 
