@@ -24,13 +24,6 @@
                        height="100%" 
                        width="100%"
                        (mapClick)="onMapClick($event)">
-                <!-- Center Marker -->
-                <map-marker
-                    [position]="markerPosition"
-                    [options]="markerOptions"
-                    (mapDragend)="markerDragEnd($event)">
-                </map-marker>
-
                 <!-- Circle -->
                 <map-circle
                     #circle

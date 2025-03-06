@@ -310,15 +310,6 @@ export class DialogAddBroadcastLocation implements OnInit {
   markerPosition: google.maps.LatLngLiteral = { lat: 51.5339834, lng: 0.0753218 };
   currentRadius: number = 500;
 
-  // Add marker options property
-  markerOptions = {
-    draggable: true,
-    icon: {
-      url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
-      scaledSize: new google.maps.Size(40, 40)
-    }
-  };
-
   // Add circle options property with proper typing
   circleOptions: google.maps.CircleOptions = { 
     fillColor: '#ff4081', 
