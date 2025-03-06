@@ -3,7 +3,7 @@
         <!-- Header with close button -->
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; position: sticky; top: 0; background: white; z-index: 1000;">
             <h4 style="margin: 0; font-size: 20px;">Add/Edit Geo-Location</h4>
-            <button mat-icon-button (click)="onNoClick()" style="margin: -8px -8px 0 0;">
+            <button mat-icon-button class="no-ripple" (click)="onNoClick()" style="margin: -8px -8px 0 0;" [disableRipple]="true">
                 <mat-icon>close</mat-icon>
             </button>
         </div>
@@ -65,4 +65,30 @@
         </div>
     </div>
 </div>
+
+<style>
+    ::ng-deep .no-ripple {
+        position: relative;
+        overflow: hidden;
+    }
+    ::ng-deep .no-ripple::after {
+        display: none !important;
+    }
+    ::ng-deep .no-ripple:hover {
+        background: none !important;
+    }
+    ::ng-deep .no-ripple .mat-ripple-element {
+        display: none !important;
+    }
+    ::ng-deep .no-ripple .mat-button-focus-overlay {
+        background-color: transparent !important;
+        display: none !important;
+    }
+    ::ng-deep .mat-mdc-icon-button .mat-mdc-button-persistent-ripple::before {
+        opacity: 0 !important;
+    }
+    ::ng-deep .mat-mdc-icon-button:hover .mat-mdc-button-persistent-ripple::before {
+        opacity: 0 !important;
+    }
+</style>
         
