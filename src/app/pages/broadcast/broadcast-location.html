@@ -1,7 +1,7 @@
-<div class="dialog-container" style="width: 700px; max-height: 640px; overflow: hidden;">
+<div class="dialog-container" style="width: 700px; max-height: 90vh; overflow-y: auto;">
     <div style="padding: 20px;">
         <!-- Header with close button -->
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; position: sticky; top: 0; background: white; z-index: 1000;">
             <h4 style="margin: 0; font-size: 20px;">Add/Edit Geo-Location</h4>
             <button mat-icon-button (click)="onNoClick()" style="margin: -8px -8px 0 0;">
                 <mat-icon>close</mat-icon>
@@ -35,7 +35,7 @@
                 <map-circle
                     #circle
                     [center]="markerPosition"
-                    [radius]="angForm.get('radius')?.value"
+                    [radius]="currentRadius"
                     [options]="circleOptions"
                     (radiusChange)="onRadiusChange($event)"
                     (centerChange)="onCenterChange($event)">
@@ -55,7 +55,9 @@
                 </div>
                 <div style="flex: 1; text-align: center;">
                     <strong style="display: block; margin-bottom: 6px; color: #666;">Radius in meters</strong>
-                    <span>{{angForm.get('radius')?.value || 0}}</span>
+                    <mat-form-field style="width: 80px;">
+                        <input matInput type="number" [ngModel]="currentRadius" (ngModelChange)="onRadiusInput($event)" min="1">
+                    </mat-form-field>
                 </div>
             </div>
         </div>

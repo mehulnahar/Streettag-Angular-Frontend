@@ -296,6 +296,7 @@ export class DialogAddBroadcast {
 })
 export class DialogAddBroadcastLocation implements OnInit {
   @ViewChild(GoogleMap) map!: GoogleMap;
+  @ViewChild('circle') circle: any;
   clicked = false;
   resData: any;
   angForm: FormGroup = this.createForm();
@@ -307,6 +308,7 @@ export class DialogAddBroadcastLocation implements OnInit {
   center: google.maps.LatLngLiteral = { lat: 51.5339834, lng: 0.0753218 };
   zoom = 13;
   markerPosition: google.maps.LatLngLiteral = { lat: 51.5339834, lng: 0.0753218 };
+  currentRadius: number = 500;
 
   // Add marker options property
   markerOptions = {
@@ -348,7 +350,7 @@ export class DialogAddBroadcastLocation implements OnInit {
   createForm(): FormGroup {
     return this.fb.group({
       circuit_id: [this.data?.data?.id || null],
-      radius: [500],
+      radius: [500, [Validators.required, Validators.min(1)]],
       lat: [0],
       lng: [0],
     });
@@ -363,17 +365,22 @@ export class DialogAddBroadcastLocation implements OnInit {
     ) {
       const lat = parseFloat(event.broadcast_lat);
       const lng = parseFloat(event.broadcast_lng);
-      this.angForm.controls["lat"].setValue(lat);
-      this.angForm.controls["lng"].setValue(lng);
-      this.angForm.controls["radius"].setValue(
-        parseInt(event.broadcast_radius)
-      );
+      const radius = parseInt(event.broadcast_radius) || 500;
+      this.currentRadius = radius;
+      this.angForm.patchValue({
+        lat: lat,
+        lng: lng,
+        radius: radius
+      });
       this.center = { lat, lng };
       this.markerPosition = { lat, lng };
     } else {
-      this.angForm.controls["lat"].setValue(0);
-      this.angForm.controls["lng"].setValue(0);
-      this.angForm.controls["radius"].setValue(500);
+      this.currentRadius = 500;
+      this.angForm.patchValue({
+        lat: 0,
+        lng: 0,
+        radius: 500
+      });
       this.center = { lat: 51.5339834, lng: 0.0753218 };
       this.markerPosition = { lat: 51.5339834, lng: 0.0753218 };
     }
@@ -390,10 +397,10 @@ export class DialogAddBroadcastLocation implements OnInit {
   onRadiusChange(event: any) {
     if (event && event.radius) {
       const newRadius = Math.round(event.radius);
-      // Update form value when circle is resized
+      this.currentRadius = newRadius;
       this.angForm.patchValue({
         radius: newRadius
-      });
+      }, { emitEvent: false });
     }
   }
 
@@ -405,19 +412,15 @@ export class DialogAddBroadcastLocation implements OnInit {
     }
   }
 
-  onRadiusInput(event: any) {
-    const radius = parseInt(event.target.value);
-    if (!isNaN(radius)) {
-      // Update form value when input changes
+  onRadiusInput(newRadius: number) {
+    if (!isNaN(newRadius) && newRadius > 0) {
+      this.currentRadius = newRadius;
       this.angForm.patchValue({
-        radius: radius
-      });
-
-      // Update circle options to reflect new radius
-      this.circleOptions = {
-        ...this.circleOptions,
-        radius: radius
-      };
+        radius: newRadius
+      }, { emitEvent: false });
+      if (this.circle) {
+        this.circle.setRadius(newRadius);
+      }
     }
   }
 
