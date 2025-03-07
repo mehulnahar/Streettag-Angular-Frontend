@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from '../../shared/shared.module';
-import { LeaderboardComponent } from './leaderboard.component';
+import { LeaderboardNewComponent } from './leaderboard-new.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -16,12 +16,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 
 export const routes: Routes = [
-  { path: '', component: LeaderboardComponent }
+  { path: '', component: LeaderboardNewComponent }
 ];
 
 @NgModule({
   declarations: [
-    LeaderboardComponent
+    LeaderboardNewComponent
   ],
   imports: [
     CommonModule,
@@ -41,4 +41,4 @@ export const routes: Routes = [
     MatInputModule
   ]
 })
-export class LeaderboardModule { } 
+export class LeaderboardNewModule { } 

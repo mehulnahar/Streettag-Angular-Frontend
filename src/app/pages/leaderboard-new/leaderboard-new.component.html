@@ -8,31 +8,34 @@
 
 <div class="main-container">
   <form (ngSubmit)="onSubmit(searchForm.value)" #searchForm="ngForm" class="search-form">
-    <select
-      class="form-select"
-      name="location_name"
-      [(ngModel)]="location_name"
-      (ngModelChange)="get_location_id($event)"
-    >
-      <option value="">World</option>
-      <option *ngFor="let location of dataSourceLocation" [value]="location.id">
-        {{ location.location_name }}
-      </option>
-    </select>
+    <mat-form-field appearance="fill">
+      <mat-label>Location</mat-label>
+      <mat-select
+        name="location_name"
+        [(ngModel)]="location_name"
+        (ngModelChange)="get_location_id($event)"
+      >
+        <mat-option value="">World</mat-option>
+        <mat-option *ngFor="let location of dataSourceLocation" [value]="location.id">
+          {{ location.location_name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
 
-    <select
-      class="form-select"
-      name="circuit_name"
-      [(ngModel)]="circuit_id"
-      ngModel
-    >
-      <option value="">World</option>
-      <option *ngFor="let circuit of dataSourceCircuit" [value]="circuit.id">
-        {{ circuit.circuit_name }}
-      </option>
-    </select>
+    <mat-form-field appearance="fill">
+      <mat-label>Circuit</mat-label>
+      <mat-select
+        name="circuit_name"
+        [(ngModel)]="circuit_id"
+      >
+        <mat-option value="">World</mat-option>
+        <mat-option *ngFor="let circuit of dataSourceCircuit" [value]="circuit.id">
+          {{ circuit.circuit_name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
 
-    <button mat-raised-button color="primary" type="submit">
+    <button mat-raised-button color="primary" type="submit" style="margin-bottom: 18px;">
       <mat-icon>search</mat-icon>
       <span>SUBMIT</span>
     </button>
