@@ -381,6 +381,12 @@ export class RfBoxAddDialog {
     if (event.latLng) {
       this.lat = event.latLng.lat();
       this.lng = event.latLng.lng();
+      
+      // Update form values when marker is dragged
+      this.angForm.patchValue({
+        lat: this.lat.toString(),
+        lng: this.lng.toString()
+      });
     }
   }
 }
