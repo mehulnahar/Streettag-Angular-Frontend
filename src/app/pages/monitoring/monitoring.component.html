@@ -12,8 +12,7 @@
       <div class="form-row">
         <mat-form-field>
           <mat-label>Select Location</mat-label>
-          <mat-select formControlName="location_id" (selectionChange)="get_location_id($event.value)" required>
-            <mat-option>Select Location</mat-option>
+          <mat-select formControlName="location_id" (selectionChange)="get_location_id($event.value)" required placeholder="Select Location">
             <mat-option *ngFor="let location of (dataSourceLocation$ | async)" [value]="location.id">
               {{ location.location_name }}
             </mat-option>
@@ -25,8 +24,7 @@
 
         <mat-form-field>
           <mat-label>Select Circuit</mat-label>
-          <mat-select formControlName="circuit_id" required>
-            <mat-option>Select Circuit</mat-option>
+          <mat-select formControlName="circuit_id" required placeholder="Select Circuit">
             <mat-option *ngFor="let circuit of dataSourceCircuit$ | async" [value]="circuit.id">
               {{ circuit.circuit_name }}
             </mat-option>
