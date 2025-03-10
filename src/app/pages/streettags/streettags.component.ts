@@ -142,19 +142,17 @@ export class StreettagsComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    if (this.dataSource) {
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
-    }
-
     if (this.paginator) {
-      this.paginator.page.subscribe(() => {
-        this.getallCircuits();
+      this.paginator.page.subscribe((event) => {
+        this.onPageChange(event);
       });
     }
 
     if (this.sort) {
       this.sort.sortChange.subscribe(() => {
+        if (this.paginator) {
+          this.paginator.pageIndex = 0;
+        }
         this.getallCircuits();
       });
     }
@@ -229,26 +227,73 @@ export class StreettagsComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ///////////////get all event//////////////////
   getallCircuits() {
     const url = `${this.baseUrl}getStreetTags`;
-    const params = {
-      page: (this.paginator?.pageIndex ?? 0) + 1,
-      limit: this.paginator?.pageSize ?? 5
-    };
     
-    this.ajaxService.getdata<PaginatedResponse>(params, url).subscribe(
+    this.isLoading = true;
+    
+    this.ajaxService.get<PaginatedResponse>(url).subscribe(
       (response) => {
         if (response.status === "true") {
-          this.dataSource = new MatTableDataSource<StreetTag>(response.response);
-          this.totalItems = response.total;
+          // Store all data
+          const allData = response.response;
+          this.totalItems = allData.length;
+
+          // Calculate pagination
+          const pageIndex = this.paginator?.pageIndex ?? 0;
+          const pageSize = this.paginator?.pageSize ?? 10;
+          const startIndex = pageIndex * pageSize;
+          const endIndex = startIndex + pageSize;
+
+          // Get current page data
+          const paginatedData = allData.slice(startIndex, endIndex);
+          
+          // Update data source with paginated data
+          this.dataSource = new MatTableDataSource<StreetTag>(paginatedData);
+          
+          // Set up sorting
           this.dataSource.sort = this.sort;
+
+          // Set up filtering
+          this.dataSource.filterPredicate = (data: StreetTag, filter: string) => {
+            return data.street_name.toLowerCase().includes(filter) ||
+                   data.score.toString().includes(filter) ||
+                   data.start_date.toLowerCase().includes(filter) ||
+                   data.end_date.toLowerCase().includes(filter);
+          };
         }
+        this.isLoading = false;
       },
       (error) => {
         console.error('Error fetching data:', error);
+        this.isLoading = false;
+        this.snackBar.open('Error loading data. Please try again.', 'Close', {
+          duration: 3000,
+          verticalPosition: 'top'
+        });
       }
     );
+  }
+
+  // Add method to handle page changes
+  onPageChange(event: any) {
+    const pageIndex = event.pageIndex;
+    const pageSize = event.pageSize;
+    
+    // Get all data from data source
+    const allData = this.dataSource.data;
+    
+    // Calculate new page
+    const startIndex = pageIndex * pageSize;
+    const endIndex = startIndex + pageSize;
+    
+    // Update data source with new page data
+    this.dataSource = new MatTableDataSource<StreetTag>(
+      allData.slice(startIndex, endIndex)
+    );
+    
+    // Maintain sorting and filtering
+    this.dataSource.sort = this.sort;
   }
 
   confirmDialog(data:any): void {
@@ -651,7 +696,6 @@ export class DialogOverviewMessageDialogStreettags {
     public snackBar: MatSnackBar,
     public formBuilder: FormBuilder
   ) {
-    // Initialize form with existing data
     this.angForm = this.formBuilder.group({
       street_name: [data.event.street_name, Validators.required],
       start_date: [new Date(data.event.start_date), Validators.required],
@@ -678,7 +722,7 @@ export class DialogOverviewMessageDialogStreettags {
   updateevent() {
     if (this.angForm.valid) {
       const formData = this.angForm.value;
-      const url = 'http://52.56.93.181:3000/api/admin/editStreetTag';
+      const url = `${this.baseUrl}editStreetTag`;
       
       const formatStartDate = (date: Date | string) => {
         if (date instanceof Date) {
@@ -704,10 +748,12 @@ export class DialogOverviewMessageDialogStreettags {
         streettag_id: this.streettag_id
       };
 
-      console.log('Sending payload:', payload); // For debugging
+      console.log('Updating street tag at:', url); // Debug log
+      console.log('With payload:', payload); // Debug log
 
       this.ajaxService.post(payload, url).subscribe(
         (response: any) => {
+          console.log('Update response:', response); // Debug log
           if (response.status) {
             this.snackBar.open('Street Tag Updated Successfully!', 'Close', {
               duration: 2000,
