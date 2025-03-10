@@ -50,7 +50,7 @@
       <thead>
         <tr>
           <th>RANK</th>
-          <th>TEAM NAME</th>
+          <th>TEAM</th>
           <th>AVERAGE/SCORE</th>
           <th>NUMBER OF PLAYERS</th>
         </tr>
@@ -66,7 +66,7 @@
             <mat-icon *ngIf="entry.rank <= 3" class="rank-icon">accessibility_new</mat-icon>
           </td>
           <td>{{ entry.teamName | decode }}</td>
-          <td>{{ entry.averageScore | number }} / {{ entry.totalScore | number }}</td>
+          <td>{{ entry.averageScore | number }}</td>
           <td>{{ entry.totalplayer }}</td>
         </tr>
       </tbody>

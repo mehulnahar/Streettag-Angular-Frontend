@@ -280,9 +280,9 @@ export class LeaderboardNewComponent implements OnInit {
     return apiResponse.map((item, index) => ({
       rank: index + 1,
       teamName: item.team_name,
-      playerCount: item.total_players,
-      averageScore: item.avg_points,
-      totalScore: item.total_points,
+      playerCount: item.totalplayer,
+      averageScore: item.avgpoints ? parseInt(item.avgpoints) : (item.totalpoints / item.totalplayer),
+      totalScore: item.totalpoints,
       totalplayer: item.totalplayer
     }));
   }
@@ -302,7 +302,7 @@ export class LeaderboardNewComponent implements OnInit {
     this.iframeCode =
       '<iframe src="' + frameUrl + '" height="500" width="700"></iframe>';
 
-    const url = `${this.baseUrl}getLeaderboardData`;
+    const url = `${this.baseUrl}getAvgLeaderboardData`;
 
     this.ajaxService.post(data, url).subscribe((data: any) => {
       this.dataSourceLeaderboard = data["response"];
