@@ -102,18 +102,24 @@
     }
 
     .rank-1 {
-      background-color: #303f9f;
+      background: linear-gradient(45deg, #FF4081, #E91E63);
       color: white;
+      font-weight: bold;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
 
     .rank-2 {
-      background-color: #7682d6;
+      background: linear-gradient(45deg, #7C4DFF, #651FFF);
       color: white;
+      font-weight: bold;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
 
     .rank-3 {
-      background-color: #c4caed;
+      background: linear-gradient(45deg, #448AFF, #2979FF);
       color: white;
+      font-weight: bold;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
 
     tr:nth-child(6n+4) {
