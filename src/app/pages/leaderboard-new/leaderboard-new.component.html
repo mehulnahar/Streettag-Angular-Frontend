@@ -14,8 +14,8 @@
         name="location_name"
         [(ngModel)]="location_name"
         (ngModelChange)="get_location_id($event)"
+        placeholder="Select Location"
       >
-        <mat-option value="">World</mat-option>
         <mat-option *ngFor="let location of dataSourceLocation" [value]="location.id">
           {{ location.location_name }}
         </mat-option>
@@ -27,15 +27,15 @@
       <mat-select
         name="circuit_name"
         [(ngModel)]="circuit_id"
+        placeholder="Select Circuit"
       >
-        <mat-option value="">World</mat-option>
         <mat-option *ngFor="let circuit of dataSourceCircuit" [value]="circuit.id">
           {{ circuit.circuit_name }}
         </mat-option>
       </mat-select>
     </mat-form-field>
 
-    <button mat-raised-button color="primary" type="submit" style="margin-bottom: 18px;">
+    <button mat-raised-button color="primary" type="submit" style="margin-bottom: 18px;" [disabled]="!location_name || !circuit_id">
       <mat-icon>search</mat-icon>
       <span>SUBMIT</span>
     </button>
