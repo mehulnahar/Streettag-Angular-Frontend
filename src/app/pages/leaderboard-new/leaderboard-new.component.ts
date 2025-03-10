@@ -304,13 +304,36 @@ export class LeaderboardNewComponent implements OnInit {
 
     const url = `${this.baseUrl}getAvgLeaderboardData`;
 
-    this.ajaxService.post(data, url).subscribe((data: any) => {
-      this.dataSourceLeaderboard = data["response"];
-      this.spinner = false;
-      this.dataSource2 = this.mapApiResponseToLeaderboardEntry(data["response"]);
-      this.dataSource = new MatTableDataSource<LeaderboardEntry>(this.dataSource2);
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
+    this.ajaxService.post(data, url).subscribe({
+      next: (response: any) => {
+        this.spinner = false;
+        if (response.status === "false") {
+          this.snackBar.open(response.msg || "Leaderboard not active", "Close", {
+            duration: 5000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+            panelClass: ['error-snackbar']
+          });
+          // Clear the table data
+          this.dataSource2 = [];
+          this.dataSource = new MatTableDataSource<LeaderboardEntry>([]);
+        } else {
+          this.dataSourceLeaderboard = response["response"];
+          this.dataSource2 = this.mapApiResponseToLeaderboardEntry(response["response"]);
+          this.dataSource = new MatTableDataSource<LeaderboardEntry>(this.dataSource2);
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.sort = this.sort;
+        }
+      },
+      error: (error) => {
+        this.spinner = false;
+        this.snackBar.open("Error fetching leaderboard data", "Close", {
+          duration: 5000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+          panelClass: ['error-snackbar']
+        });
+      }
     });
   }
 
