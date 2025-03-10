@@ -128,6 +128,9 @@ export class StreettagsComponent implements OnInit, AfterViewInit {
   public totalItems: number = 0;
   public isLoading: boolean = false;
 
+  // Add new property to store full dataset
+  private fullDataset: StreetTag[] = [];
+
   constructor(
     public appSettings: AppSettings,
     public formBuilder: FormBuilder,
@@ -160,7 +163,34 @@ export class StreettagsComponent implements OnInit, AfterViewInit {
 
   applyFilter(filterValue: string) {
     if (this.dataSource) {
-      this.dataSource.filter = filterValue.trim().toLowerCase();
+      filterValue = filterValue.trim().toLowerCase();
+      
+      // Filter the full dataset
+      const filteredData = this.fullDataset.filter(item => 
+        item.street_name.toLowerCase().includes(filterValue) ||
+        item.score.toString().includes(filterValue) ||
+        item.start_date.toLowerCase().includes(filterValue) ||
+        item.end_date.toLowerCase().includes(filterValue)
+      );
+
+      // Update total items for pagination
+      this.totalItems = filteredData.length;
+
+      // Get current page
+      const pageIndex = this.paginator?.pageIndex ?? 0;
+      const pageSize = this.paginator?.pageSize ?? 10;
+      const startIndex = pageIndex * pageSize;
+      const endIndex = startIndex + pageSize;
+
+      // Update data source with paginated filtered data
+      this.dataSource = new MatTableDataSource<StreetTag>(
+        filteredData.slice(startIndex, endIndex)
+      );
+      
+      // Reset to first page when filtering
+      if (this.paginator) {
+        this.paginator.firstPage();
+      }
     }
   }
 
@@ -235,9 +265,9 @@ export class StreettagsComponent implements OnInit, AfterViewInit {
     this.ajaxService.get<PaginatedResponse>(url).subscribe(
       (response) => {
         if (response.status === "true") {
-          // Store all data
-          const allData = response.response;
-          this.totalItems = allData.length;
+          // Store full dataset
+          this.fullDataset = response.response;
+          this.totalItems = this.fullDataset.length;
 
           // Calculate pagination
           const pageIndex = this.paginator?.pageIndex ?? 0;
@@ -246,7 +276,7 @@ export class StreettagsComponent implements OnInit, AfterViewInit {
           const endIndex = startIndex + pageSize;
 
           // Get current page data
-          const paginatedData = allData.slice(startIndex, endIndex);
+          const paginatedData = this.fullDataset.slice(startIndex, endIndex);
           
           // Update data source with paginated data
           this.dataSource = new MatTableDataSource<StreetTag>(paginatedData);
@@ -275,24 +305,22 @@ export class StreettagsComponent implements OnInit, AfterViewInit {
     );
   }
 
-  // Add method to handle page changes
+  // Update page change handler
   onPageChange(event: any) {
     const pageIndex = event.pageIndex;
     const pageSize = event.pageSize;
     
-    // Get all data from data source
-    const allData = this.dataSource.data;
-    
-    // Calculate new page
+    // Calculate new page indices
     const startIndex = pageIndex * pageSize;
     const endIndex = startIndex + pageSize;
     
-    // Update data source with new page data
-    this.dataSource = new MatTableDataSource<StreetTag>(
-      allData.slice(startIndex, endIndex)
-    );
+    // Get page data from full dataset
+    const paginatedData = this.fullDataset.slice(startIndex, endIndex);
     
-    // Maintain sorting and filtering
+    // Update data source with new page data
+    this.dataSource = new MatTableDataSource<StreetTag>(paginatedData);
+    
+    // Maintain sorting
     this.dataSource.sort = this.sort;
   }
 
