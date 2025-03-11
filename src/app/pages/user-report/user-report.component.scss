@@ -3,8 +3,9 @@
 }
 
 .virtual-scroll-viewport {
-  height: 200px;
-  max-height: 256px;
+  height: auto;
+  min-height: 150px;
+  max-height: 200px;
   width: 100%;
   overflow-y: auto;
   
