@@ -83,8 +83,8 @@ interface ApiResponse<T> {
                 [matAutocomplete]="auto3"
                 placeholder="Search team">
               <mat-autocomplete #auto3="matAutocomplete">
-                <mat-option *ngFor="let option of filteredOptions3 | async" [value]="option.team_name">
-                  {{option.team_name | decode}}
+                <mat-option *ngFor="let option of filteredOptions3 | async" [value]="option.team_namee">
+                  {{option.team_namee }}
                 </mat-option>
               </mat-autocomplete>
               <mat-hint>Not mandatory</mat-hint>
