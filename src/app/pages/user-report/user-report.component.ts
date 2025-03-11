@@ -22,7 +22,7 @@ import {
   
   import { FormControl } from "@angular/forms";
   import { startWith, map, debounceTime, distinctUntilChanged, switchMap, takeUntil, catchError } from 'rxjs/operators';
-  import { Observable, Subject } from 'rxjs';
+  import { Observable, Subject, of } from 'rxjs';
   import { environment } from "src/environments/environment";
   
   import { formatDate } from "@angular/common";
@@ -152,11 +152,25 @@ import {
               observer.complete();
             });
           }
-          return new Observable(observer => {
-            this.get_team_id(value);
-            observer.next(null);
-            observer.complete();
-          });
+          // Only load team data when user types
+          return this.ajaxService.get<ApiResponse<TeamOption[]>>(`${this.baseUrl}getTeamAdmin`).pipe(
+            map(data => {
+              this.dataSourceLocation = data.response;
+              this.options3 = this.dataSourceLocation;
+              this.filteredOptions3 = of(this._filterTeam(value));
+              this.get_team_id(value);
+              this.cdr.detectChanges();
+              return null;
+            }),
+            catchError(error => {
+              console.error('Error fetching teams:', error);
+              this.snackBar.open('Error fetching teams', 'Close', {
+                duration: 3000,
+                verticalPosition: 'top'
+              });
+              return of(null);
+            })
+          );
         })
       ).subscribe();
 
@@ -168,18 +182,27 @@ import {
         switchMap(value => {
           if (!value) {
             this.resetPlayerFields();
-            this.options1 = [];
             return new Observable(observer => {
               observer.next(null);
               observer.complete();
             });
           }
-          return this.getAllPlayers().pipe(
-            map(() => {
+          if (this.is_all) {
+            // Only load all players when user types and no team is selected
+            return this.getAllPlayers().pipe(
+              map(() => {
+                this.get_player_id(value);
+                return null;
+              })
+            );
+          } else {
+            // Use existing filtered players when team is selected
+            return new Observable(observer => {
               this.get_player_id(value);
-              return null;
-            })
-          );
+              observer.next(null);
+              observer.complete();
+            });
+          }
         })
       ).subscribe();
     }
@@ -527,6 +550,11 @@ import {
 
     trackByPlayer(index: number, item: PlayerOption): string {
       return item.player_idd;
+    }
+
+    onFocus(field: string): void {
+      // Only handle focus-related UI updates if needed
+      this.cdr.detectChanges();
     }
   }
   

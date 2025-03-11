@@ -8,7 +8,7 @@
 				<div class="col-md-6">
 					<mat-form-field appearance="outline" class="w-100">
 						<mat-label>Team Name</mat-label>
-						<input type="text" matInput [formControl]="myControl3" [matAutocomplete]="auto3">
+						<input type="text" matInput [formControl]="myControl3" [matAutocomplete]="auto3" (focus)="onFocus('team')">
 						<mat-icon matSuffix>group</mat-icon>
 						<mat-autocomplete #auto3="matAutocomplete">
 							<cdk-virtual-scroll-viewport itemSize="48" class="virtual-scroll-viewport">
@@ -24,8 +24,7 @@
 				<div class="col-md-6">
 					<mat-form-field appearance="outline" class="w-100">
 						<mat-label>Player ID</mat-label>
-						<input type="text" matInput [formControl]="myControl1" 
-							   [matAutocomplete]="is_all ? auto1 : auto2">
+						<input type="text" matInput [formControl]="myControl1" [matAutocomplete]="is_all ? auto1 : auto2" (focus)="onFocus('player')">
 						<mat-icon matSuffix>person</mat-icon>
 						<mat-autocomplete #auto1="matAutocomplete">
 							<cdk-virtual-scroll-viewport itemSize="48" class="virtual-scroll-viewport">

@@ -154,60 +154,73 @@ export class GiveBonusPointsComponent implements OnInit, OnDestroy {
 
   private initializeSearchSubscriptions() {
     // Team search subscription
-    this.searchTeam$.pipe(
+    this.myControl3.valueChanges.pipe(
+      takeUntil(this.destroy$),
       debounceTime(300),
       distinctUntilChanged(),
-      switchMap(term => {
-        if (!term) {
-          return this.getAllPlayers();
+      switchMap(value => {
+        if (!value) {
+          this.options3 = [];
+          this.resetPlayerFields();
+          return of(null);
         }
-        return this.getTeamPlayers(term);
-      }),
-      takeUntil(this.destroy$)
+        return this.ajaxService.get<any>(`${this.baseUrl}getTeamAdmin`).pipe(
+          map(data => {
+            this.dataSourceLocation = data.response;
+            this.options3 = this.dataSourceLocation;
+            this.filteredOptions3 = of(this._filterTeam(value));
+            this.get_team_id(value);
+            this.cdr.detectChanges();
+            return null;
+          }),
+          catchError(error => {
+            console.error('Error fetching teams:', error);
+            this.snackBar.open('Error fetching teams', 'Close', {
+              duration: 3000,
+              verticalPosition: 'top'
+            });
+            return of(null);
+          })
+        );
+      })
     ).subscribe();
 
     // Player search subscription
-    this.searchPlayer$.pipe(
+    this.myControl1.valueChanges.pipe(
+      takeUntil(this.destroy$),
       debounceTime(300),
       distinctUntilChanged(),
-      switchMap(term => {
-        if (!term) return of([]);
-        return this.getPlayerDetails(term);
-      }),
-      takeUntil(this.destroy$)
+      switchMap(value => {
+        if (!value) {
+          this.resetPlayerFields();
+          return of(null);
+        }
+        if (this.is_all) {
+          return this.getAllPlayers().pipe(
+            map(() => {
+              this.get_player_id(value);
+              return null;
+            })
+          );
+        } else {
+          return new Observable(observer => {
+            this.get_player_id(value);
+            observer.next(null);
+            observer.complete();
+          });
+        }
+      })
     ).subscribe();
 
-    // Initialize autocomplete observables
-    this.initializeAutocomplete();
-  }
-
-  private initializeAutocomplete() {
-    // Team autocomplete
-    this.filteredOptions3 = this.myControl3.valueChanges.pipe(
-      startWith(''),
-      map(value => {
-        const searchTerm = typeof value === 'string' ? value : value?.team_namee || '';
-        if (typeof value === 'object' && value) {
-          this.get_team_id(value.team_id);
-        } else {
-          this.searchTeam$.next(searchTerm);
-        }
-        return this._filterTeam(searchTerm);
-      })
-    );
-
-    // Player autocomplete
+    // Initialize filtered options
     this.filteredOptions1 = this.myControl1.valueChanges.pipe(
       startWith(''),
-      map(value => {
-        const searchTerm = typeof value === 'string' ? value : value?.player_idd || '';
-        if (typeof value === 'object' && value) {
-          this.get_player_id(value.player_idd);
-        } else {
-          this.searchPlayer$.next(searchTerm);
-        }
-        return this._filter(searchTerm);
-      })
+      map(value => this._filter(value || ''))
+    );
+
+    this.filteredOptions3 = this.myControl3.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filterTeam(value || ''))
     );
   }
 
@@ -317,8 +330,9 @@ export class GiveBonusPointsComponent implements OnInit, OnDestroy {
     if (window.innerWidth <= 992) {
       this.sidenavOpen = false;
     }
-    this.getallLocation();
-    this.getAllPlayers().subscribe();
+    // Remove initial API calls
+    // this.getallLocation();
+    // this.getAllPlayers().subscribe();
   }
 
   ngOnDestroy() {
