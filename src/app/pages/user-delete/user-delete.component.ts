@@ -5,6 +5,7 @@ import {
     ViewChild,
     HostListener,
     Inject,
+    OnDestroy,
   } from "@angular/core";
   import { FormGroup, FormBuilder, FormControl, Validators } from "@angular/forms";
   import { MatPaginator } from "@angular/material/paginator";
@@ -17,8 +18,8 @@ import {
   import { Router } from "@angular/router";
   import { MatSort } from "@angular/material/sort";
   
-  import { startWith, map } from "rxjs/operators";
-  import { Observable } from "rxjs";
+  import { startWith, map, debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
+  import { Observable, Subject } from "rxjs";
   import { environment } from "src/environments/environment";
   
   import { formatDate } from "@angular/common";
@@ -144,6 +145,9 @@ interface ApiResponse<T> {
                 <mat-icon>delete</mat-icon>
                 Remove
               </button>
+              <div *ngIf="spinner" class="mt-3">
+                <mat-progress-spinner diameter="30" mode="indeterminate"></mat-progress-spinner>
+              </div>
             </div>
           </form>
         </mat-card-content>
@@ -193,7 +197,7 @@ interface ApiResponse<T> {
     }
   `]
 })
-export class UserDeleteComponent implements OnInit {
+export class UserDeleteComponent implements OnInit, OnDestroy {
   @ViewChild("sidenav", { static: false }) sidenav: any;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -212,7 +216,9 @@ export class UserDeleteComponent implements OnInit {
   public filteredOptions1: Observable<PlayerDetails[]> = new Observable<PlayerDetails[]>();
   public filteredOptions3: Observable<any[]> = new Observable<any[]>();
 
-  // Data sources
+  // Data sources - using Maps for faster lookups
+  private playerMap = new Map<string, PlayerDetails>();
+  private teamMap = new Map<string, any>();
   public dataSourceLocation: any[] = [];
   public dataSourceAllPlayers: any[] = [];
   public dataSourcePlayers: any[] = [];
@@ -238,6 +244,9 @@ export class UserDeleteComponent implements OnInit {
   public location_id: string = "";
   public team_id: string = "";
   private readonly baseUrl = environment.baseUrl;
+  
+  // Subject for cleanup
+  private destroy$ = new Subject<void>();
 
   constructor(
     public appSettings: AppSettings,
@@ -259,6 +268,11 @@ export class UserDeleteComponent implements OnInit {
     this.getAllTeams();
     this.setupAutoComplete();
   }
+  
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
   @HostListener("window:resize")
   public onWindowResize(): void {
@@ -268,31 +282,49 @@ export class UserDeleteComponent implements OnInit {
   }
 
   private _filter(value: string): PlayerDetails[] {
+    if (!value) return this.options1.slice(0, 20); // Return first 20 items when empty
+    
     const filterValue = value.toLowerCase();
+    // When user is actively searching, do a full search across all items
     return this.options1.filter((option: PlayerDetails) => {
-      const playerIdMatch = option.player_idd ? window.atob(option.player_idd).toLowerCase().includes(filterValue) : false;
-      const nameMatch = option.fullname ? window.atob(option.fullname).toLowerCase().includes(filterValue) : false;
-      return playerIdMatch || nameMatch;
-    });
+      // Try to get decoded values only once
+      let playerIdLower = '';
+      let fullnameLower = '';
+      
+      try {
+        playerIdLower = option.player_idd ? window.atob(option.player_idd).toLowerCase() : '';
+        fullnameLower = option.fullname ? window.atob(option.fullname).toLowerCase() : '';
+      } catch (e) {
+        // Handle decoding errors silently
+        playerIdLower = option.player_idd ? option.player_idd.toLowerCase() : '';
+        fullnameLower = option.fullname ? option.fullname.toLowerCase() : '';
+      }
+      
+      return playerIdLower.includes(filterValue) || fullnameLower.includes(filterValue);
+    }); // Don't limit results when user is actively searching
   }
 
   private _filterTeam(value: string): any[] {
+    if (!value) return this.options3.slice(0, 20); // Return first 20 items when empty
+    
     const filterValue = value.toLowerCase();
+    // When user is actively searching, do a full search across all items
     return this.options3.filter((option: any) => {
-      const teamName = option.team_name ? window.atob(option.team_name).toLowerCase() : '';
+      let teamName = '';
+      
+      try {
+        teamName = option.team_namee ? window.atob(option.team_namee).toLowerCase() : '';
+      } catch (e) {
+        // Handle decoding errors silently
+        teamName = option.team_namee ? option.team_namee.toLowerCase() : '';
+      }
+      
       return teamName.includes(filterValue);
-    });
+    }); // Don't limit results when user is actively searching
   }
 
   get_team_id(res: string): boolean {
-    this.player_name = "";
-    this.player_email = "";
-    this.player_dob = "";
-    this.player_points = "";
-    this.player_team = "";
-    this.player_id = "";
-    this.player_id2 = "";
-    this.points = "";
+    this.resetPlayerFields();
 
     if (res === "0") {
       this.player_id = "";
@@ -309,75 +341,133 @@ export class UserDeleteComponent implements OnInit {
       return false;
     }
 
-    this.ajaxService.post(data1, url).subscribe({
-      next: (response: any) => {
-        if (response.response) {
-          this.dataSourcePlayers = response.response;
-          this.player_namet = "";
-          this.options1 = this.dataSourcePlayers;
-
-          this.filteredOptions1 = this.myControl1.valueChanges.pipe(
-            startWith(""),
-            map((value: string | null) => {
-              const searchValue = value ? value.toLowerCase() : '';
-              if (value) {
-                this.get_player_id(value);
+    this.spinner = true;
+    this.ajaxService.post(data1, url)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response: any) => {
+          if (response.response) {
+            this.dataSourcePlayers = response.response;
+            this.player_namet = "";
+            this.options1 = this.dataSourcePlayers;
+            
+            // Cache players in map for faster lookups
+            this.playerMap.clear();
+            this.dataSourcePlayers.forEach(player => {
+              if (player.player_idd) {
+                this.playerMap.set(player.player_idd, player);
               }
-              return this._filter(searchValue);
-            })
-          );
+            });
 
-          this.is_all = false;
+            this.setupPlayerAutocomplete();
+            this.is_all = false;
+          }
+          this.spinner = false;
+        },
+        error: () => {
+          this.spinner = false;
         }
-      }
-    });
+      });
 
     return true;
   }
 
   getAllTeams() {
+    this.spinner = true;
     const url = `${this.baseUrl}getTeamAdmin`;
 
-    this.ajaxService.get(url).subscribe({
-      next: (response: any) => {
-        if (response.response) {
-          this.dataSourceLocation = response.response;
-          this.options3 = this.dataSourceLocation;
-
-          this.filteredOptions3 = this.myControl3.valueChanges.pipe(
-            startWith(""),
-            map((value: string | null) => {
-              const searchValue = value ? value.toLowerCase() : '';
-              if (!value) {
-                this.getAllPlayers();
-              } else {
-                this.get_team_id(value);
+    this.ajaxService.get(url)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response: any) => {
+          if (response.response) {
+            this.dataSourceLocation = response.response;
+            this.options3 = this.dataSourceLocation;
+            
+            // Cache teams in map for faster lookups
+            this.teamMap.clear();
+            this.dataSourceLocation.forEach(team => {
+              if (team.team_namee) {
+                this.teamMap.set(team.team_namee, team);
               }
-              return this._filterTeam(searchValue);
-            })
-          );
+            });
+
+            this.setupTeamAutocomplete();
+          }
+          this.spinner = false;
+          this.getAllPlayers(); // Load players after teams
+        },
+        error: () => {
+          this.spinner = false;
         }
-      }
-    });
+      });
   }
 
   setupAutoComplete() {
+    this.setupPlayerAutocomplete();
+    this.setupTeamAutocomplete();
+  }
+  
+  setupPlayerAutocomplete() {
     this.filteredOptions1 = this.myControl1.valueChanges.pipe(
       startWith(''),
-      map((value: string | null) => this._filter(value || ''))
+      debounceTime(300), // Add debounce to reduce API calls
+      distinctUntilChanged(),
+      map((value: string | null) => {
+        const searchValue = value || '';
+        // If user has typed something, call get_player_id to fetch details
+        if (value && value.trim().length > 0) {
+          this.get_player_id(value);
+        }
+        // If search is empty, limit to 20 items, otherwise do full search
+        return this._filter(searchValue);
+      })
+    );
+  }
+  
+  setupTeamAutocomplete() {
+    this.filteredOptions3 = this.myControl3.valueChanges.pipe(
+      startWith(''),
+      debounceTime(300), // Add debounce to reduce API calls
+      distinctUntilChanged(),
+      map((value: string | null) => {
+        const searchValue = value ? value.toLowerCase() : '';
+        if (!value) {
+          this.getAllPlayers();
+        } else {
+          this.get_team_id(value);
+        }
+        // If search is empty, limit to 20 items, otherwise do full search
+        return this._filterTeam(searchValue);
+      })
     );
   }
 
   onPlayerIdFocus(): void {
-    // Show all options when field is focused
+    // Show limited options when field is focused and empty
+    // But allow full search when user types
     this.filteredOptions1 = this.myControl1.valueChanges.pipe(
       startWith(''),
-      map(() => this.options1)
+      map((value: string | null) => {
+        if (!value) {
+          return this.options1.slice(0, 20);
+        } else {
+          return this._filter(value);
+        }
+      })
     );
   }
 
   confirmDialog(userId: string): void {
-    const decodedId = window.atob(userId);
+    if (!userId) return;
+    
+    let decodedId;
+    try {
+      decodedId = window.atob(userId);
+    } catch (e) {
+      decodedId = userId;
+    }
+    
     const message = `Are you sure you want to delete ${decodedId} ?`;
     const dialogData = new ConfirmDialogModel('Confirm Action', message);
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
@@ -385,159 +475,155 @@ export class UserDeleteComponent implements OnInit {
       data: dialogData
     });
 
-    dialogRef.afterClosed().subscribe((dialogResult) => {
-      if (dialogResult === true) {
-        this.spinner = true;
-        const url = `${this.baseUrl}deleteUserByAdmin`;
-        const dataobj = { data: decodedId };
+    dialogRef.afterClosed()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((dialogResult) => {
+        if (dialogResult === true) {
+          this.deleteUserConfirmed(decodedId);
+        }
+      });
+  }
+  
+  deleteUserConfirmed(decodedId: string): void {
+    this.spinner = true;
+    const url = `${this.baseUrl}deleteUserByAdmin`;
+    const dataobj = { data: decodedId };
 
-        this.ajaxService.post<ApiResponse<unknown>>(dataobj, url).subscribe({
-          next: (response: any) => {
-            // Reset all form fields
-            this.player_name = "";
-            this.player_points = "";
-            this.player_email = "";
-            this.player_dob = "";
-            this.player_points = "";
-            this.player_team = "";
-            this.device_token = "";
-            this.device_type = "";
-            this.circuit_id = "";
-            this.location_id = "";
-            this.team_id = "";
-            this.team_name = "0";
-            this.player_id = "";
-            this.player_id2 = "";
-            this.points = "";
-            this.is_all = true;
-            this.team_namet = "";
-            this.player_namet = "";
-            this.myControl1.reset();
-            this.myControl3.reset();
-
-            // Refresh teams data
-            this.getAllTeams();
-            
-            this.snackBar.open('User Removed Successfully!', 'Close', {
-              duration: 3000,
-              verticalPosition: 'top',
-             
-            });
-
-            this.spinner = false;
-          },
-          error: () => {
-            this.snackBar.open('User Removed Successfully!', 'Close', {
-              duration: 3000,
-              verticalPosition: 'top',
-              panelClass: "blue-snackbar"
-            });
-
-            this.spinner = false;
-          }
-        });
-      } else {
-        // Reset all form fields even on cancel
-        this.player_name = "";
-        this.player_points = "";
-        this.player_email = "";
-        this.player_dob = "";
-        this.player_points = "";
-        this.player_team = "";
-        this.device_token = "";
-        this.device_type = "";
-        this.circuit_id = "";
-        this.location_id = "";
-        this.team_id = "";
-        this.team_name = "0";
-        this.player_id = "";
-        this.player_id2 = "";
-        this.points = "";
-        this.is_all = true;
-        this.team_namet = "";
-        this.player_namet = "";
-        this.myControl1.reset();
-        this.myControl3.reset();
-
-        this.getAllTeams();
-        this.spinner = false;
-      }
+    this.ajaxService.post<ApiResponse<unknown>>(dataobj, url)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.resetAllFields();
+          this.showSuccessMessage();
+        },
+        error: () => {
+          this.showSuccessMessage();
+        }
+      });
+  }
+  
+  resetAllFields(): void {
+    this.resetPlayerFields();
+    this.team_name = "0";
+    this.team_namet = "";
+    this.player_namet = "";
+    this.is_all = true;
+    this.myControl1.reset();
+    this.myControl3.reset();
+    this.getAllTeams();
+  }
+  
+  resetPlayerFields(): void {
+    this.player_name = "";
+    this.player_email = "";
+    this.player_dob = "";
+    this.player_points = "";
+    this.player_team = "";
+    this.device_token = "";
+    this.device_type = "";
+    this.circuit_id = "";
+    this.location_id = "";
+    this.team_id = "";
+    this.player_id = "";
+    this.player_id2 = "";
+    this.points = "";
+  }
+  
+  showSuccessMessage(): void {
+    this.snackBar.open('User Removed Successfully!', 'Close', {
+      duration: 3000,
+      verticalPosition: 'top'
     });
-  }
-
-  ngAfterViewInit() {
-    // Removed as dataSource is not used
-  }
-
-  applyFilter(event: Event) {
-    // Removed as dataSource is not used
+    this.spinner = false;
   }
 
   getAllPlayers() {
+    this.spinner = true;
     const url = `${this.baseUrl}getAllPlayersList`;
 
-    this.ajaxService.get(url).subscribe({
-      next: (response: any) => {
-        if (response.response) {
-          this.dataSourceAllPlayers = response.response;
-          this.options1 = this.dataSourceAllPlayers;
-
-          this.filteredOptions1 = this.myControl1.valueChanges.pipe(
-            startWith(""),
-            map((value: string | null) => {
-              const searchValue = value ? value.toLowerCase() : '';
-              if (value) {
-                this.get_player_id(value);
+    this.ajaxService.get(url)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response: any) => {
+          if (response.response) {
+            this.dataSourceAllPlayers = response.response;
+            this.options1 = this.dataSourceAllPlayers;
+            
+            // Cache players in map for faster lookups
+            this.playerMap.clear();
+            this.dataSourceAllPlayers.forEach(player => {
+              if (player.player_idd) {
+                this.playerMap.set(player.player_idd, player);
               }
-              return this._filter(searchValue);
-            })
-          );
+            });
+
+            this.setupPlayerAutocomplete();
+          }
+          this.spinner = false;
+        },
+        error: () => {
+          this.spinner = false;
         }
-      }
-    });
+      });
   }
 
   get_player_id(res: string): void {
-    if (!res) return;
-
+    if (!res) {
+      this.resetPlayerFields();
+      return;
+    }
+    
+    // Always call the API to get the most up-to-date details
+    this.spinner = true;
     const url = `${this.baseUrl}getPlayerDetailsAdmin`;
     const data = { player_id: res };
 
-    this.ajaxService.post<ApiResponse<PlayerDetails>>(data, url).subscribe({
-      next: (response) => {
-        if (response.response.length > 0) {
-          const details = response.response[0];
-          this.player_name = details.fullname;
-          this.player_email = details.email;
-          this.player_dob = details.date_of_birth;
-          // Convert score_points to number and handle base64 decoding if needed
-          this.player_points = details.score_points ? 
-            (typeof details.score_points === 'string' && details.score_points.includes('=') ? 
-              window.atob(details.score_points) : 
-              details.score_points.toString()) : 
-            '0';
-          this.player_team = details.team_name;
-          this.device_token = details.device_token;
-          this.device_type = details.device_type;
-          this.circuit_id = details.circuit_id;
-          this.location_id = details.location_id;
-          this.team_id = details.team_id;
-          this.player_id = details.player_id;
+    this.ajaxService.post<ApiResponse<PlayerDetails>>(data, url)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          if (response.response && response.response.length > 0) {
+            const details = response.response[0];
+            this.updatePlayerDetails(details);
+            
+            // Add to cache
+            if (details.player_id) {
+              this.playerMap.set(details.player_id, details);
+            }
+          } else {
+            // If no details found, reset fields
+            this.resetPlayerFields();
+          }
+          this.spinner = false;
+        },
+        error: () => {
+          this.snackBar.open('Failed to fetch player details', 'Close', {
+            duration: 2000,
+            verticalPosition: 'top'
+          });
+          this.resetPlayerFields();
+          this.spinner = false;
         }
-      },
-      error: (error: unknown) => {
-        this.snackBar.open('Failed to fetch player details', 'Close', {
-          duration: 2000,
-          horizontalPosition: 'right',
-          verticalPosition: 'top',
-          panelClass: ['error-snackbar']
-        });
-      }
-    });
+      });
   }
-
-  deleteUser(user: User) {
-    // Removed as it's not used
+  
+  updatePlayerDetails(details: PlayerDetails): void {
+    this.player_name = details.fullname;
+    this.player_email = details.email;
+    this.player_dob = details.date_of_birth;
+    // Convert score_points to number and handle base64 decoding if needed
+    this.player_points = details.score_points ? 
+      (typeof details.score_points === 'string' && details.score_points.includes('=') ? 
+        window.atob(details.score_points) : 
+        details.score_points.toString()) : 
+      '0';
+    this.player_team = details.team_name;
+    this.device_token = details.device_token;
+    this.device_type = details.device_type;
+    this.circuit_id = details.circuit_id;
+    this.location_id = details.location_id;
+    this.team_id = details.team_id;
+    this.player_id = details.player_id;
   }
 }
   
