@@ -59,6 +59,12 @@ export class HeatMapComponent implements OnInit, OnDestroy {
     animation: google.maps.Animation.DROP
   };
 
+  durations = [
+    { id: 'today', name: 'Today' },
+    { id: 'week', name: 'Week' },
+    { id: 'month', name: 'Month' }
+  ];
+
   constructor(
     private fb: FormBuilder,
     private ajaxService: AjaxService,

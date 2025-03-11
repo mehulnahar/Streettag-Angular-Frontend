@@ -31,8 +31,7 @@
       <div class="col-md-4">
         <mat-form-field appearance="fill" class="w-100">
           <mat-label>Select Location</mat-label>
-          <mat-select formControlName="location_id" (selectionChange)="getCircuits($event.value)">
-            <mat-option [value]="">Select Location</mat-option>
+          <mat-select formControlName="location_id" (selectionChange)="getCircuits($event.value)" placeholder="Select Location">
             <mat-option *ngFor="let option of locationArray | async" [value]="option.id">
               {{ option.location_name }}
             </mat-option>
@@ -43,8 +42,7 @@
       <div class="col-md-4">
         <mat-form-field appearance="fill" class="w-100">
           <mat-label>Select Circuit</mat-label>
-          <mat-select formControlName="circuit_id">
-            <mat-option [value]="">Select Circuit</mat-option>
+          <mat-select formControlName="circuit_id" placeholder="Select Circuit">
             <mat-option *ngFor="let option1 of circuitArray | async" [value]="option1">
               {{ option1.circuit_name }}
             </mat-option>

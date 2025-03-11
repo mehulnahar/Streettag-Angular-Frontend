@@ -9,13 +9,12 @@
 <div class="container pt-3">
   <div fxLayout="row" fxLayoutAlign="start center" class="controls-container">
     <div class="col-md-4" [formGroup]="angForm">
-      <mat-form-field appearance="outline" class="w-100">
+      <mat-form-field appearance="fill">
         <mat-label>Select Duration</mat-label>
-        <mat-select formControlName="duration" (selectionChange)="disableDownloadButton()">
-          <mat-option value="" disabled>Select Duration</mat-option>
-          <mat-option value="today">Today</mat-option>
-          <mat-option value="week">Week</mat-option>
-          <mat-option value="month">Month</mat-option>
+        <mat-select formControlName="duration" placeholder="Select Duration">
+          <mat-option *ngFor="let duration of durations" [value]="duration.id">
+            {{ duration.name }}
+          </mat-option>
         </mat-select>
       </mat-form-field>
     </div>
