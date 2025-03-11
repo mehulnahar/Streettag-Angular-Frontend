@@ -421,7 +421,7 @@ export class UserDeleteComponent implements OnInit {
             this.snackBar.open('User Removed Successfully!', 'Close', {
               duration: 3000,
               verticalPosition: 'top',
-              panelClass: "blue-snackbar"
+             
             });
 
             this.spinner = false;
