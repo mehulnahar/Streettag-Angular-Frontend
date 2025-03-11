@@ -456,8 +456,13 @@ export class DialogOverviewAddMessageDialogPolytags implements OnInit {
   }
 
   updateMarkerFromInput() {
-    // Trigger the debounced update
-    this.coordinateUpdate.next();
+    const lat = parseFloat(this.form.get('lat')?.value);
+    const lng = parseFloat(this.form.get('lng')?.value);
+    
+    if (!isNaN(lat) && !isNaN(lng)) {
+      this.markerPosition = { lat, lng };
+      this.center = { lat, lng };
+    }
   }
   
   private updateMarkerPosition() {
