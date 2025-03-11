@@ -36,7 +36,7 @@
 
         <mat-form-field appearance="outline" fxFlex="calc(50% - 10px)" fxFlex.lt-md="100">
             <mat-label>Select Team</mat-label>
-            <mat-select [(ngModel)]="selectedTeam" (ngModelChange)="get_team_id($event)" [disabled]="!selectedLocation">
+            <mat-select [(ngModel)]="selectedTeam" (ngModelChange)="get_team_id($event)" >
                 <mat-option *ngFor="let team of dataSourceTeam" [value]="team.id">
                     {{team.team_name | decode}}
                 </mat-option>
