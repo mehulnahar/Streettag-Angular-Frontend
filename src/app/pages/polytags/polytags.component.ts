@@ -267,9 +267,9 @@ export class DialogOverviewAddMessageDialogPolytags implements OnInit {
   markerPosition: google.maps.LatLngLiteral = { lat: 24, lng: 12 };
   markerOptions: google.maps.MarkerOptions = { 
     draggable: true,
-    icon: {
-      url: 'https://maps.google.com/mapfiles/ms/icons/green-dot.png'
-    }
+    animation: google.maps.Animation.BOUNCE,
+    // Use the default red marker without specifying a custom icon
+    // This will match the style of other markers on the map
   };
 
   // Existing polytags
@@ -313,6 +313,15 @@ export class DialogOverviewAddMessageDialogPolytags implements OnInit {
           lat: this.markerPosition.lat,
           lng: this.markerPosition.lng
         });
+        
+        // Ensure marker options are applied
+        this.markerOptions = {
+          draggable: true,
+          animation: google.maps.Animation.BOUNCE,
+          // Use the default red marker without specifying a custom icon
+          // This will match the style of other markers on the map
+        };
+        
         this.getNearByTags();
       });
     }
@@ -352,6 +361,15 @@ export class DialogOverviewAddMessageDialogPolytags implements OnInit {
       lat: this.markerPosition.lat,
       lng: this.markerPosition.lng
     });
+    
+    // Ensure marker options are maintained
+    this.markerOptions = {
+      draggable: true,
+      animation: google.maps.Animation.BOUNCE,
+      // Use the default red marker without specifying a custom icon
+      // This will match the style of other markers on the map
+    };
+    
     this.getNearByTags();
   }
 
@@ -464,6 +482,14 @@ export class DialogOverviewAddMessageDialogPolytags implements OnInit {
       this.center = {
         lat: lat,
         lng: lng
+      };
+      
+      // Ensure marker options are maintained
+      this.markerOptions = {
+        draggable: true,
+        animation: google.maps.Animation.BOUNCE,
+        // Use the default red marker without specifying a custom icon
+        // This will match the style of other markers on the map
       };
       
       // Get nearby tags for the new location
