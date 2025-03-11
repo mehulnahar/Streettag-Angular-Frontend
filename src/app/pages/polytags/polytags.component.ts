@@ -5,6 +5,7 @@ import {
   ViewChild,
   HostListener,
   Inject,
+  AfterViewInit,
 } from "@angular/core";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { MatFormFieldModule, MatFormFieldControl } from "@angular/material/form-field";
@@ -15,16 +16,20 @@ import { MatTableDataSource } from "@angular/material/table";
 import { AppSettings } from "../../app.settings";
 import { Settings } from "../../app.settings.model";
 import { AjaxService } from "src/app/ajax.service";
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import {
+  MatDialog,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from "@angular/material/dialog";
 import { Router } from "@angular/router";
 import { MatSort } from "@angular/material/sort";
 import { environment } from "src/environments/environment";
 import { ConfirmDialogComponent } from "src/app/shared/confirm-dialog/confirm-dialog.component";
 import { ConfirmDialogModel } from "src/app/shared/confirm-dialog/confirmDialog.model";
-import { Observable, map } from "rxjs";
-import { GoogleMap } from '@angular/google-maps';
+import { GoogleMap, MapInfoWindow, MapMarker } from "@angular/google-maps";
+import { Observable, map, Subject } from "rxjs";
 import { HttpClient } from "@angular/common/http";
-import { MapInfoWindow } from "@angular/google-maps";
+import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 
 interface PolyTag {
   id: number;
@@ -48,6 +53,17 @@ interface ApiResponse<T> {
   selector: "app-event",
   templateUrl: "./polytags.component.html",
   styleUrls: ["./polytags.component.scss"],
+  styles: [`
+    ::ng-deep .large-dialog .mat-dialog-container {
+      padding: 0;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    ::ng-deep .large-dialog .mat-dialog-content {
+      max-height: calc(90vh - 120px);
+    }
+  `],
   // encapsulation: ViewEncapsulation.None,
   providers: [],
 })
@@ -146,8 +162,10 @@ export class PolytagsComponent implements OnInit {
 
   openAddMessageDialog(): void {
     const dialogRef = this.dialog.open(DialogOverviewAddMessageDialogPolytags, {
-      width: '600px',
-      maxWidth: '90vw'
+      width: '800px',
+      maxWidth: '95vw',
+      maxHeight: '90vh',
+      panelClass: 'large-dialog'
     });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -256,21 +274,26 @@ export class DialogOverviewAddMessageDialogPolytags implements OnInit {
 
   // Existing polytags
   nearByLatLng: any[] = [];
+  
+  // For debouncing coordinate inputs
+  private coordinateUpdate = new Subject<void>();
 
   constructor(
     public dialogRef: MatDialogRef<DialogOverviewAddMessageDialogPolytags>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private formBuilder: FormBuilder,
     private ajaxService: AjaxService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private http: HttpClient
   ) {
     this.form = this.formBuilder.group({
       category_id: ['', Validators.required],
       asset_id: ['', Validators.required],
       title: ['', Validators.required],
       score: ['', [Validators.required, Validators.pattern(/^[0-9]*$/)]],
-      lat: [this.markerPosition.lat, Validators.required],
-      lng: [this.markerPosition.lng, Validators.required]
+      location: [''],
+      lat: [this.markerPosition.lat, [Validators.required, Validators.pattern(/^-?([0-8]?[0-9]|90)(\.[0-9]{1,20})?$/)]],
+      lng: [this.markerPosition.lng, [Validators.required, Validators.pattern(/^-?((1?[0-7]?|[0-9]?)[0-9]|180)(\.[0-9]{1,20})?$/)]]
     });
   }
 
@@ -293,6 +316,14 @@ export class DialogOverviewAddMessageDialogPolytags implements OnInit {
         this.getNearByTags();
       });
     }
+    
+    // Setup debounced coordinate updates
+    this.coordinateUpdate.pipe(
+      debounceTime(300), // Wait for 300ms pause in events
+      distinctUntilChanged()
+    ).subscribe(() => {
+      this.updateMarkerPosition();
+    });
   }
 
   loadCategories() {
@@ -345,6 +376,99 @@ export class DialogOverviewAddMessageDialogPolytags implements OnInit {
     // Handle location text change
     const location = event.target.value;
     this.form.patchValue({ location });
+  }
+
+  async setLocation() {
+    const location = this.form.get('location')?.value;
+    if (!location) {
+      this.snackBar.open('Please enter a location first', 'Close', {
+        duration: 3000,
+      });
+      return;
+    }
+
+    try {
+      const geocoder = new google.maps.Geocoder();
+      
+      geocoder.geocode(
+        { address: location },
+        (results: google.maps.GeocoderResult[] | null, status: google.maps.GeocoderStatus) => {
+          if (status === 'OK' && results && results.length > 0) {
+            const location = results[0].geometry.location;
+            
+            // Update map position
+            this.center = {
+              lat: location.lat(),
+              lng: location.lng()
+            };
+            
+            this.markerPosition = {
+              lat: location.lat(),
+              lng: location.lng()
+            };
+
+            // Update form values
+            this.form.patchValue({
+              lat: location.lat(),
+              lng: location.lng()
+            });
+            
+            // Update map zoom
+            this.zoom = 15;
+
+            // Get nearby tags for the new location
+            this.getNearByTags();
+
+            this.snackBar.open('Location set successfully', 'Close', {
+              duration: 3000
+            });
+          } else {
+            this.snackBar.open('Location not found', 'Close', {
+              duration: 3000
+            });
+          }
+        }
+      );
+    } catch (error) {
+      console.error('Error setting location:', error);
+      this.snackBar.open('Error setting location. Please try again.', 'Close', {
+        duration: 3000
+      });
+    }
+  }
+
+  updateMarkerFromInput() {
+    // Trigger the debounced update
+    this.coordinateUpdate.next();
+  }
+  
+  private updateMarkerPosition() {
+    const latValue = this.form.get('lat')?.value;
+    const lngValue = this.form.get('lng')?.value;
+    
+    const lat = parseFloat(latValue);
+    const lng = parseFloat(lngValue);
+    
+    // Only update if both values are valid numbers
+    if (!isNaN(lat) && !isNaN(lng) && 
+        lat >= -90 && lat <= 90 && 
+        lng >= -180 && lng <= 180) {
+      
+      // Update marker position
+      this.markerPosition = {
+        lat: lat,
+        lng: lng
+      };
+      
+      // Update center to keep marker in view
+      this.center = {
+        lat: lat,
+        lng: lng
+      };
+      
+      // Get nearby tags for the new location
+      this.getNearByTags();
+    }
   }
 
   addevent() {

@@ -1,11 +1,11 @@
 <div style="width:100%; height:auto; max-height:90vh;" perfectScrollbar>
     <div style="width:100%;">
-        <div mat-dialog-title>Add New PolyTag</div>
+        <div mat-dialog-title style="font-size: 24px; padding: 16px 16px 0 16px;">Add New PolyTag</div>
 
         <form [formGroup]="form" (ngSubmit)="addevent()">
-            <div mat-dialog-content>
+            <div mat-dialog-content style="padding: 0 16px;">
                 <div fxLayout="column" class="p-2">
-                    <mat-form-field>
+                    <mat-form-field style="width: 100%;">
                         <mat-select formControlName="category_id" placeholder="Select Category" (selectionChange)="get_category_id($event.value)">
                             <mat-option *ngFor="let category of dataSourceCategory | async" [value]="category.id">
                                 {{category.category}}
@@ -14,7 +14,7 @@
                         <mat-error *ngIf="form.get('category_id')?.hasError('required')">Category is required</mat-error>
                     </mat-form-field>
 
-                    <mat-form-field>
+                    <mat-form-field style="width: 100%;">
                         <mat-select formControlName="asset_id" placeholder="Select Asset">
                             <mat-option *ngFor="let asset of dataSourceCategoryAssets | async" [value]="asset.id">
                                 {{asset.asset_name}}
@@ -23,18 +23,36 @@
                         <mat-error *ngIf="form.get('asset_id')?.hasError('required')">Asset is required</mat-error>
                     </mat-form-field>
 
-                    <mat-form-field>
+                    <mat-form-field style="width: 100%;">
                         <input matInput placeholder="Title" formControlName="title">
                         <mat-error *ngIf="form.get('title')?.hasError('required')">Title is required</mat-error>
                     </mat-form-field>
 
-                    <mat-form-field>
+                    <mat-form-field style="width: 100%;">
                         <input matInput type="number" placeholder="Score" formControlName="score">
                         <mat-error *ngIf="form.get('score')?.hasError('required')">Score is required</mat-error>
                         <mat-error *ngIf="form.get('score')?.hasError('pattern')">Score must be a number</mat-error>
                     </mat-form-field>
 
-                    <div class="map-container" style="height: 400px; margin: 16px 0;">
+                    <!-- Location Details Section -->
+                    <div class="section" style="margin-top: 16px;">
+                        <h3 style="font-size: 18px; margin-bottom: 16px;">Location Details</h3>
+                        
+                        <!-- Location Input and Button -->
+                        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="16px">
+                            <mat-form-field fxFlex>
+                                <mat-label>Event Location</mat-label>
+                                <textarea matInput formControlName="location" rows="3"></textarea>
+                            </mat-form-field>
+
+                            <button mat-raised-button color="accent" type="button" (click)="setLocation()" style="height: 36px; margin-top: 10px;">
+                                <mat-icon>location_on</mat-icon>
+                                Set Location
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="map-container" style="height: 450px; margin: 16px 0;">
                         <google-map [center]="center" [zoom]="zoom" height="100%" width="100%" (mapClick)="markerDragEnd($event)">
                             <map-marker
                                 [position]="markerPosition"
@@ -60,17 +78,21 @@
 
                     <div fxLayout="row" fxLayoutGap="16px">
                         <mat-form-field fxFlex>
-                            <input matInput placeholder="Latitude" formControlName="lat" readonly>
+                            <input matInput placeholder="Latitude" formControlName="lat" (input)="updateMarkerFromInput()">
+                            <mat-error *ngIf="form.get('lat')?.hasError('required')">Latitude is required</mat-error>
+                            <mat-error *ngIf="form.get('lat')?.hasError('pattern')">Invalid latitude value</mat-error>
                         </mat-form-field>
 
                         <mat-form-field fxFlex>
-                            <input matInput placeholder="Longitude" formControlName="lng" readonly>
+                            <input matInput placeholder="Longitude" formControlName="lng" (input)="updateMarkerFromInput()">
+                            <mat-error *ngIf="form.get('lng')?.hasError('required')">Longitude is required</mat-error>
+                            <mat-error *ngIf="form.get('lng')?.hasError('pattern')">Invalid longitude value</mat-error>
                         </mat-form-field>
                     </div>
                 </div>
             </div>
 
-            <div mat-dialog-actions align="end" style="margin-bottom: 8px;">
+            <div mat-dialog-actions align="end" style="margin: 0 16px 16px 16px; padding: 16px 0 0 0;">
                 <button mat-button type="button" (click)="onNoClick()">Cancel</button>
                 <button mat-raised-button color="primary" type="submit" [disabled]="!form.valid">Add PolyTag</button>
             </div>
