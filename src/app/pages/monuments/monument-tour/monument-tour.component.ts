@@ -355,6 +355,9 @@ export class AddTourDialog implements OnDestroy {
             verticalPosition: 'top'
         });
 
+        // Store the original search query
+        const originalQuery = this.address;
+
         // Use Google Maps Geocoding Service
         const geocoder = new google.maps.Geocoder();
         
@@ -367,7 +370,9 @@ export class AddTourDialog implements OnDestroy {
                     // Update form values
                     this.lat = location.lat();
                     this.lng = location.lng();
-                    this.address = results[0].formatted_address || this.address;
+                    
+                    // Keep the original search query instead of using formatted address
+                    this.address = originalQuery;
                     
                     // Update map
                     this.center = {
@@ -396,7 +401,7 @@ export class AddTourDialog implements OnDestroy {
                     // Set zoom level for better view
                     this.zoom = 15;
                     
-                    this.snackBar.open('Location found!', undefined, {
+                    this.snackBar.open('Location set successfully!', undefined, {
                         duration: 2000,
                         verticalPosition: 'top',
                         panelClass: ['green-snackbar']

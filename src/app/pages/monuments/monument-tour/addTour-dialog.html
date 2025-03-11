@@ -84,13 +84,17 @@
       <div class="form-field-container">
         <h3>Tour Location</h3>
         <div class="location-search">
-          <mat-form-field appearance="fill" class="full-width">
-            <mat-label>Search Location</mat-label>
-            <input matInput [(ngModel)]="address" [ngModelOptions]="{standalone: true}" placeholder="Enter location">
-            <button mat-icon-button matSuffix (click)="setlocation()" type="button">
-              <mat-icon>search</mat-icon>
+          <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="16px">
+            <mat-form-field fxFlex>
+              <mat-label>Search Location</mat-label>
+              <input matInput [(ngModel)]="address" [ngModelOptions]="{standalone: true}" placeholder="Enter location">
+            </mat-form-field>
+
+            <button mat-raised-button color="accent" type="button" (click)="setlocation()" style="height: 36px; margin-top: 10px;">
+              <mat-icon>location_on</mat-icon>
+              Set Location
             </button>
-          </mat-form-field>
+          </div>
         </div>
 
         <div class="map-container">
