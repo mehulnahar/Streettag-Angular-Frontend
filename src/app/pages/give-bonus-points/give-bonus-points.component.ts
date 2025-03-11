@@ -4,7 +4,9 @@ import {
   ViewEncapsulation,
   ViewChild,
   HostListener,
-  Inject,
+  OnDestroy,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef
 } from "@angular/core";
 import { FormGroup, FormBuilder, FormControl } from "@angular/forms";
 import { MatPaginator } from "@angular/material/paginator";
@@ -13,12 +15,12 @@ import { MatTableDataSource } from "@angular/material/table";
 import { AppSettings } from "../../app.settings";
 import { Settings } from "../../app.settings.model";
 import { AjaxService } from "src/app/ajax.service";
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { MatDialog } from "@angular/material/dialog";
 import { Router } from "@angular/router";
 import { MatSort } from "@angular/material/sort";
 
-import { startWith, map } from "rxjs/operators";
-import { Observable } from "rxjs";
+import { startWith, map, debounceTime, distinctUntilChanged, switchMap, takeUntil, catchError } from "rxjs/operators";
+import { Observable, Subject, of } from "rxjs";
 import { environment } from "src/environments/environment";
 
 interface PlayerResponse {
@@ -31,9 +33,10 @@ interface PlayerResponse {
   templateUrl: "./give-bonus-points.component.html",
   styleUrls: ["./give-bonus-points.component.scss"],
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [],
 })
-export class GiveBonusPointsComponent implements OnInit {
+export class GiveBonusPointsComponent implements OnInit, OnDestroy {
 	
   @ViewChild("sidenav", { static: false }) sidenav: any;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -49,9 +52,9 @@ export class GiveBonusPointsComponent implements OnInit {
   public myControl3 = new FormControl();
   options3: any[] = [];
 
-  public filteredOptions1: Observable<any>;
-  public filteredOptions2: Observable<any>;
-  public filteredOptions3: Observable<any>;
+  public filteredOptions1: Observable<any> = new Observable<any>();
+  public filteredOptions2: Observable<any> = new Observable<any>();
+  public filteredOptions3: Observable<any> = new Observable<any>();
 
   public settings: Settings;
   public sidenavOpen: boolean = true;
@@ -60,7 +63,7 @@ export class GiveBonusPointsComponent implements OnInit {
   public type: string = "all";
   public showSearch: boolean = false;
   public searchText: string = '';
-  public form: FormGroup;
+  public form: FormGroup = new FormGroup({});
 
   public show_dialog: boolean = false;
   public button_name: string = "Show Login Form!";
@@ -117,16 +120,26 @@ export class GiveBonusPointsComponent implements OnInit {
 
   public is_all: boolean = true;
 
+  private destroy$ = new Subject<void>();
+  private searchTeam$ = new Subject<string>();
+  private searchPlayer$ = new Subject<string>();
+  private readonly MAX_ITEMS = 30; // Limit items for better performance
+
   constructor(
     public appSettings: AppSettings,
     public formBuilder: FormBuilder,
     public snackBar: MatSnackBar,
     public dialog: MatDialog,
     public router: Router,
-    private ajaxService: AjaxService
+    private ajaxService: AjaxService,
+    private cdr: ChangeDetectorRef
   ) {
     this.settings = this.appSettings.settings;
-    
+    this.initForm();
+    this.initializeSearchSubscriptions();
+  }
+
+  private initForm() {
     this.form = this.formBuilder.group({
       device_token: [''],
       device_type: [''],
@@ -137,84 +150,185 @@ export class GiveBonusPointsComponent implements OnInit {
       points: [''],
       bonus_type: ['2'],
     });
+  }
 
-    // Initialize Observables
-    this.filteredOptions1 = new Observable<any>();
-    this.filteredOptions2 = new Observable<any>();
-    this.filteredOptions3 = new Observable<any>();
+  private initializeSearchSubscriptions() {
+    // Team search subscription
+    this.searchTeam$.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap(term => {
+        if (!term) {
+          return this.getAllPlayers();
+        }
+        return this.getTeamPlayers(term);
+      }),
+      takeUntil(this.destroy$)
+    ).subscribe();
 
-    this.getallLocation();
-    this.getAllPlayers();
+    // Player search subscription
+    this.searchPlayer$.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap(term => {
+        if (!term) return of([]);
+        return this.getPlayerDetails(term);
+      }),
+      takeUntil(this.destroy$)
+    ).subscribe();
+
+    // Initialize autocomplete observables
+    this.initializeAutocomplete();
+  }
+
+  private initializeAutocomplete() {
+    // Team autocomplete
+    this.filteredOptions3 = this.myControl3.valueChanges.pipe(
+      startWith(''),
+      map(value => {
+        const searchTerm = typeof value === 'string' ? value : value?.team_namee || '';
+        if (typeof value === 'object' && value) {
+          this.get_team_id(value.team_id);
+        } else {
+          this.searchTeam$.next(searchTerm);
+        }
+        return this._filterTeam(searchTerm);
+      })
+    );
+
+    // Player autocomplete
+    this.filteredOptions1 = this.myControl1.valueChanges.pipe(
+      startWith(''),
+      map(value => {
+        const searchTerm = typeof value === 'string' ? value : value?.player_idd || '';
+        if (typeof value === 'object' && value) {
+          this.get_player_id(value.player_idd);
+        } else {
+          this.searchPlayer$.next(searchTerm);
+        }
+        return this._filter(searchTerm);
+      })
+    );
+  }
+
+  private _filter(value: string): any[] {
+    if (!value) return this.options1.slice(0, this.MAX_ITEMS);
+    
+    const filterValue = value.toLowerCase();
+    return this.options1
+      .filter(option => option.player_idd.toLowerCase().includes(filterValue))
+      .slice(0, this.MAX_ITEMS);
+  }
+
+  private _filterTeam(value: string): any[] {
+    if (!value) return this.options3.slice(0, this.MAX_ITEMS);
+    
+    const filterValue = value.toLowerCase();
+    return this.options3
+      .filter(option => option.team_namee.toLowerCase().includes(filterValue))
+      .slice(0, this.MAX_ITEMS);
+  }
+
+  private getTeamPlayers(teamId: string): Observable<any> {
+    const url = `${this.baseUrl}getPlayerByTeamAdmin`;
+    return this.ajaxService.post<PlayerResponse>({ team_id: teamId }, url).pipe(
+      map(data => {
+        this.dataSourcePlayers = data.response;
+        this.options1 = this.dataSourcePlayers;
+        this.is_all = false;
+        this.cdr.detectChanges();
+        return data;
+      }),
+      catchError(error => {
+        console.error('Error fetching team players:', error);
+        return of([]);
+      })
+    );
+  }
+
+  private getPlayerDetails(playerId: string): Observable<any> {
+    const url = `${this.baseUrl}getPlayerDetailsAdmin`;
+    return this.ajaxService.post<PlayerResponse>({ player_id: playerId }, url).pipe(
+      map(data => {
+        if (data.response.length > 0) {
+          const player = data.response[0];
+          this.updatePlayerDetails(player);
+        }
+        return data;
+      }),
+      catchError(error => {
+        console.error('Error fetching player details:', error);
+        return of([]);
+      })
+    );
+  }
+
+  private updatePlayerDetails(player: any) {
+    this.player_name = player.fullname;
+    this.player_email = player.email;
+    this.player_team = player.team_name;
+    this.player_id = player.player_id;
+    
+    this.form.patchValue({
+      device_token: player.device_token,
+      device_type: player.device_type,
+      circuit_id: player.circuit_id,
+      location_id: player.location_id,
+      team_id: player.team_id,
+      player_email: player.email
+    });
+
+    this.cdr.detectChanges();
+  }
+
+  getAllPlayers(): Observable<any> {
+    const url = `${this.baseUrl}getAllPlayersList`;
+    return this.ajaxService.get<PlayerResponse>(url).pipe(
+      map(data => {
+        this.dataSourceAllPlayers = data.response;
+        this.options1 = this.dataSourceAllPlayers;
+        this.cdr.detectChanges();
+        return data;
+      }),
+      catchError(error => {
+        console.error('Error fetching all players:', error);
+        return of([]);
+      })
+    );
+  }
+
+  getallLocation() {
+    const url = `${this.baseUrl}getTeamAdmin`;
+    this.ajaxService.get<PlayerResponse>(url).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (data) => {
+        this.dataSourceLocation = data.response;
+        this.options3 = this.dataSourceLocation;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error fetching locations:', error);
+      }
+    });
   }
 
   ngOnInit() {
     if (window.innerWidth <= 992) {
       this.sidenavOpen = false;
     }
-
-    this.loadInitialData();
+    this.getallLocation();
+    this.getAllPlayers().subscribe();
   }
 
-  private loadInitialData() {
-    // Initialize your data loading here
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   @HostListener("window:resize")
   public onWindowResize(): void {
     this.sidenavOpen = window.innerWidth > 992;
-  }
-
-  getallLocation() {
-    const url = `${this.baseUrl}getTeamAdmin`;
-
-    this.ajaxService.get<PlayerResponse>(url).subscribe((data) => {
-      this.dataSourceLocation = data.response;
-      this.options3 = this.dataSourceLocation;
-
-      this.filteredOptions3 = this.myControl3.valueChanges.pipe(
-        startWith(""),
-        map((value: string) => {
-          if (value === "") {
-            this.getAllPlayers();
-          } else {
-            this.get_team_id(value);
-          }
-          return this._filterTeam(value);
-        })
-      );
-    });
-  }
-
-  private _filter(value: string): any[] {
-    const filterValue = value.toLowerCase();
-    return this.options1.filter((option: any) =>
-      option.player_idd.toLowerCase().includes(filterValue)
-    );
-  }
-
-  private _filterTeam(value: string): any[] {
-    const filterValue = value.toLowerCase();
-    return this.options3.filter((option: any) =>
-      option.team_namee.toLowerCase().includes(filterValue)
-    );
-  }
-
-  getAllPlayers() {
-    this.dataSourceAllPlayers = [];
-    const url = `${this.baseUrl}getAllPlayersList`;
-
-    this.ajaxService.get<PlayerResponse>(url).subscribe((data) => {
-      this.dataSourceAllPlayers = data.response;
-      this.options1 = this.dataSourceAllPlayers;
-
-      this.filteredOptions1 = this.myControl1.valueChanges.pipe(
-        startWith(""),
-        map((value: string) => {
-          this.get_player_id(value);
-          return this._filter(value);
-        })
-      );
-    });
   }
 
   get_player_id(res: string): boolean {
@@ -348,7 +462,7 @@ export class GiveBonusPointsComponent implements OnInit {
     this.player_namet = "";
 
     this.getallLocation();
-    this.getAllPlayers();
+    this.getAllPlayers().subscribe();
   }
 
   private resetPlayerFields(): void {
