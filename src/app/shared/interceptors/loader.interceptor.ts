@@ -8,14 +8,23 @@ import {
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { LoaderService } from '../services/loader.service';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class LoaderInterceptor implements HttpInterceptor {
   private totalRequests = 0;
 
-  constructor(private loaderService: LoaderService) {}
+  constructor(
+    private loaderService: LoaderService,
+    private router: Router
+  ) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    // Skip loader for dashboard requests
+    if (this.router.url.includes('/dashboard')) {
+      return next.handle(request);
+    }
+
     this.totalRequests++;
     this.loaderService.show();
 
