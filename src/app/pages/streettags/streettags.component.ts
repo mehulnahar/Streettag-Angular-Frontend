@@ -78,6 +78,17 @@ interface PaginatedResponse {
   styleUrls: ["./streettags.component.scss"],
   encapsulation: ViewEncapsulation.None,
   providers: [],
+  styles: [`
+    ::ng-deep .large-dialog .mat-dialog-container {
+      padding: 0;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    ::ng-deep .large-dialog .mat-dialog-content {
+      max-height: calc(90vh - 120px);
+    }
+  `]
 })
 export class StreettagsComponent implements OnInit, AfterViewInit {
   @ViewChild("sidenav", { static: false }) sidenav: any;
@@ -238,6 +249,10 @@ export class StreettagsComponent implements OnInit, AfterViewInit {
   openAddMessageDialog(): void {
     let dialogRef = this.dialog.open(DialogOverviewAddMessageDialogStreettags, {
       data: { groups: this.groupList.result },
+      width: '800px',
+      maxWidth: '95vw',
+      maxHeight: '90vh',
+      panelClass: 'large-dialog'
     });
 
     dialogRef.afterClosed().subscribe(() => {
