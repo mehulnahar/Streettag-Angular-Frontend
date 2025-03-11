@@ -476,10 +476,10 @@ export class AddMonumentDialog implements OnInit, OnDestroy {
                   lng: parseFloat(tag.lng) 
                 },
                 map: this.googleMap?.googleMap,
-                icon: {
-                  url: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
-                  scaledSize: new google.maps.Size(32, 32)
-                },
+                // icon: {
+                //   url: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
+                //   scaledSize: new google.maps.Size(32, 32)
+                // },
                 title: tag.name || 'Nearby Tag'
               });
               this.nearbyMarkers.push(marker);
