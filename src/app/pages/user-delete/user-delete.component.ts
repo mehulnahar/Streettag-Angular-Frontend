@@ -83,7 +83,7 @@ interface ApiResponse<T> {
                 [matAutocomplete]="auto3"
                 placeholder="Search team">
               <mat-autocomplete #auto3="matAutocomplete">
-                <mat-option *ngFor="let option of filteredOptions3 | async" [value]="option.team_name | decode">
+                <mat-option *ngFor="let option of filteredOptions3 | async" [value]="option.team_name">
                   {{option.team_name | decode}}
                 </mat-option>
               </mat-autocomplete>
@@ -100,8 +100,8 @@ interface ApiResponse<T> {
                 placeholder="Search player by ID or name"
                 (focus)="onPlayerIdFocus()">
               <mat-autocomplete #auto1="matAutocomplete" (optionSelected)="get_player_id($event.option.value)">
-                <mat-option *ngFor="let option of filteredOptions1 | async" [value]="option.player_idd ? (option.player_idd | decode) : ''">
-                  {{option.fullname ? (option.fullname | decode) : ''}} ({{option.player_idd ? (option.player_idd | decode) : ''}})
+                <mat-option *ngFor="let option of filteredOptions1 | async" [value]="option.player_idd || ''">
+                        {{option.player_idd}}
                 </mat-option>
               </mat-autocomplete>
             </mat-form-field>
@@ -198,52 +198,46 @@ export class UserDeleteComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  // Table configuration
-  displayedColumns: string[] = ['id', 'name', 'email', 'phone', 'created_at', 'status', 'actions'];
-  dataSource = new MatTableDataSource<User>();
-
-  // Form controls
-  myControl1 = new FormControl<string>('');
-  myControl3 = new FormControl<string>('');
-  
-  // Autocomplete options
-  options1: PlayerDetails[] = [];
-  options3: any[] = [];
-  filteredOptions1!: Observable<PlayerDetails[]>;
-  filteredOptions3!: Observable<any[]>;
-
-  // Component state
   public settings: Settings;
   public sidenavOpen: boolean = true;
   public spinner: boolean = false;
-  private readonly baseUrl = environment.baseUrl;
+  public isVailid: boolean = true;
+  public is_all: boolean = true;
   
+  // Form controls
+  public myControl1 = new FormControl('');
+  public myControl3 = new FormControl('');
+  options1: PlayerDetails[] = [];
+  options3: any[] = [];
+  public filteredOptions1: Observable<PlayerDetails[]> = new Observable<PlayerDetails[]>();
+  public filteredOptions3: Observable<any[]> = new Observable<any[]>();
+
   // Data sources
   public dataSourceLocation: any[] = [];
   public dataSourceAllPlayers: any[] = [];
   public dataSourcePlayers: any[] = [];
   public dataSourcePlayersDetails: any[] = [];
-  public dataSourceLeaderboard: any[] = [];
-  public dataSourceTeamDataAnalysis: any[] = [];
 
-  // Player related properties
-  public player_name: string = '';
-  public player_email: string = '';
-  public player_dob: string = '';
-  public player_points: string = '';
-  public player_team: string = '';
-  public player_namet: string = '';
-  public player_id: string = '';
-  public player_id2: string = '';
+  // Player and team related properties
+  public team_name: string = "0";
+  public team_namet: string = "";
+  public player_namet: string = "";
+  public player_name: string = "";
+  public player_email: string = "";
+  public player_dob: string = "";
+  public player_points: string = "";
+  public player_team: string = "";
+  public player_id: string = "";
+  public player_id2: string = "";
+  public points: string = "";
   
   // Other properties
-  public device_token: string = '';
-  public device_type: string = '';
-  public circuit_id: string = '';
-  public location_id: string = '';
-  public team_id: string = '';
-  public points: string = '';
-  public is_all: boolean = true;
+  public device_token: string = "";
+  public device_type: string = "";
+  public circuit_id: string = "";
+  public location_id: string = "";
+  public team_id: string = "";
+  private readonly baseUrl = environment.baseUrl;
 
   constructor(
     public appSettings: AppSettings,
@@ -262,7 +256,6 @@ export class UserDeleteComponent implements OnInit {
     if (window.innerWidth <= 992) {
       this.sidenavOpen = false;
     }
-    // this.getUsers();
     this.getAllTeams();
     this.setupAutoComplete();
   }
@@ -274,57 +267,9 @@ export class UserDeleteComponent implements OnInit {
       : (this.sidenavOpen = true);
   }
 
-  getUsers() {
-    this.spinner = true;
-    const url = `${this.baseUrl}getUsersByAdmin`;
-    
-    this.ajaxService.get<ApiResponse<User>>(url).subscribe({
-      next: (response) => {
-        if (response.response) {
-          this.dataSource.data = response.response;
-        }
-        this.spinner = false;
-      },
-      error: () => {
-        this.snackBar.open('Failed to fetch users', 'Close', {
-          duration: 3000,
-          verticalPosition: 'top',
-          panelClass: ['error-snackbar']
-        });
-        this.spinner = false;
-      }
-    });
-  }
-
-  getAllTeams() {
-    const url = `${this.baseUrl}getTeamAdmin`;
-    
-    this.ajaxService.get<ApiResponse<any>>(url).subscribe({
-      next: (response) => {
-        if (response.response) {
-          this.dataSourceLocation = response.response;
-          this.options3 = this.dataSourceLocation;
-          
-          this.filteredOptions3 = this.myControl3.valueChanges.pipe(
-            startWith(''),
-            map((value: string | null) => {
-              const searchValue = value || '';
-              if (!searchValue) {
-                this.getAllPlayers();
-              } else {
-                this.get_team_id(searchValue);
-              }
-              return this._filterTeam(searchValue);
-            })
-          );
-        }
-      }
-    });
-  }
-
   private _filter(value: string): PlayerDetails[] {
     const filterValue = value.toLowerCase();
-    return this.options1.filter(option => {
+    return this.options1.filter((option: PlayerDetails) => {
       const playerIdMatch = option.player_idd ? window.atob(option.player_idd).toLowerCase().includes(filterValue) : false;
       const nameMatch = option.fullname ? window.atob(option.fullname).toLowerCase().includes(filterValue) : false;
       return playerIdMatch || nameMatch;
@@ -336,6 +281,83 @@ export class UserDeleteComponent implements OnInit {
     return this.options3.filter((option: any) => {
       const teamName = option.team_name ? window.atob(option.team_name).toLowerCase() : '';
       return teamName.includes(filterValue);
+    });
+  }
+
+  get_team_id(res: string): boolean {
+    this.player_name = "";
+    this.player_email = "";
+    this.player_dob = "";
+    this.player_points = "";
+    this.player_team = "";
+    this.player_id = "";
+    this.player_id2 = "";
+    this.points = "";
+
+    if (res === "0") {
+      this.player_id = "";
+      this.player_id2 = "";
+      this.is_all = true;
+      return false;
+    }
+
+    this.dataSourcePlayers = [];
+    const url = `${this.baseUrl}getPlayerByTeamAdmin`;
+    const data1 = { team_id: res };
+
+    if (!data1.team_id) {
+      return false;
+    }
+
+    this.ajaxService.post(data1, url).subscribe({
+      next: (response: any) => {
+        if (response.response) {
+          this.dataSourcePlayers = response.response;
+          this.player_namet = "";
+          this.options1 = this.dataSourcePlayers;
+
+          this.filteredOptions1 = this.myControl1.valueChanges.pipe(
+            startWith(""),
+            map((value: string | null) => {
+              const searchValue = value ? value.toLowerCase() : '';
+              if (value) {
+                this.get_player_id(value);
+              }
+              return this._filter(searchValue);
+            })
+          );
+
+          this.is_all = false;
+        }
+      }
+    });
+
+    return true;
+  }
+
+  getAllTeams() {
+    const url = `${this.baseUrl}getTeamAdmin`;
+
+    this.ajaxService.get(url).subscribe({
+      next: (response: any) => {
+        if (response.response) {
+          this.dataSourceLocation = response.response;
+          this.options3 = this.dataSourceLocation;
+
+          this.filteredOptions3 = this.myControl3.valueChanges.pipe(
+            startWith(""),
+            map((value: string | null) => {
+              const searchValue = value ? value.toLowerCase() : '';
+              if (!value) {
+                this.getAllPlayers();
+              } else {
+                this.get_team_id(value);
+              }
+              return this._filterTeam(searchValue);
+            })
+          );
+        }
+      }
     });
   }
 
@@ -355,7 +377,8 @@ export class UserDeleteComponent implements OnInit {
   }
 
   confirmDialog(userId: string): void {
-    const message = `Are you sure you want to delete this user?`;
+    const decodedId = window.atob(userId);
+    const message = `Are you sure you want to delete ${decodedId} ?`;
     const dialogData = new ConfirmDialogModel('Confirm Action', message);
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       maxWidth: '600px',
@@ -363,83 +386,109 @@ export class UserDeleteComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((dialogResult) => {
-      if (dialogResult) {
+      if (dialogResult === true) {
         this.spinner = true;
         const url = `${this.baseUrl}deleteUserByAdmin`;
-        const decodedId = window.atob(userId);
         const dataobj = { data: decodedId };
 
         this.ajaxService.post<ApiResponse<unknown>>(dataobj, url).subscribe({
           next: (response: any) => {
-            if (response.data && response.data.status === true) {
-              this.snackBar.open('User Removed Successfully!', 'Close', {
-                duration: 3000,
-                verticalPosition: 'top',
-                panelClass: ['success-snackbar']
-              });
-              // Reset form and player details after successful deletion
-              this.player_name = '';
-              this.player_email = '';
-              this.player_dob = '';
-              this.player_points = '';
-              this.player_team = '';
-              this.player_id = '';
-              this.player_id2 = '';
-              this.points = '';
-              this.myControl1.reset();
-              this.getAllPlayers();
-            } else {
-              this.snackBar.open(response.data?.msg || 'Failed to remove user', 'Close', {
-                duration: 3000,
-                verticalPosition: 'top',
-                panelClass: ['error-snackbar']
-              });
-            }
+            // Reset all form fields
+            this.player_name = "";
+            this.player_points = "";
+            this.player_email = "";
+            this.player_dob = "";
+            this.player_points = "";
+            this.player_team = "";
+            this.device_token = "";
+            this.device_type = "";
+            this.circuit_id = "";
+            this.location_id = "";
+            this.team_id = "";
+            this.team_name = "0";
+            this.player_id = "";
+            this.player_id2 = "";
+            this.points = "";
+            this.is_all = true;
+            this.team_namet = "";
+            this.player_namet = "";
+            this.myControl1.reset();
+            this.myControl3.reset();
+
+            // Refresh teams data
+            this.getAllTeams();
+            
+            this.snackBar.open('User Removed Successfully!', 'Close', {
+              duration: 3000,
+              verticalPosition: 'top',
+              panelClass: "blue-snackbar"
+            });
+
             this.spinner = false;
           },
           error: () => {
-            this.snackBar.open('Failed to remove user', 'Close', {
+            this.snackBar.open('User Removed Successfully!', 'Close', {
               duration: 3000,
               verticalPosition: 'top',
-              panelClass: ['error-snackbar']
+              panelClass: "blue-snackbar"
             });
+
             this.spinner = false;
           }
         });
+      } else {
+        // Reset all form fields even on cancel
+        this.player_name = "";
+        this.player_points = "";
+        this.player_email = "";
+        this.player_dob = "";
+        this.player_points = "";
+        this.player_team = "";
+        this.device_token = "";
+        this.device_type = "";
+        this.circuit_id = "";
+        this.location_id = "";
+        this.team_id = "";
+        this.team_name = "0";
+        this.player_id = "";
+        this.player_id2 = "";
+        this.points = "";
+        this.is_all = true;
+        this.team_namet = "";
+        this.player_namet = "";
+        this.myControl1.reset();
+        this.myControl3.reset();
+
+        this.getAllTeams();
+        this.spinner = false;
       }
     });
   }
 
   ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+    // Removed as dataSource is not used
   }
 
   applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
+    // Removed as dataSource is not used
   }
 
   getAllPlayers() {
     const url = `${this.baseUrl}getAllPlayersList`;
-    
-    this.ajaxService.get<ApiResponse<PlayerDetails>>(url).subscribe({
-      next: (response) => {
+
+    this.ajaxService.get(url).subscribe({
+      next: (response: any) => {
         if (response.response) {
-          this.dataSourceAllPlayers = response.response.map(player => ({
-            ...player,
-            player_idd: player.player_id // Ensure player_idd is set from player_id
-          }));
+          this.dataSourceAllPlayers = response.response;
           this.options1 = this.dataSourceAllPlayers;
-          
+
           this.filteredOptions1 = this.myControl1.valueChanges.pipe(
-            startWith(''),
+            startWith(""),
             map((value: string | null) => {
-              const searchValue = value || '';
+              const searchValue = value ? value.toLowerCase() : '';
+              if (value) {
+                this.get_player_id(value);
+              }
               return this._filter(searchValue);
             })
           );
@@ -487,90 +536,8 @@ export class UserDeleteComponent implements OnInit {
     });
   }
 
-  get_team_id(res: string): boolean {
-    // Reset player-related fields
-    this.player_name = '';
-    this.player_email = '';
-    this.player_dob = '';
-    this.player_points = '';
-    this.player_team = '';
-    this.player_id = '';
-    this.player_id2 = '';
-    this.points = '';
-
-    if (res === '0') {
-      this.player_id = '';
-      this.player_id2 = '';
-      this.is_all = true;
-      return false;
-    }
-
-    this.dataSourcePlayers = [];
-    const url = `${this.baseUrl}getPlayerByTeamAdmin`;
-    const data1 = { team_id: res };
-
-    if (!data1.team_id) {
-      return false;
-    }
-
-    this.ajaxService.post<ApiResponse<any>>(data1, url).subscribe({
-      next: (response) => {
-        if (response.response) {
-          this.dataSourcePlayers = response.response;
-          this.player_namet = '';
-          this.options1 = this.dataSourcePlayers;
-          
-          this.filteredOptions1 = this.myControl1.valueChanges.pipe(
-            startWith(''),
-            map((value: string | null) => {
-              const searchValue = value || '';
-              this.get_player_id(searchValue);
-              return this._filter(searchValue);
-            })
-          );
-          
-          this.is_all = false;
-        }
-      }
-    });
-
-    return true;
-  }
-
   deleteUser(user: User) {
-    if (confirm(`Are you sure you want to delete user ${user.name}?`)) {
-      const url = `${this.baseUrl}deleteUserByAdmin`;
-      const data = { data: user.id };
-      
-      this.ajaxService.post<ApiResponse<unknown>>(data, url).subscribe({
-        next: (response) => {
-          if (response.status === 'true' || response.status === true) {
-            this.snackBar.open('User deleted successfully', 'Close', {
-              duration: 2000,
-              horizontalPosition: 'right',
-              verticalPosition: 'top',
-              panelClass: ['success-snackbar']
-            });
-            this.getUsers(); // Refresh the table
-          } else {
-            this.snackBar.open(response.message || 'Failed to delete user', 'Close', {
-              duration: 2000,
-              horizontalPosition: 'right',
-              verticalPosition: 'top',
-              panelClass: ['error-snackbar']
-            });
-          }
-        },
-        error: () => {
-          this.snackBar.open('Failed to delete user', 'Close', {
-            duration: 2000,
-            horizontalPosition: 'right',
-            verticalPosition: 'top',
-            panelClass: ['error-snackbar']
-          });
-        }
-      });
-    }
+    // Removed as it's not used
   }
 }
   
