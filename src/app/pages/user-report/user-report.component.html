@@ -11,9 +11,11 @@
 						<input type="text" matInput [formControl]="myControl3" [matAutocomplete]="auto3">
 						<mat-icon matSuffix>group</mat-icon>
 						<mat-autocomplete #auto3="matAutocomplete">
-							<mat-option *ngFor="let option of filteredOptions3 | async" [value]="option.team_namee">
-								{{option.team_namee}}
-							</mat-option>
+							<cdk-virtual-scroll-viewport itemSize="48" class="virtual-scroll-viewport">
+								<mat-option *cdkVirtualFor="let option of filteredOptions3 | async; trackBy: trackByTeam" [value]="option.team_namee">
+									{{option.team_namee}}
+								</mat-option>
+							</cdk-virtual-scroll-viewport>
 						</mat-autocomplete>
 						<mat-hint>Not mandatory</mat-hint>
 					</mat-form-field>
@@ -26,14 +28,18 @@
 							   [matAutocomplete]="is_all ? auto1 : auto2">
 						<mat-icon matSuffix>person</mat-icon>
 						<mat-autocomplete #auto1="matAutocomplete">
-							<mat-option *ngFor="let option of filteredOptions1 | async" [value]="option.player_idd">
-								{{option.player_idd}}
-							</mat-option>
+							<cdk-virtual-scroll-viewport itemSize="48" class="virtual-scroll-viewport">
+								<mat-option *cdkVirtualFor="let option of filteredOptions1 | async; trackBy: trackByPlayer" [value]="option.player_idd">
+									{{option.player_idd}}
+								</mat-option>
+							</cdk-virtual-scroll-viewport>
 						</mat-autocomplete>
 						<mat-autocomplete #auto2="matAutocomplete">
-							<mat-option *ngFor="let option of filteredOptions1 | async" [value]="option.player_idd">
-								{{option.player_idd}}
-							</mat-option>
+							<cdk-virtual-scroll-viewport itemSize="48" class="virtual-scroll-viewport">
+								<mat-option *cdkVirtualFor="let option of filteredOptions1 | async; trackBy: trackByPlayer" [value]="option.player_idd">
+									{{option.player_idd}}
+								</mat-option>
+							</cdk-virtual-scroll-viewport>
 						</mat-autocomplete>
 					</mat-form-field>
 				</div>

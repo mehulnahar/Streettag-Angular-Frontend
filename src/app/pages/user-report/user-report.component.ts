@@ -5,6 +5,9 @@ import {
     ViewChild,
     HostListener,
     Inject,
+    OnDestroy,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef
   } from "@angular/core";
   import { FormGroup, FormBuilder, Validators } from "@angular/forms";
   import { MatPaginator } from "@angular/material/paginator";
@@ -18,9 +21,8 @@ import {
   import { MatSort } from "@angular/material/sort";
   
   import { FormControl } from "@angular/forms";
-  import { startWith } from "rxjs/internal/operators/startWith";
-  import { map } from "rxjs/internal/operators/map";
-  import { Observable } from "rxjs/internal/Observable";
+  import { startWith, map, debounceTime, distinctUntilChanged, switchMap, takeUntil, catchError } from 'rxjs/operators';
+  import { Observable, Subject } from 'rxjs';
   import { environment } from "src/environments/environment";
   
   import { formatDate } from "@angular/common";
@@ -60,11 +62,12 @@ import {
     templateUrl: './user-report.component.html',
     styleUrls: ['./user-report.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
   })
 
 
 
-  export class UserReportComponent implements OnInit {
+  export class UserReportComponent implements OnInit, OnDestroy {
   
     @ViewChild("sidenav", { static: false }) sidenav: any;
     @ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
@@ -116,6 +119,9 @@ import {
 
     public isVailid:Boolean = true;
   
+    private destroy$ = new Subject<void>();
+    private readonly MAX_ITEMS = 30; // Limit items for better performance
+  
     constructor(
       public appSettings: AppSettings,
       public formBuilder: FormBuilder,
@@ -124,36 +130,65 @@ import {
       public router: Router,
       private ajaxService: AjaxService,
       private excelService: ExcelService,
-      private dateAdapter: DateAdapter<Date>
+      private dateAdapter: DateAdapter<Date>,
+      private cdr: ChangeDetectorRef
     ) {
       this.dateAdapter.setLocale('en-GB');
       this.settings = this.appSettings.settings;
-      this.getAllTeams();
-      this.getAllPlayers();
-
-      // Subscribe to form control value changes
-      this.myControl3.valueChanges.subscribe(value => {
-        if (value === "") {
-          this.getAllPlayers();
-        } else {
-          this.get_team_id(value);
-        }
-      });
-
-      this.myControl1.valueChanges.subscribe(value => {
-        this.get_player_id(value);
-      });
+      this.initializeFormControls();
     }
   
+    private initializeFormControls() {
+      // Initialize team search with debounce
+      this.myControl3.valueChanges.pipe(
+        takeUntil(this.destroy$),
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap(value => {
+          if (!value) {
+            this.options3 = [];
+            return new Observable(observer => {
+              observer.next(null);
+              observer.complete();
+            });
+          }
+          return new Observable(observer => {
+            this.get_team_id(value);
+            observer.next(null);
+            observer.complete();
+          });
+        })
+      ).subscribe();
 
+      // Initialize player search with debounce
+      this.myControl1.valueChanges.pipe(
+        takeUntil(this.destroy$),
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap(value => {
+          if (!value) {
+            this.resetPlayerFields();
+            this.options1 = [];
+            return new Observable(observer => {
+              observer.next(null);
+              observer.complete();
+            });
+          }
+          return this.getAllPlayers().pipe(
+            map(() => {
+              this.get_player_id(value);
+              return null;
+            })
+          );
+        })
+      ).subscribe();
+    }
   
     ngOnInit() {
       if (window.innerWidth <= 992) {
         this.sidenavOpen = false;
       }
     }
-  
-
   
     @HostListener("window:resize")
     public onWindowResize(): void {
@@ -202,22 +237,18 @@ import {
     getAllTeams(): void {
       const url = `${this.baseUrl}getTeamAdmin`;
   
-      this.ajaxService.get<ApiResponse<TeamOption[]>>(url).subscribe({
+      this.ajaxService.get<ApiResponse<TeamOption[]>>(url).pipe(
+        takeUntil(this.destroy$)
+      ).subscribe({
         next: (data) => {
           this.dataSourceLocation = data.response;
           this.options3 = this.dataSourceLocation;
   
           this.filteredOptions3 = this.myControl3.valueChanges.pipe(
             startWith(""),
-            map((value) => {
-              if (value === "") {
-                this.getAllPlayers();
-              } else {
-                this.get_team_id(value || "");
-              }
-              return this._filterTeam(value || "");
-            })
+            map((value) => this._filterTeam(value || ""))
           );
+          this.cdr.detectChanges();
         },
         error: (error) => {
           console.error('Error fetching teams:', error);
@@ -230,84 +261,71 @@ import {
     }
   
     private _filter(value: string): PlayerOption[] {
+      if (!value) return this.options1.slice(0, this.MAX_ITEMS);
+      
       const filterValue = value.toLowerCase();
-  
-      return this.options1.filter((option: PlayerOption) =>
-        option.player_idd.toLowerCase().includes(filterValue)
-      );
+      return this.options1
+        .filter((option: PlayerOption) =>
+          option.player_idd.toLowerCase().includes(filterValue)
+        )
+        .slice(0, this.MAX_ITEMS);
     }
   
     private _filterTeam(value: string): TeamOption[] {
+      if (!value) return this.options3.slice(0, this.MAX_ITEMS);
+      
       const filterValue = value.toLowerCase();
-  
-      return this.options3.filter((option: TeamOption) =>
-        option.team_namee.toLowerCase().includes(filterValue)
-      );
+      return this.options3
+        .filter((option: TeamOption) =>
+          option.team_namee.toLowerCase().includes(filterValue)
+        )
+        .slice(0, this.MAX_ITEMS);
     }
   
-
-    getAllPlayers(): void {
-      this.dataSourceAllPlayers = [];
+    getAllPlayers(): Observable<any> {
       const url = `${this.baseUrl}getAllPlayersList`;
   
-      this.ajaxService.get<ApiResponse<PlayerOption[]>>(url).subscribe({
-        next: (data) => {
+      return this.ajaxService.get<ApiResponse<PlayerOption[]>>(url).pipe(
+        map(data => {
           this.dataSourceAllPlayers = data.response;
           this.options1 = this.dataSourceAllPlayers;
   
           this.filteredOptions1 = this.myControl1.valueChanges.pipe(
             startWith(""),
-            map((value) => {
-              this.get_player_id(value || "");
-              return this._filter(value || "");
-            })
+            map((value) => this._filter(value || ""))
           );
-        },
-        error: (error) => {
+          this.cdr.detectChanges();
+          return data;
+        }),
+        catchError(error => {
           console.error('Error fetching players:', error);
           this.snackBar.open('Error fetching players', 'Close', {
             duration: 3000,
             verticalPosition: 'top'
           });
-        }
-      });
+          return [];
+        })
+      );
     }
   
     get_player_id(res: string): void {
-      this.points = "";
-      this.player_name = "";
-      this.player_email = "";
-      this.player_dob = "";
-      this.player_points = "";
-      this.player_team = "";
-      
-      const url = `${this.baseUrl}getPlayerDetailsAdmin`;
-      const data1 = {
-        player_id: res,
-      };
-  
-      if (data1.player_id === "") {
-        this.isVailid = true;
+      if (!res) {
+        this.resetPlayerFields();
         return;
       }
+
+      const url = `${this.baseUrl}getPlayerDetailsAdmin`;
+      const data1 = { player_id: res };
   
-      this.ajaxService.post<ApiResponse<any>>(data1, url).subscribe({
+      this.ajaxService.post<ApiResponse<any>>(data1, url).pipe(
+        takeUntil(this.destroy$)
+      ).subscribe({
         next: (data) => {
           this.dataSourcePlayersDetails = data.response;
   
-          if (this.dataSourcePlayersDetails && this.dataSourcePlayersDetails.length > 0) {
-        this.player_name = this.dataSourcePlayersDetails[0].fullname;
-        this.player_email = this.dataSourcePlayersDetails[0].email;
-        this.player_dob = this.dataSourcePlayersDetails[0].date_of_birth;
-        this.player_points = this.dataSourcePlayersDetails[0].score_points;
-        this.player_team = this.dataSourcePlayersDetails[0].team_name;
-        this.device_token = this.dataSourcePlayersDetails[0].device_token;
-        this.device_type = this.dataSourcePlayersDetails[0].device_type;
-        this.circuit_id = this.dataSourcePlayersDetails[0].circuit_id;
-        this.location_id = this.dataSourcePlayersDetails[0].location_id;
-        this.team_id = this.dataSourcePlayersDetails[0].team_id;
-        this.player_id = this.dataSourcePlayersDetails[0].player_id;
-        this.isVailid = false;
+          if (this.dataSourcePlayersDetails?.length > 0) {
+            const player = this.dataSourcePlayersDetails[0];
+            this.updatePlayerDetails(player);
           }
         },
         error: (error) => {
@@ -320,15 +338,35 @@ import {
       });
     }
   
-    get_team_id(res: string): void {
+    private updatePlayerDetails(player: any): void {
+      this.player_name = player.fullname;
+      this.player_email = player.email;
+      this.player_dob = player.date_of_birth;
+      this.player_points = player.score_points;
+      this.player_team = player.team_name;
+      this.device_token = player.device_token;
+      this.device_type = player.device_type;
+      this.circuit_id = player.circuit_id;
+      this.location_id = player.location_id;
+      this.team_id = player.team_id;
+      this.player_id = player.player_id;
+      this.isVailid = false;
+      this.cdr.detectChanges();
+    }
+  
+    private resetPlayerFields(): void {
+      this.points = "";
       this.player_name = "";
       this.player_email = "";
       this.player_dob = "";
       this.player_points = "";
       this.player_team = "";
-      this.player_id = "";
-      this.player_id2 = "";
-      this.points = "";
+      this.isVailid = true;
+      this.cdr.detectChanges();
+    }
+  
+    get_team_id(res: string): void {
+      this.resetPlayerFields();
   
       if (res === "0") {
         this.player_id = "";
@@ -337,31 +375,26 @@ import {
         return;
       }
   
-      this.dataSourcePlayers = [];
       const url = `${this.baseUrl}getPlayerByTeamAdmin`;
-      const data1 = {
-        team_id: res,
-      };
+      const data1 = { team_id: res };
   
-      if (data1.team_id === "") {
-        return;
-      }
+      if (!data1.team_id) return;
   
-      this.ajaxService.post<ApiResponse<any>>(data1, url).subscribe({
+      this.ajaxService.post<ApiResponse<any>>(data1, url).pipe(
+        takeUntil(this.destroy$)
+      ).subscribe({
         next: (data) => {
           this.dataSourcePlayers = data.response;
-        this.player_namet = "";
-        this.options1 = this.dataSourcePlayers;
+          this.player_namet = "";
+          this.options1 = this.dataSourcePlayers;
   
-        this.filteredOptions1 = this.myControl1.valueChanges.pipe(
-          startWith(""),
-          map((value) => {
-              this.get_player_id(value || "");
-              return this._filter(value || "");
-          })
-        );
+          this.filteredOptions1 = this.myControl1.valueChanges.pipe(
+            startWith(""),
+            map((value) => this._filter(value || ""))
+          );
   
-        this.is_all = false;
+          this.is_all = false;
+          this.cdr.detectChanges();
         },
         error: (error) => {
           console.error('Error fetching team players:', error);
@@ -483,5 +516,17 @@ import {
       });
     }      
   
+    ngOnDestroy() {
+      this.destroy$.next();
+      this.destroy$.complete();
+    }
+
+    trackByTeam(index: number, item: TeamOption): string {
+      return item.team_namee;
+    }
+
+    trackByPlayer(index: number, item: PlayerOption): string {
+      return item.player_idd;
+    }
   }
   
