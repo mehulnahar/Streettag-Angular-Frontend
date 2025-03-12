@@ -24,7 +24,7 @@
 						Type at least 3 characters to search
 					</mat-option>
 					<mat-option *ngFor="let player of filteredPlayers | async" [value]="player.player_idd">
-						{{player.fullname ? player.fullname : ''}} {{player.player_idd ? '(' + player.player_idd + ')' : ''}}
+						{{player.fullname ? player.fullname : ''}} {{player.player_idd ?   player.player_idd  : ''}}
 					</mat-option>
 				</mat-autocomplete>
 				<mat-hint>Type at least 3 characters to search</mat-hint>
