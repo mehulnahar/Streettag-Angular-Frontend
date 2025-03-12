@@ -4,6 +4,7 @@ import {
   ViewEncapsulation,
   ViewChild,
   HostListener,
+  OnDestroy,
 } from "@angular/core";
 import { FormGroup, FormBuilder, FormControl, Validators } from "@angular/forms";
 import { MatPaginator } from "@angular/material/paginator";
@@ -15,8 +16,8 @@ import { AjaxService } from "src/app/ajax.service";
 import { MatDialog } from "@angular/material/dialog";
 import { Router } from "@angular/router";
 import { MatSort } from "@angular/material/sort";
-import { startWith, map } from "rxjs/operators";
-import { Observable } from "rxjs";
+import { startWith, map, debounceTime, switchMap, catchError, distinctUntilChanged } from "rxjs/operators";
+import { Observable, of, Subject } from "rxjs";
 import { environment } from "src/environments/environment";
 import { formatDate } from "@angular/common";
 import { DateAdapter } from "@angular/material/core";
@@ -53,7 +54,7 @@ interface TeamDetails {
   styleUrls: ['./dob-change.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class DobChangeComponent implements OnInit {
+export class DobChangeComponent implements OnInit, OnDestroy {
   @ViewChild("sidenav") sidenav: any;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -103,6 +104,12 @@ export class DobChangeComponent implements OnInit {
   public player_namet: string = '';
   public is_all: boolean = true;
 
+  private destroy$ = new Subject<void>();
+  private searchTerms = new Subject<string>();
+  public isSearching = false;
+  private allPlayersCache: PlayerDetails[] = [];
+  public isPlayersLoaded = false;
+
   constructor(
     public appSettings: AppSettings,
     public formBuilder: FormBuilder,
@@ -132,13 +139,18 @@ export class DobChangeComponent implements OnInit {
 
     this.setupAutoComplete();
     this.getallLocation();
-    this.getAllPlayers();
+    this.loadPlayersInBackground();
   }
 
   ngOnInit() {
     if (window.innerWidth <= 992) {
       this.sidenavOpen = false;
     }
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   @HostListener("window:resize")
@@ -194,30 +206,62 @@ export class DobChangeComponent implements OnInit {
 
   private setupAutoComplete(): void {
     // Setup team autocomplete
-      this.filteredOptions3 = this.myControl3.valueChanges.pipe(
+    this.filteredOptions3 = this.myControl3.valueChanges.pipe(
       startWith(''),
       map(value => {
         if (!value) {
-            this.getAllPlayers();
           return this.options3;
-          }
-          return this._filterTeam(value);
-        })
-      );
+        }
+        return this._filterTeam(value);
+      })
+    );
 
-    // Setup player autocomplete
+    // Setup player autocomplete with debounce and client-side filtering
     this.filteredOptions1 = this.myControl1.valueChanges.pipe(
       startWith(''),
-      map(value => this._filter(value || ''))
+      debounceTime(300),
+      distinctUntilChanged(),
+      map(value => {
+        if (!value || value.length < 3) {
+          return [];
+        }
+        
+        this.isSearching = true;
+        const result = this._filterPlayers(value);
+        this.isSearching = false;
+        return result;
+      })
     );
   }
 
   onPlayerIdFocus(): void {
-    // Show all options when field is focused
-    this.filteredOptions1 = this.myControl1.valueChanges.pipe(
-      startWith(''),
-      map(value => this.options1)
-    );
+    // Don't show all options when field is focused
+    // Only show results when user types at least 3 characters
+  }
+
+  // Client-side filtering with pagination
+  private _filterPlayers(value: string): PlayerDetails[] {
+    if (!this.isPlayersLoaded || !value || value.length < 3) {
+      return [];
+    }
+    
+    const filterValue = value.toLowerCase();
+    
+    // Filter players and limit to 20 results
+    return this.allPlayersCache
+      .filter(player => {
+        try {
+          const playerIdMatch = player.player_idd ? 
+            window.atob(player.player_idd).toLowerCase().includes(filterValue) : false;
+          const nameMatch = player.fullname ? 
+            window.atob(player.fullname).toLowerCase().includes(filterValue) : false;
+          return playerIdMatch || nameMatch;
+        } catch (error) {
+          console.error('Error decoding player data:', error);
+          return false;
+        }
+      })
+      .slice(0, 20); // Limit to 20 results
   }
 
   getallLocation() {
@@ -257,14 +301,15 @@ export class DobChangeComponent implements OnInit {
     });
   }
 
-  getAllPlayers() {
+  loadPlayersInBackground() {
+    this.isSearching = true;
     const url = `${this.baseUrl}getAllPlayersList`;
     this.ajaxService.get(url).subscribe({
       next: (response) => {
         try {
           const data = this.handleApiResponse(response);
           if (Array.isArray(data.response)) {
-            this.dataSourceAllPlayers = data.response.map(item => ({
+            this.allPlayersCache = data.response.map(item => ({
               ...item,
               player_idd: item.player_id || '',
               fullname: item.fullname || '',
@@ -278,31 +323,17 @@ export class DobChangeComponent implements OnInit {
               team_id: item.team_id || '',
               player_id: item.player_id || ''
             }));
-      this.options1 = this.dataSourceAllPlayers;
-          } else {
-            console.error('Invalid player data format:', data);
-            this.snackBar.open("Invalid data format received", undefined, {
-              duration: 3000,
-              verticalPosition: "top",
-              panelClass: "red-snackbar",
-            });
+            this.isPlayersLoaded = true;
           }
         } catch (error) {
           console.error('Error processing player data:', error);
-          this.snackBar.open("Error processing data", undefined, {
-            duration: 3000,
-            verticalPosition: "top",
-            panelClass: "red-snackbar",
-          });
+        } finally {
+          this.isSearching = false;
         }
       },
       error: (error) => {
         console.error('Failed to fetch players:', error);
-        this.snackBar.open("Failed to fetch players", undefined, {
-          duration: 3000,
-          verticalPosition: "top",
-          panelClass: "red-snackbar",
-        });
+        this.isSearching = false;
       }
     });
   }
@@ -352,6 +383,7 @@ export class DobChangeComponent implements OnInit {
     const url = `${this.baseUrl}getPlayerByTeamAdmin`;
     const data = { team_id: res };
 
+    this.isSearching = true;
     this.ajaxService.post<ApiResponse>(data, url).subscribe({
       next: (response) => {
         const data = this.handleApiResponse(response);
@@ -360,11 +392,20 @@ export class DobChangeComponent implements OnInit {
           this.options1 = this.dataSourcePlayers;
           this.is_all = false;
           
+          // Update the filteredOptions1 to use the team-specific players
           this.filteredOptions1 = this.myControl1.valueChanges.pipe(
             startWith(''),
-            map(value => this._filter(value || ''))
+            debounceTime(300),
+            distinctUntilChanged(),
+            map(value => {
+              if (!value || value.length < 3) {
+                return [];
+              }
+              return this._filter(value);
+            })
           );
         }
+        this.isSearching = false;
       },
       error: (error) => {
         console.error('Failed to fetch team players:', error);
@@ -373,6 +414,7 @@ export class DobChangeComponent implements OnInit {
           verticalPosition: 'top',
           panelClass: ['red-snackbar']
         });
+        this.isSearching = false;
       }
     });
   }
@@ -446,7 +488,7 @@ export class DobChangeComponent implements OnInit {
         this.myControl4.reset();
 
         this.getallLocation();
-        this.getAllPlayers();
+        this.loadPlayersInBackground();
 
         const message = data.status === "true" 
           ? "Date Of Birth Updated Successfully."
