@@ -543,7 +543,7 @@ export class DobChangeComponent implements OnInit, OnDestroy {
     });
     
     if (selectedTeam) {
-      this.get_team_id(selectedTeam.team_id);
+      this.get_team_id(selectedTeam.team_namee);
     }
   }
 }
