@@ -145,9 +145,7 @@ interface ApiResponse<T> {
                 <mat-icon>delete</mat-icon>
                 Remove
               </button>
-              <div *ngIf="spinner" class="mt-3">
-                <mat-progress-spinner diameter="30" mode="indeterminate"></mat-progress-spinner>
-              </div>
+          
             </div>
           </form>
         </mat-card-content>
@@ -204,7 +202,6 @@ export class UserDeleteComponent implements OnInit, OnDestroy {
 
   public settings: Settings;
   public sidenavOpen: boolean = true;
-  public spinner: boolean = false;
   public isVailid: boolean = true;
   public is_all: boolean = true;
   
@@ -341,7 +338,6 @@ export class UserDeleteComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    this.spinner = true;
     this.ajaxService.post(data1, url)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -362,10 +358,8 @@ export class UserDeleteComponent implements OnInit, OnDestroy {
             this.setupPlayerAutocomplete();
             this.is_all = false;
           }
-          this.spinner = false;
         },
         error: () => {
-          this.spinner = false;
         }
       });
 
@@ -373,7 +367,6 @@ export class UserDeleteComponent implements OnInit, OnDestroy {
   }
 
   getAllTeams() {
-    this.spinner = true;
     const url = `${this.baseUrl}getTeamAdmin`;
 
     this.ajaxService.get(url)
@@ -394,11 +387,9 @@ export class UserDeleteComponent implements OnInit, OnDestroy {
 
             this.setupTeamAutocomplete();
           }
-          this.spinner = false;
           this.getAllPlayers(); // Load players after teams
         },
         error: () => {
-          this.spinner = false;
         }
       });
   }
@@ -485,7 +476,6 @@ export class UserDeleteComponent implements OnInit, OnDestroy {
   }
   
   deleteUserConfirmed(decodedId: string): void {
-    this.spinner = true;
     const url = `${this.baseUrl}deleteUserByAdmin`;
     const dataobj = { data: decodedId };
 
@@ -534,11 +524,9 @@ export class UserDeleteComponent implements OnInit, OnDestroy {
       duration: 3000,
       verticalPosition: 'top'
     });
-    this.spinner = false;
   }
 
   getAllPlayers() {
-    this.spinner = true;
     const url = `${this.baseUrl}getAllPlayersList`;
 
     this.ajaxService.get(url)
@@ -559,10 +547,8 @@ export class UserDeleteComponent implements OnInit, OnDestroy {
 
             this.setupPlayerAutocomplete();
           }
-          this.spinner = false;
         },
         error: () => {
-          this.spinner = false;
         }
       });
   }
@@ -574,7 +560,6 @@ export class UserDeleteComponent implements OnInit, OnDestroy {
     }
     
     // Always call the API to get the most up-to-date details
-    this.spinner = true;
     const url = `${this.baseUrl}getPlayerDetailsAdmin`;
     const data = { player_id: res };
 
@@ -594,7 +579,6 @@ export class UserDeleteComponent implements OnInit, OnDestroy {
             // If no details found, reset fields
             this.resetPlayerFields();
           }
-          this.spinner = false;
         },
         error: () => {
           this.snackBar.open('Failed to fetch player details', 'Close', {
@@ -602,7 +586,6 @@ export class UserDeleteComponent implements OnInit, OnDestroy {
             verticalPosition: 'top'
           });
           this.resetPlayerFields();
-          this.spinner = false;
         }
       });
   }
