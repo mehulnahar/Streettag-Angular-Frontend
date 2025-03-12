@@ -122,6 +122,11 @@ import {
     private destroy$ = new Subject<void>();
     private readonly MAX_ITEMS = 30; // Limit items for better performance
   
+    // Add cache for player data
+    private playerDataCache: PlayerOption[] = [];
+    private readonly DEBOUNCE_TIME = 500; // Increased debounce time
+    private readonly MIN_SEARCH_LENGTH = 2; // Only search after 2 characters
+  
     constructor(
       public appSettings: AppSettings,
       public formBuilder: FormBuilder,
@@ -139,27 +144,36 @@ import {
     }
   
     private initializeFormControls() {
-      // Initialize player search with debounce
+      // Initialize player search with improved debounce and caching
       this.myControl1.valueChanges.pipe(
         takeUntil(this.destroy$),
-        debounceTime(300),
+        debounceTime(this.DEBOUNCE_TIME), // Increased debounce time
         distinctUntilChanged(),
         switchMap(value => {
-          if (!value) {
+          if (!value || value.length < this.MIN_SEARCH_LENGTH) {
             this.resetPlayerFields();
             this.options1 = [];
             return of([]);
           }
           
-          // Fetch fresh player data on each search
+          // Use cached data if available and is_all is true
+          if (this.is_all && this.playerDataCache.length > 0) {
+            return of(this._filter(value));
+          }
+          
+          // Fetch fresh player data only when needed
           if (this.is_all) {
+            this.spinner = true; // Show loading indicator
             return this.ajaxService.get<ApiResponse<PlayerOption[]>>(`${this.baseUrl}getAllPlayersList`).pipe(
               map(data => {
+                this.spinner = false; // Hide loading indicator
                 this.dataSourceAllPlayers = data.response;
+                this.playerDataCache = data.response; // Cache the data
                 this.options1 = this.dataSourceAllPlayers;
                 return this._filter(value);
               }),
               catchError(error => {
+                this.spinner = false; // Hide loading indicator
                 console.error('Error fetching players:', error);
                 this.snackBar.open('Error fetching players', 'Close', {
                   duration: 3000,
@@ -291,12 +305,11 @@ import {
     }
   
     private _filter(value: string): PlayerOption[] {
-      if (!value) return [];
+      if (!value || value.length < this.MIN_SEARCH_LENGTH) return [];
       
       const filterValue = value.toLowerCase();
-      const filtered = this.options1
+      const filtered = (this.is_all ? this.playerDataCache : this.options1)
         .filter((option: PlayerOption) => {
-          // Check if player_idd exists and includes the search value
           return option.player_idd && option.player_idd.toLowerCase().includes(filterValue);
         })
         .slice(0, this.MAX_ITEMS);
@@ -400,6 +413,7 @@ import {
   
     get_team_id(res: string): void {
       this.resetPlayerFields();
+      this.playerDataCache = []; // Clear cache when switching teams
   
       if (res === "0") {
         this.player_id = "";
@@ -416,10 +430,12 @@ import {
   
       if (!data1.team_id) return;
   
+      this.spinner = true; // Show loading indicator
       this.ajaxService.post<ApiResponse<any>>(data1, url).pipe(
         takeUntil(this.destroy$)
       ).subscribe({
         next: (data) => {
+          this.spinner = false; // Hide loading indicator
           this.dataSourcePlayers = data.response;
           this.player_namet = "";
           this.options1 = this.dataSourcePlayers || [];
@@ -428,6 +444,7 @@ import {
           this.cdr.detectChanges();
         },
         error: (error) => {
+          this.spinner = false; // Hide loading indicator
           console.error('Error fetching team players:', error);
           this.snackBar.open('Error fetching team players', 'Close', {
             duration: 3000,
