@@ -401,13 +401,16 @@ export class DobChangeComponent implements OnInit, OnDestroy {
           this.options1 = this.dataSourcePlayers;
           this.is_all = false;
           
-          // Update the filteredOptions1 to use the team-specific players
+          // Update the filteredOptions1 to show all team players immediately without requiring typing
           this.filteredOptions1 = this.myControl1.valueChanges.pipe(
             startWith(''),
-            debounceTime(300),
-            distinctUntilChanged(),
             map(value => {
-              if (!value || value.length < 3) {
+              if (!value) {
+                // When no value is entered, show all players for the selected team (limited to 20)
+                return this.options1.slice(0, 20);
+              }
+              // When user types, filter as usual
+              if (value.length < 3) {
                 return [];
               }
               return this._filter(value);

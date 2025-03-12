@@ -77,7 +77,7 @@
 					<mat-form-field appearance="outline" class="w-100">
 						<mat-label>Player ID</mat-label>
 						<input type="text" 
-							placeholder="Type at least 3 characters to search" 
+							placeholder="Select a player from the list" 
 							matInput 
 							[formControl]="myControl1" 
 							[matAutocomplete]="auto2"
@@ -92,14 +92,14 @@
 							<mat-option *ngIf="!isSearching && (filteredOptions1 | async)?.length === 0 && myControl1.value && myControl1.value.length >= 3" disabled>
 								No players found
 							</mat-option>
-							<mat-option *ngIf="!isSearching && myControl1.value && myControl1.value.length < 3" disabled>
+							<mat-option *ngIf="!isSearching && myControl1.value && myControl1.value.length < 3 && myControl1.value.length > 0" disabled>
 								Type at least 3 characters to search
 							</mat-option>
-							<mat-option *ngFor="let option of filteredOptions1 | async" [value]="option.player_idd | decode">
-								<span>{{option.fullname ? (option.fullname | decode) : ''}} ({{option.player_idd ? (option.player_idd | decode) : ''}})</span>
+							<mat-option *ngFor="let option of filteredOptions1 | async" [value]="option.player_idd">
+								<span>{{option.player_idd}}</span>
 							</mat-option>
 						</mat-autocomplete>
-						<mat-hint>Type at least 3 characters to search</mat-hint>
+						<mat-hint>Players from selected team are shown automatically</mat-hint>
 					</mat-form-field>
 				</div>
 
