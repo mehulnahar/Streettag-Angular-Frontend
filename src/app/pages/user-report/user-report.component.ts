@@ -139,6 +139,45 @@ import {
     }
   
     private initializeFormControls() {
+      // Initialize player search with debounce
+      this.myControl1.valueChanges.pipe(
+        takeUntil(this.destroy$),
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap(value => {
+          if (!value) {
+            this.resetPlayerFields();
+            this.options1 = [];
+            return of([]);
+          }
+          
+          // Fetch fresh player data on each search
+          if (this.is_all) {
+            return this.ajaxService.get<ApiResponse<PlayerOption[]>>(`${this.baseUrl}getAllPlayersList`).pipe(
+              map(data => {
+                this.dataSourceAllPlayers = data.response;
+                this.options1 = this.dataSourceAllPlayers;
+                return this._filter(value);
+              }),
+              catchError(error => {
+                console.error('Error fetching players:', error);
+                this.snackBar.open('Error fetching players', 'Close', {
+                  duration: 3000,
+                  verticalPosition: 'top'
+                });
+                return of([]);
+              })
+            );
+          } else {
+            // If team is selected, filter from existing team players
+            return of(this._filter(value));
+          }
+        })
+      ).subscribe(filteredOptions => {
+        this.filteredOptions1 = of(filteredOptions);
+        this.cdr.detectChanges();
+      });
+
       // Initialize team search with debounce
       this.myControl3.valueChanges.pipe(
         takeUntil(this.destroy$),
@@ -173,24 +212,6 @@ import {
           );
         })
       ).subscribe();
-
-      // Initialize player search with debounce - only for filtering suggestions
-      this.myControl1.valueChanges.pipe(
-        takeUntil(this.destroy$),
-        debounceTime(300),
-        distinctUntilChanged()
-      ).subscribe(value => {
-        if (!value) {
-          this.resetPlayerFields();
-          return;
-        }
-        
-        // Only update the filtered options, don't fetch player details yet
-        if (this.is_all) {
-          this.getAllPlayers().subscribe();
-        }
-        this.filteredOptions1 = of(this._filter(value));
-      });
     }
   
     ngOnInit() {
@@ -270,14 +291,17 @@ import {
     }
   
     private _filter(value: string): PlayerOption[] {
-      if (!value) return this.options1.slice(0, this.MAX_ITEMS);
+      if (!value) return [];
       
       const filterValue = value.toLowerCase();
-      return this.options1
-        .filter((option: PlayerOption) =>
-          option.player_idd.toLowerCase().includes(filterValue)
-        )
+      const filtered = this.options1
+        .filter((option: PlayerOption) => {
+          // Check if player_idd exists and includes the search value
+          return option.player_idd && option.player_idd.toLowerCase().includes(filterValue);
+        })
         .slice(0, this.MAX_ITEMS);
+      
+      return filtered;
     }
   
     private _filterTeam(value: string): TeamOption[] {
@@ -381,6 +405,9 @@ import {
         this.player_id = "";
         this.player_id2 = "";
         this.is_all = true;
+        this.options1 = [];
+        this.filteredOptions1 = of([]);
+        this.cdr.detectChanges();
         return;
       }
   
@@ -395,13 +422,8 @@ import {
         next: (data) => {
           this.dataSourcePlayers = data.response;
           this.player_namet = "";
-          this.options1 = this.dataSourcePlayers;
-  
-          this.filteredOptions1 = this.myControl1.valueChanges.pipe(
-            startWith(""),
-            map((value) => this._filter(value || ""))
-          );
-  
+          this.options1 = this.dataSourcePlayers || [];
+          this.filteredOptions1 = of(this.options1);
           this.is_all = false;
           this.cdr.detectChanges();
         },
