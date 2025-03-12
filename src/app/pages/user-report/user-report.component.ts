@@ -174,37 +174,23 @@ import {
         })
       ).subscribe();
 
-      // Initialize player search with debounce
+      // Initialize player search with debounce - only for filtering suggestions
       this.myControl1.valueChanges.pipe(
         takeUntil(this.destroy$),
         debounceTime(300),
-        distinctUntilChanged(),
-        switchMap(value => {
-          if (!value) {
-            this.resetPlayerFields();
-            return new Observable(observer => {
-              observer.next(null);
-              observer.complete();
-            });
-          }
-          if (this.is_all) {
-            // Only load all players when user types and no team is selected
-            return this.getAllPlayers().pipe(
-              map(() => {
-                this.get_player_id(value);
-                return null;
-              })
-            );
-          } else {
-            // Use existing filtered players when team is selected
-            return new Observable(observer => {
-              this.get_player_id(value);
-              observer.next(null);
-              observer.complete();
-            });
-          }
-        })
-      ).subscribe();
+        distinctUntilChanged()
+      ).subscribe(value => {
+        if (!value) {
+          this.resetPlayerFields();
+          return;
+        }
+        
+        // Only update the filtered options, don't fetch player details yet
+        if (this.is_all) {
+          this.getAllPlayers().subscribe();
+        }
+        this.filteredOptions1 = of(this._filter(value));
+      });
     }
   
     ngOnInit() {
@@ -555,6 +541,14 @@ import {
     onFocus(field: string): void {
       // Only handle focus-related UI updates if needed
       this.cdr.detectChanges();
+    }
+
+    // Add new method to handle option selection
+    onPlayerOptionSelected(event: any): void {
+      const selectedPlayerId = event.option.value;
+      if (selectedPlayerId) {
+        this.get_player_id(selectedPlayerId);
+      }
     }
   }
   

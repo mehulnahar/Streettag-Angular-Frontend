@@ -26,14 +26,14 @@
 						<mat-label>Player ID</mat-label>
 						<input type="text" matInput [formControl]="myControl1" [matAutocomplete]="is_all ? auto1 : auto2" (focus)="onFocus('player')">
 						<mat-icon matSuffix>person</mat-icon>
-						<mat-autocomplete #auto1="matAutocomplete">
+						<mat-autocomplete #auto1="matAutocomplete" (optionSelected)="onPlayerOptionSelected($event)">
 							<cdk-virtual-scroll-viewport itemSize="48" class="virtual-scroll-viewport">
 								<mat-option *cdkVirtualFor="let option of filteredOptions1 | async; trackBy: trackByPlayer" [value]="option.player_idd">
 									{{option.player_idd}}
 								</mat-option>
 							</cdk-virtual-scroll-viewport>
 						</mat-autocomplete>
-						<mat-autocomplete #auto2="matAutocomplete">
+						<mat-autocomplete #auto2="matAutocomplete" (optionSelected)="onPlayerOptionSelected($event)">
 							<cdk-virtual-scroll-viewport itemSize="48" class="virtual-scroll-viewport">
 								<mat-option *cdkVirtualFor="let option of filteredOptions1 | async; trackBy: trackByPlayer" [value]="option.player_idd">
 									{{option.player_idd}}
