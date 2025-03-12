@@ -39,7 +39,7 @@
 							   [formControl]="myControl1" 
 							   [matAutocomplete]="auto1">
 						<mat-icon matSuffix>person_search</mat-icon>
-						<mat-autocomplete #auto1="matAutocomplete">
+						<mat-autocomplete #auto1="matAutocomplete" (optionSelected)="get_player_id($event.option.value)">
 							<mat-option *ngFor="let option of filteredOptions1 | async" [value]="option.player_idd">
 								{{option.player_idd}}
 							</mat-option>

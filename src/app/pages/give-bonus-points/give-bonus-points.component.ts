@@ -185,7 +185,7 @@ export class GiveBonusPointsComponent implements OnInit, OnDestroy {
       })
     ).subscribe();
 
-    // Player search subscription
+    // Player search subscription - modified to not fetch details while typing
     this.myControl1.valueChanges.pipe(
       takeUntil(this.destroy$),
       debounceTime(300),
@@ -196,18 +196,9 @@ export class GiveBonusPointsComponent implements OnInit, OnDestroy {
           return of(null);
         }
         if (this.is_all) {
-          return this.getAllPlayers().pipe(
-            map(() => {
-              this.get_player_id(value);
-              return null;
-            })
-          );
+          return this.getAllPlayers();
         } else {
-          return new Observable(observer => {
-            this.get_player_id(value);
-            observer.next(null);
-            observer.complete();
-          });
+          return of(null);
         }
       })
     ).subscribe();
@@ -396,12 +387,10 @@ export class GiveBonusPointsComponent implements OnInit, OnDestroy {
       this.player_namet = "";
       this.options1 = this.dataSourcePlayers;
 
+      // Modified to not fetch player details while typing
       this.filteredOptions1 = this.myControl1.valueChanges.pipe(
         startWith(""),
-        map((value: string) => {
-          this.get_player_id(value);
-          return this._filter(value);
-        })
+        map((value: string) => this._filter(value))
       );
 
       this.is_all = false;
