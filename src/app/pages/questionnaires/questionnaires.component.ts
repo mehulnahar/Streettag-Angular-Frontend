@@ -4,14 +4,17 @@ import {
   ViewEncapsulation,
   ViewChild,
   HostListener,
+  OnDestroy,
 } from "@angular/core";
-import { FormGroup, FormBuilder } from "@angular/forms";
+import { FormGroup, FormBuilder, FormControl } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { AppSettings } from "../../app.settings";
 import { Settings } from "../../app.settings.model";
 import { Router } from "@angular/router";
 import { environment } from "src/environments/environment";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, Subject, of } from 'rxjs';
+import { startWith, map, debounceTime, distinctUntilChanged, catchError } from 'rxjs/operators';
 
 export interface QuestionnaireResponse {
   question: string;
@@ -19,8 +22,11 @@ export interface QuestionnaireResponse {
 }
 
 export interface Player {
-  player_idd: string;
-  team_name: string;
+  id?: number;
+  player_id?: string; // Base64 encoded player ID
+  player_idd: string; // Decoded player ID
+  team_name?: string;
+  fullname?: string;
 }
 
 @Component({
@@ -29,7 +35,7 @@ export interface Player {
   styleUrls: ["./questionnaires.component.scss"],
   encapsulation: ViewEncapsulation.None,
 })
-export class QuestionnairesComponent implements OnInit {
+export class QuestionnairesComponent implements OnInit, OnDestroy {
   @ViewChild("sidenav", { static: false }) sidenav: any;
   private readonly baseUrl = environment.baseUrl;
 
@@ -41,6 +47,14 @@ export class QuestionnairesComponent implements OnInit {
   public beforeQuestions: QuestionnaireResponse[] = [];
   public afterQuestions: QuestionnaireResponse[] = [];
   public playersList: Player[] = [];
+  
+  // New properties for optimized search
+  public playerSearchControl = new FormControl<string>('');
+  public filteredPlayers!: Observable<Player[]>;
+  public isSearching = false;
+  public isPlayersLoaded = false;
+  private allPlayersCache: Player[] = [];
+  private destroy$ = new Subject<void>();
 
   constructor(
     public appSettings: AppSettings,
@@ -53,6 +67,27 @@ export class QuestionnairesComponent implements OnInit {
     this.form = this.formBuilder.group({
       search: ['']
     });
+    
+    // Setup autocomplete with debounce
+    this.filteredPlayers = this.playerSearchControl.valueChanges.pipe(
+      startWith(''),
+      debounceTime(300),
+      distinctUntilChanged(),
+      map(value => {
+        if (!value || typeof value !== 'string' || value.length < 3) {
+          return [];
+        }
+        this.isSearching = true;
+        const result = this._filterPlayers(value);
+        this.isSearching = false;
+        return result;
+      })
+    );
+    
+    // Update playerId when selection changes
+    this.playerSearchControl.valueChanges.subscribe(value => {
+      this.playerId = value || ''; // Handle null values by converting to empty string
+    });
   }
 
   ngOnInit() {
@@ -60,7 +95,12 @@ export class QuestionnairesComponent implements OnInit {
       this.sidenavOpen = false;
     }
     this.checkUserLogin();
-    this.getAllPlayersList();
+    this.loadPlayersInBackground();
+  }
+  
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   checkUserLogin() {
@@ -80,8 +120,48 @@ export class QuestionnairesComponent implements OnInit {
       ? (this.sidenavOpen = false)
       : (this.sidenavOpen = true);
   }
+  
+  // Client-side filtering with pagination
+  private _filterPlayers(value: string | null): Player[] {
+    if (!this.isPlayersLoaded || !value || typeof value !== 'string' || value.length < 3) {
+      return [];
+    }
+    
+    const filterValue = value.toLowerCase();
+    
+    // Filter players and limit to 20 results
+    return this.allPlayersCache
+      .filter(player => {
+        try {
+          // player_idd is already decoded in the API response
+          const playerIdMatch = player.player_idd ? 
+            player.player_idd.toLowerCase().includes(filterValue) : false;
+          
+          // Check if fullname needs decoding
+          const nameMatch = player.fullname ? 
+            (typeof player.fullname === 'string' ? 
+              player.fullname.toLowerCase().includes(filterValue) : 
+              false) : 
+            false;
+          
+          // Check if team_name needs decoding
+          const teamMatch = player.team_name ? 
+            (typeof player.team_name === 'string' ? 
+              player.team_name.toLowerCase().includes(filterValue) : 
+              false) : 
+            false;
+            
+          return playerIdMatch || nameMatch || teamMatch;
+        } catch (error) {
+          console.error('Error filtering player data:', error);
+          return false;
+        }
+      })
+      .slice(0, 20); // Limit to 20 results
+  }
 
-  public getAllPlayersList() {
+  public loadPlayersInBackground() {
+    this.isSearching = true;
     const token = localStorage.getItem('JWTtoken');
     if (!token) {
       this.snackBar.open('Authentication token not found. Please login again.', 'Close', {
@@ -97,23 +177,30 @@ export class QuestionnairesComponent implements OnInit {
       'Authorization': `Bearer ${token}`
     });
 
-    return this.http.get(`${this.baseUrl}getAllPlayersList`, { 
+    this.http.get(`${this.baseUrl}getAllPlayersList`, { 
       headers,
       withCredentials: false
     }).subscribe({
       next: (response: any) => {
         console.log('Players List Response:', response);
         if (response && response.response) {
-          this.playersList = response.response.map((player: any) => ({
+          this.allPlayersCache = response.response.map((player: any) => ({
+            id: player.id || 0,
+            // Store both encoded and decoded player IDs
+            player_id: player.player_id || '',
             player_idd: player.player_idd || '',
-            team_name: player.team_name || ''
+            // Use other fields as before
+            team_name: player.team_name || '',
+            fullname: player.fullname || ''
           }));
+          this.isPlayersLoaded = true;
         } else {
           this.snackBar.open('No players data found', 'Close', {
             duration: 3000,
             verticalPosition: 'top'
           });
         }
+        this.isSearching = false;
       },
       error: (error) => {
         console.error('Error fetching players list:', error);
@@ -133,6 +220,7 @@ export class QuestionnairesComponent implements OnInit {
           verticalPosition: 'top',
           panelClass: ['error-snackbar']
         });
+        this.isSearching = false;
       }
     });
   }
@@ -165,8 +253,10 @@ export class QuestionnairesComponent implements OnInit {
     this.beforeQuestions = [];
     this.afterQuestions = [];
 
+    // Use the decoded player_id (player_idd) directly
+    // This is what we already have in this.playerId
     const payload = {
-      player_id: this.playerId
+      player_id: this.playerId // Using the decoded player_id
     };
 
     console.log('Sending request with payload:', payload);
