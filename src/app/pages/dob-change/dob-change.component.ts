@@ -205,14 +205,19 @@ export class DobChangeComponent implements OnInit, OnDestroy {
   }
 
   private setupAutoComplete(): void {
-    // Setup team autocomplete
+    // Setup team autocomplete with debounce and client-side filtering
     this.filteredOptions3 = this.myControl3.valueChanges.pipe(
       startWith(''),
+      debounceTime(300),
+      distinctUntilChanged(),
       map(value => {
-        if (!value) {
-          return this.options3;
+        if (!value || value.length < 3) {
+          return [];
         }
-        return this._filterTeam(value);
+        this.isSearching = true;
+        const result = this._filterTeam(value);
+        this.isSearching = false;
+        return result;
       })
     );
 
@@ -265,6 +270,7 @@ export class DobChangeComponent implements OnInit, OnDestroy {
   }
 
   getallLocation() {
+    this.isSearching = true;
     const url = `${this.baseUrl}getTeamAdmin`;
     this.ajaxService.get(url).subscribe({
       next: (response) => {
@@ -288,6 +294,8 @@ export class DobChangeComponent implements OnInit, OnDestroy {
             verticalPosition: "top",
             panelClass: "red-snackbar",
           });
+        } finally {
+          this.isSearching = false;
         }
       },
       error: (error) => {
@@ -297,6 +305,7 @@ export class DobChangeComponent implements OnInit, OnDestroy {
           verticalPosition: "top",
           panelClass: "red-snackbar",
         });
+        this.isSearching = false;
       }
     });
   }
@@ -440,11 +449,22 @@ export class DobChangeComponent implements OnInit, OnDestroy {
   }
 
   private _filterTeam(value: string): TeamDetails[] {
+    if (!value || value.length < 3) {
+      return [];
+    }
+    
     const filterValue = value.toLowerCase();
-    return this.options3.filter(option => {
-      const teamName = option.team_name ? window.atob(option.team_name).toLowerCase() : '';
-      return teamName.includes(filterValue);
-    });
+    return this.options3
+      .filter(option => {
+        try {
+          const teamName = option.team_name ? window.atob(option.team_name).toLowerCase() : '';
+          return teamName.includes(filterValue);
+        } catch (error) {
+          console.error('Error decoding team name:', error);
+          return false;
+        }
+      })
+      .slice(0, 20); // Limit to 20 results
   }
 
   onSubmit(formValue: any): void {
@@ -508,5 +528,22 @@ export class DobChangeComponent implements OnInit, OnDestroy {
         });
       }
     });
+  }
+
+  onTeamSelected(teamName: string): void {
+    if (!teamName) return;
+    
+    // Find the team ID for the selected team name
+    const selectedTeam = this.options3.find(team => {
+      try {
+        return window.atob(team.team_name) === teamName;
+      } catch (error) {
+        return false;
+      }
+    });
+    
+    if (selectedTeam) {
+      this.get_team_id(selectedTeam.team_id);
+    }
   }
 }
