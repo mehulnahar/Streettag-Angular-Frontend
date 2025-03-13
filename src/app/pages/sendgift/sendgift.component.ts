@@ -17,9 +17,8 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dial
 import { Router } from "@angular/router";
 import { MatSort } from "@angular/material/sort";
 import { FormControl } from "@angular/forms";
-import { Observable } from "rxjs/internal/Observable";
-import { startWith } from "rxjs/internal/operators/startWith";
-import { map } from "rxjs/internal/operators/map";
+import { Observable, of } from 'rxjs';
+import { startWith, map, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { environment } from "src/environments/environment";
 
 interface GiftCardData {
@@ -118,8 +117,6 @@ export class SendgiftComponent implements OnInit {
   }
 
   ngOnInit() {
- 
-
     if (window.innerWidth <= 992) {
       this.sidenavOpen = false;
     }
@@ -331,6 +328,13 @@ export class send_gift_card implements OnInit {
   player_email = "";
   player_team = "";
 
+  // Add cache and optimization constants
+  private readonly DEBOUNCE_TIME = 500; // 500ms debounce
+  private readonly MIN_SEARCH_LENGTH = 2;
+  private readonly MAX_ITEMS = 30;
+  private playerDataCache: PlayerData[] = [];
+  private teamDataCache: TeamData[] = [];
+
   constructor(
     public dialogRef: MatDialogRef<send_gift_card>,
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -342,6 +346,7 @@ export class send_gift_card implements OnInit {
     private ajaxService: AjaxService
   ) {
     this.settings = this.appSettings.settings;
+    this.initializeFormControls();
   }
 
   ngOnInit() {
@@ -354,89 +359,141 @@ export class send_gift_card implements OnInit {
     this.getAllCodeMoney();
   }
 
+  private initializeFormControls() {
+    // Initialize team search with debounce
+    this.myControl3.valueChanges.pipe(
+      debounceTime(this.DEBOUNCE_TIME),
+      distinctUntilChanged(),
+      startWith(""),
+      map((value: string) => {
+        if (!value) {
+          this.getAllPlayers();
+          return this.options3.slice(0, this.MAX_ITEMS);
+        } else if (value.length >= this.MIN_SEARCH_LENGTH) {
+          this.get_team_id(value);
+        }
+        return this._filterTeam(value);
+      })
+    ).subscribe();
+
+    // Initialize player search with debounce
+    this.myControl1.valueChanges.pipe(
+      debounceTime(this.DEBOUNCE_TIME),
+      distinctUntilChanged(),
+      startWith(""),
+      map((value: string) => {
+        if (value && value.length >= this.MIN_SEARCH_LENGTH) {
+          this.get_player_id(value);
+        }
+        return this._filter(value);
+      })
+    ).subscribe();
+  }
+
   getallLocation() {
+    if (this.teamDataCache.length > 0) {
+      this.dataSourceLocation = this.teamDataCache;
+      this.options3 = this.dataSourceLocation;
+      this.initializeTeamFilter();
+      return;
+    }
+
     const url = `${this.baseUrl}getTeamAdmin`;
 
-    this.ajaxService.get<ApiResponse<TeamData[]>>(url).subscribe(
-      (data) => {
+    this.ajaxService.get<ApiResponse<TeamData[]>>(url).subscribe({
+      next: (data) => {
         if (data && data.response) {
+          this.teamDataCache = data.response;
           this.dataSourceLocation = data.response;
           this.options3 = this.dataSourceLocation;
-
-          this.filteredOptions3 = this.myControl3.valueChanges.pipe(
-            startWith(""),
-            map((value) => {
-              if (value === "") {
-                this.getAllPlayers();
-              } else {
-                this.get_team_id(value);
-              }
-              return this._filterTeam(value || "");
-            })
-          );
+          this.initializeTeamFilter();
         }
       },
-      (error) => {
+      error: (error) => {
         console.error('Error fetching team data:', error);
         this.snackBar.open("Error loading teams. Please try again.", "Close", {
           duration: 3000,
           panelClass: ['error-snackbar']
         });
       }
+    });
+  }
+
+  private initializeTeamFilter() {
+    this.filteredOptions3 = this.myControl3.valueChanges.pipe(
+      startWith(""),
+      map((value: string) => this._filterTeam(value))
     );
   }
 
   getAllPlayers() {
+    if (this.playerDataCache.length > 0) {
+      this.dataSourceAllPlayers = this.playerDataCache;
+      this.options1 = this.dataSourceAllPlayers;
+      this.initializePlayerFilter();
+      return;
+    }
+
     const url = `${this.baseUrl}getAllPlayersList`;
 
-    this.ajaxService.get<ApiResponse<PlayerData[]>>(url).subscribe(
-      (data) => {
+    this.ajaxService.get<ApiResponse<PlayerData[]>>(url).subscribe({
+      next: (data) => {
         if (data && data.response) {
+          this.playerDataCache = data.response;
           this.dataSourceAllPlayers = data.response;
           this.options1 = this.dataSourceAllPlayers;
-
-          this.filteredOptions1 = this.myControl1.valueChanges.pipe(
-            startWith(""),
-            map((value) => {
-              this.get_player_id(value);
-              return this._filter(value || "");
-            })
-          );
+          this.initializePlayerFilter();
         }
       },
-      (error) => {
+      error: (error) => {
         console.error('Error fetching players:', error);
         this.snackBar.open("Error loading players. Please try again.", "Close", {
           duration: 3000,
           panelClass: ['error-snackbar']
         });
       }
+    });
+  }
+
+  private initializePlayerFilter() {
+    this.filteredOptions1 = this.myControl1.valueChanges.pipe(
+      startWith(""),
+      map((value: string) => this._filter(value))
     );
   }
 
-  getAllCodeMoney() {
-    const url = `${this.baseUrl}getAllCodeMoney`;
+  private _filter(value: string): PlayerData[] {
+    if (!value || value.length < this.MIN_SEARCH_LENGTH) return [];
+    
+    const filterValue = value.toLowerCase();
+    return this.options1
+      .filter((option) => {
+        // Filter by player_idd instead of player_id
+        const searchValue = option.player_idd?.toLowerCase() || '';
+        return searchValue.includes(filterValue);
+      })
+      .slice(0, this.MAX_ITEMS);
+  }
 
-    this.ajaxService.get<ApiResponse<GiftData[]>>(url).subscribe(
-      (data) => {
-        if (data && data.response) {
-          this.dataSourceAllGift = data.response;
-        }
-      },
-      (error) => {
-        console.error('Error fetching gift codes:', error);
-        this.snackBar.open("Error loading gift amounts. Please try again.", "Close", {
-          duration: 3000,
-          panelClass: ['error-snackbar']
-        });
-      }
-    );
+  private _filterTeam(value: string): TeamData[] {
+    if (!value || value.length < this.MIN_SEARCH_LENGTH) return this.options3.slice(0, this.MAX_ITEMS);
+    
+    const filterValue = value.toLowerCase();
+    return this.options3
+      .filter((option) => option.team_namee.toLowerCase().includes(filterValue))
+      .slice(0, this.MAX_ITEMS);
   }
 
   get_team_id(res: string): boolean {
     if (res === "0") {
       this.player_id = "";
       this.is_all = true;
+      this.options1 = [];
+      this.filteredOptions1 = of([]);
+      return false;
+    }
+
+    if (!res || res.length < this.MIN_SEARCH_LENGTH) {
       return false;
     }
 
@@ -447,86 +504,85 @@ export class send_gift_card implements OnInit {
       return false;
     }
 
-    this.ajaxService.post<ApiResponse<PlayerData[]>>(data, url).subscribe((response) => {
-      this.dataSourcePlayers = response.response;
-      this.player_namet = "";
-      this.options1 = this.dataSourcePlayers;
-
-      this.filteredOptions1 = this.myControl1.valueChanges.pipe(
-        startWith(""),
-        map((value) => {
-          this.get_player_id(value);
-          return this._filter(value || "");
-        })
-      );
-
-      this.is_all = false;
+    this.ajaxService.post<ApiResponse<PlayerData[]>>(data, url).subscribe({
+      next: (response) => {
+        if (response && response.response) {
+          // Map the response to ensure we have both player_id and player_idd
+          this.dataSourcePlayers = response.response.map(player => ({
+            ...player,
+            player_idd: player.player_idd || this.decodeBase64(player.player_id)
+          }));
+          
+          this.player_namet = "";
+          this.options1 = this.dataSourcePlayers;
+          
+          // Update the filtered options to show player_idd
+          this.filteredOptions1 = of(this.options1);
+          this.is_all = false;
+        }
+      },
+      error: (error) => {
+        console.error('Error fetching team players:', error);
+        this.snackBar.open("Error loading team players", "Close", {
+          duration: 3000,
+          panelClass: ['error-snackbar']
+        });
+      }
     });
 
     return true;
   }
 
+  // Helper method to decode base64 if needed
+  private decodeBase64(str: string): string {
+    try {
+      return atob(str);
+    } catch (e) {
+      return str;
+    }
+  }
+
   get_player_id(res: string): boolean {
-    if (!res) {
+    if (!res || res.length < this.MIN_SEARCH_LENGTH) {
       return false;
     }
 
     const url = `${this.baseUrl}getPlayerDetailsAdmin`;
     const data = { player_id: res };
 
-    this.ajaxService.post<ApiResponse<PlayerData[]>>(data, url).subscribe((response) => {
-      if (response && response.response && response.response.length > 0) {
-        this.dataSourcePlayersDetails = response.response;
-        const details = this.dataSourcePlayersDetails[0];
-        
-        try {
-          // Properly set the values without any encoding
-          this.player_name = details.fullname || '';
-          this.player_email = details.email || '';
-          this.player_team = details.team_name || '';
-          this.device_token = details.device_token || '';
-          this.device_type = details.device_type || '';
-          this.circuit_id = details.circuit_id || '';
-          this.location_id = details.location_id || '';
-          this.team_id = details.team_id || '';
-          this.player_id = details.player_id || '';
-        } catch (error) {
-          console.error('Error processing player details:', error);
+    this.ajaxService.post<ApiResponse<PlayerData[]>>(data, url)
+      .pipe(
+        debounceTime(this.DEBOUNCE_TIME)
+      )
+      .subscribe({
+        next: (response) => {
+          if (response?.response?.[0]) {
+            const details = response.response[0];
+            this.updatePlayerDetails(details);
+          }
+        },
+        error: (error) => {
+          console.error('Error fetching player details:', error);
           this.snackBar.open('Error loading player details', 'Close', {
             duration: 3000,
             panelClass: ['error-snackbar']
           });
         }
-      } else {
-        console.error('Invalid player details response:', response);
-        this.snackBar.open('Error loading player details', 'Close', {
-          duration: 3000,
-          panelClass: ['error-snackbar']
-        });
-      }
-    }, error => {
-      console.error('Error fetching player details:', error);
-      this.snackBar.open('Error loading player details', 'Close', {
-        duration: 3000,
-        panelClass: ['error-snackbar']
       });
-    });
 
     return true;
   }
 
-  private _filter(value: string): PlayerData[] {
-    const filterValue = value.toLowerCase();
-    return this.options1.filter((option) =>
-      option.player_idd.toLowerCase().includes(filterValue)
-    );
-  }
-
-  private _filterTeam(value: string): TeamData[] {
-    const filterValue = value.toLowerCase();
-    return this.options3.filter((option) =>
-      option.team_namee.toLowerCase().includes(filterValue)
-    );
+  private updatePlayerDetails(details: PlayerData) {
+    this.player_name = details.fullname || '';
+    this.player_email = details.email || '';
+    this.player_team = details.team_name || '';
+    this.device_token = details.device_token || '';
+    this.device_type = details.device_type || '';
+    this.circuit_id = details.circuit_id || '';
+    this.location_id = details.location_id || '';
+    this.team_id = details.team_id || '';
+    this.player_id = details.player_id || '';
   }
 
   onSubmit(data: any): boolean {
@@ -573,5 +629,24 @@ export class send_gift_card implements OnInit {
       );
       return false;
     }
+  }
+
+  getAllCodeMoney() {
+    const url = `${this.baseUrl}getAllCodeMoney`;
+
+    this.ajaxService.get<ApiResponse<GiftData[]>>(url).subscribe({
+      next: (data) => {
+        if (data && data.response) {
+          this.dataSourceAllGift = data.response;
+        }
+      },
+      error: (error) => {
+        console.error('Error fetching gift codes:', error);
+        this.snackBar.open("Error loading gift amounts. Please try again.", "Close", {
+          duration: 3000,
+          panelClass: ['error-snackbar']
+        });
+      }
+    });
   }
 }
