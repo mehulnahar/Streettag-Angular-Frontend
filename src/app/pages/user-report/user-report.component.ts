@@ -589,5 +589,9 @@ import {
         this.get_player_id(selectedPlayerId);
       }
     }
+
+    displayFn(value: any): string {
+      return value || '';
+    }
   }
   

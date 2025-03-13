@@ -5,6 +5,8 @@
 ::ng-deep .mat-autocomplete-panel {
   max-height: 256px !important;
   overflow-y: auto !important;
+  min-width: 100% !important;
+  width: 100% !important;
   
   &::-webkit-scrollbar {
     width: 4px;
@@ -22,6 +24,17 @@
     height: 48px;
     line-height: 48px;
     font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+::ng-deep .mat-form-field {
+  width: 100%;
+  
+  .mat-form-field-wrapper {
+    width: 100%;
   }
 }
 
