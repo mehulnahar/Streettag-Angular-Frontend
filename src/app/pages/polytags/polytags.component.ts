@@ -257,6 +257,7 @@ export class DialogOverviewAddMessageDialogPolytags implements OnInit {
   dataSourceCategory: Observable<any> = new Observable<any>();
   dataSourceCategoryAssets: Observable<any> = new Observable<any>();
   private readonly baseUrl = environment.baseUrl;
+  private readonly userUrl = environment.userUrl;
   
   // Selected polytag name for info window
   selectedPolytagName: string = '';
@@ -294,6 +295,7 @@ export class DialogOverviewAddMessageDialogPolytags implements OnInit {
     private formBuilder: FormBuilder,
     private ajaxService: AjaxService,
     private snackBar: MatSnackBar,
+    private dialog: MatDialog,
     private http: HttpClient
   ) {
     this.form = this.formBuilder.group({
@@ -533,13 +535,44 @@ export class DialogOverviewAddMessageDialogPolytags implements OnInit {
   // Get marker options for existing polytags
   getExistingMarkerOptions(polytag: any): google.maps.MarkerOptions {
     return {
-      title: polytag.polytag_name
+      title: polytag.street_name || polytag.polytag_name || 'Unknown Tag'
     };
   }
 
   // Show polytag info when marker is clicked
   showPolytagInfo(polytag: any) {
     this.selectedPolytagName = polytag.polytag_name;
+    const message = `Are you sure you want to Delete this Tag?`;
+    const dialogData = new ConfirmDialogModel("Confirm Action", message);
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      maxWidth: "500px",
+      data: dialogData,
+    });
+
+    dialogRef.afterClosed().subscribe((dialogResult) => {
+      if (dialogResult === true) {
+        const url = `${this.userUrl}strtg/deleteAutoTags`;
+        const data = {
+          qid: polytag.qid
+        };
+        this.ajaxService.post<ApiResponse<any>>(data, url).subscribe((response: ApiResponse<any>) => {
+          if (response.status === false) {
+            this.snackBar.open(response.msg, undefined, {
+              duration: 3000,
+              verticalPosition: "top",
+              panelClass: ["red-snackbar"],
+            });
+          } else {
+            this.getNearByTags();
+            this.snackBar.open("Tag deleted successfully", undefined, {
+              duration: 3000,
+              verticalPosition: "top",
+              panelClass: ["blue-snackbar"],
+            });
+          }
+        });
+      }
+    });
   }
 }
 
