@@ -56,6 +56,11 @@
                             (mapDragend)="onMarkerPositionChanged(marker.getPosition())"
                             (position_changed)="onMarkerPositionChanged(marker.getPosition())">
                         </map-marker>
+
+                        <map-circle
+                            [center]="markerPosition"
+                            [options]="circleOptions">
+                        </map-circle>
                     </google-map>
                 </div>
             </div>

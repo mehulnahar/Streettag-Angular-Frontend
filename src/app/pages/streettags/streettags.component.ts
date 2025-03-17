@@ -488,6 +488,18 @@ export class DialogOverviewAddMessageDialogStreettags implements OnInit {
     draggable: true
   };
 
+  // Circle options for the 80m radius
+  public circleOptions: google.maps.CircleOptions = {
+    fillColor: '#00FF00',
+    fillOpacity: 0.2,
+    strokeColor: '#00FF00',
+    strokeOpacity: 0.8,
+    strokeWeight: 2,
+    radius: 80, // 80 meters
+    clickable: false,
+    zIndex: 1
+  };
+
   private readonly GOOGLE_MAPS_API_KEY = environment.googleMapsApiKey;
 
   constructor(
