@@ -60,6 +60,11 @@
                                 (mapDragend)="markerDragEnd($event)">
                             </map-marker>
 
+                            <map-circle
+                                [center]="markerPosition"
+                                [options]="circleOptions">
+                            </map-circle>
+
                             <map-marker
                                 *ngFor="let polytag of nearByLatLng"
                                 [position]="{ lat: +polytag.lat, lng: +polytag.lng }"

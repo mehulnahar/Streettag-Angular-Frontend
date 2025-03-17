@@ -26,7 +26,7 @@ import { MatSort } from "@angular/material/sort";
 import { environment } from "src/environments/environment";
 import { ConfirmDialogComponent } from "src/app/shared/confirm-dialog/confirm-dialog.component";
 import { ConfirmDialogModel } from "src/app/shared/confirm-dialog/confirmDialog.model";
-import { GoogleMap, MapInfoWindow, MapMarker } from "@angular/google-maps";
+import { GoogleMap, MapInfoWindow, MapMarker, MapCircle } from "@angular/google-maps";
 import { Observable, map, Subject } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
@@ -263,13 +263,23 @@ export class DialogOverviewAddMessageDialogPolytags implements OnInit {
   
   // Google Maps properties
   center: google.maps.LatLngLiteral = { lat: 24, lng: 12 };
-  zoom = 15; // Increased zoom level
+  zoom = 15; 
   markerPosition: google.maps.LatLngLiteral = { lat: 24, lng: 12 };
   markerOptions: google.maps.MarkerOptions = { 
     draggable: true,
     animation: google.maps.Animation.BOUNCE,
-    // Use the default red marker without specifying a custom icon
-    // This will match the style of other markers on the map
+  };
+
+  // Circle options for the 80m radius
+  circleOptions: google.maps.CircleOptions = {
+    fillColor: '#00FF00',
+    fillOpacity: 0.2,
+    strokeColor: '#00FF00',
+    strokeOpacity: 0.8,
+    strokeWeight: 2,
+    radius: 80 * 1, // 80 meters - Google Maps uses meters by default
+    clickable: false, // Make it non-interactive
+    zIndex: 1 // Ensure it's below markers
   };
 
   // Existing polytags
@@ -318,8 +328,6 @@ export class DialogOverviewAddMessageDialogPolytags implements OnInit {
         this.markerOptions = {
           draggable: true,
           animation: google.maps.Animation.BOUNCE,
-          // Use the default red marker without specifying a custom icon
-          // This will match the style of other markers on the map
         };
         
         this.getNearByTags();
@@ -366,9 +374,9 @@ export class DialogOverviewAddMessageDialogPolytags implements OnInit {
     this.markerOptions = {
       draggable: true,
       animation: google.maps.Animation.BOUNCE,
-      // Use the default red marker without specifying a custom icon
-      // This will match the style of other markers on the map
     };
+    
+    // Update circle position (it automatically follows marker position since we bind [center] to markerPosition)
     
     this.getNearByTags();
   }
@@ -493,8 +501,6 @@ export class DialogOverviewAddMessageDialogPolytags implements OnInit {
       this.markerOptions = {
         draggable: true,
         animation: google.maps.Animation.BOUNCE,
-        // Use the default red marker without specifying a custom icon
-        // This will match the style of other markers on the map
       };
       
       // Get nearby tags for the new location
@@ -582,5 +588,3 @@ export class DialogEditPolytags implements OnInit {
     }
   }
 }
-
-
