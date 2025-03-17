@@ -445,7 +445,7 @@ export class AddMonumentDialog implements OnInit, OnDestroy {
         fillOpacity: 0.15,
         map: this.googleMap?.googleMap,
         center: this.markerPosition,
-        radius: 1000 // 1000 meters
+        radius: 42 // 1000 meters
       });
     }
   }
