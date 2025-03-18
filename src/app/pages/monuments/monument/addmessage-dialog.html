@@ -242,6 +242,14 @@
                 #marker="mapMarker">
               </map-marker>
               <map-info-window>Click to edit location</map-info-window>
+
+              <!-- Nearby tag markers -->
+              <map-marker
+                *ngFor="let tag of nearByLatLng | async"
+                [position]="{ lat: +tag.lat, lng: +tag.lng }"
+                [options]="getExistingMarkerOptions(tag)"
+                (mapClick)="confirmDialog(tag.qid)">
+              </map-marker>
             </google-map>
           </div>
         </div>
